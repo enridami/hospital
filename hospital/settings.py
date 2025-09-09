@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',  # Nuestra aplicación personalizada de usuarios
 ]
 
 MIDDLEWARE = [
@@ -54,7 +56,7 @@ ROOT_URLCONF = 'hospital.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,3 +122,31 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# *** CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS ***
+STATIC_URL = '/static/'
+
+
+# Carpetas donde Django busca archivos estáticos durante desarrollo
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")
+]
+
+
+# Carpeta donde se recolectan todos los archivos estáticos para producción
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+
+
+# *** CONFIGURACIÓN DE ARCHIVOS MEDIA (imágenes de usuarios) ***
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# *** CONFIGURACIONES OPCIONALES DE LOGIN ***
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'

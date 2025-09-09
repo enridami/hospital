@@ -1,0 +1,30 @@
+{% extends 'users/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="card shadow-lg mx-auto mt-5" style="max-width: 32rem">
+    <div class="card-body p-4">
+        <h1 class="fs-4 card-title fw-bold mb-3 text-center">Dashboard</h1>
+       
+        <div class="text-center mb-4">
+            <h3>¡Bienvenido, {{ user.username }}!</h3>
+            {% if user.is_doctor %}
+                <p class="text-success">Tipo de usuario: Doctor</p>
+            {% else %}
+                <p class="text-info">Tipo de usuario: Paciente</p>
+            {% endif %}
+        </div>
+       
+        <div class="user-info mb-4">
+            <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+             
+        </div>
+       
+        <div class="text-center">
+            <a href="{% url 'logout' %}" class="btn btn-secondary primary-color-background">
+                Cerrar sesión
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
