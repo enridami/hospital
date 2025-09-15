@@ -7,11 +7,11 @@
        
         <div class="text-center mb-4">
             <h3>¡Bienvenido, {{ user.username }}!</h3>
-            {% if user.is_doctor %}
-                <p class="text-success">Tipo de usuario: Doctor</p>
-            {% else %}
-                <!-- <p class="text-info">Tipo de usuario: Recepcionista</p> -->
-            {% endif %}
+                {% if is_doctor_group %}
+                    <p class="text-success">Tipo de usuario: Doctor</p>
+                {% else %}
+                    <p class="text-info">Tipo de usuario: Recepcionista</p>
+                {% endif %}
         </div>
        
         <div class="user-info mb-4">

@@ -44,5 +44,9 @@ def logout_view(request):
 @login_required
 def dashboard_view(request):
     """Vista temporal de dashboard"""
-    return render(request, 'users/dashboard.html', {'user': request.user})
+    is_doctor_group = request.user.groups.filter(name='Doctor').exists()
+    return render(request, 'users/dashboard.html', {
+        'user': request.user,
+        'is_doctor_group': is_doctor_group
+    })
 
