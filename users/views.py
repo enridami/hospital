@@ -26,7 +26,7 @@ def login_view(request):
             #if hasattr(user, 'is_doctor') and user.is_doctor:
                 #return redirect('doctor_dashboard')  # Cambiar por tu URL de dashboard doctor
             #else:
-                #return redirect('patient_dashboard')  # Cambiar por tu URL de dashboard paciente
+                #return redirect('reception_dashboard')  # Cambiar por tu URL de dashboard paciente
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
             
