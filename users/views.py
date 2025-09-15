@@ -28,7 +28,7 @@ def login_view(request):
             #else:
                 #return redirect('patient_dashboard')  # Cambiar por tu URL de dashboard paciente
         else:
-            messages.error(request, 'Incorrect username or password')
+            messages.error(request, 'Usuario o contraseña incorrectos.')
             
     return render(request, 'users/login.html')
 
@@ -45,5 +45,4 @@ def logout_view(request):
 def dashboard_view(request):
     """Vista temporal de dashboard"""
     return render(request, 'users/dashboard.html', {'user': request.user})
-
 
