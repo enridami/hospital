@@ -19,14 +19,14 @@ def login_view(request):
         if user is not None:
             login(request, user)
             
-            return redirect('dashboard')  # URL temporal hasta adaptar la funcionalidad comentada abajo
-
-
-            # Redireccionar según el tipo de usuario
-            #if hasattr(user, 'is_doctor') and user.is_doctor:
-                #return redirect('doctor_dashboard')  # Cambiar por tu URL de dashboard doctor
-            #else:
-                #return redirect('reception_dashboard')  # Cambiar por tu URL de dashboard paciente
+            # Detectar tipo de usuario
+            if hasattr(user, 'doctor') and user.is_doctor:
+                return redirect('doctor_dashboard')
+            elif hasattr(user, 'receptions'):
+                return redirect('reception_dashboard')
+            
+         
+        
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
             

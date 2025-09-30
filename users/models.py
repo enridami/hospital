@@ -11,8 +11,8 @@ class Address(models.Model):
     code_postal = models.CharField(max_length=50)
    
     class Meta:
-        verbose_name = "Address"
-        verbose_name_plural = "Addresses"
+        verbose_name = "Dirección"
+        verbose_name_plural = "Direcciones"
        
     def __str__(self):
         return self.address_line
@@ -26,8 +26,8 @@ class Specialty(models.Model):
     description = models.TextField()
    
     class Meta:
-        verbose_name = "Specialty"
-        verbose_name_plural = "Specialties"
+        verbose_name = "Especialidad"
+        verbose_name_plural = "Especialidades"
        
     def __str__(self):
         return self.name
@@ -102,3 +102,47 @@ class Reset_token(models.Model):
        
     def __str__(self):
         return f"Reset token for {self.user.username}"
+    
+
+
+# Doctor
+class Doctor(models.Model):
+    user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE)
+    bio = models.TextField()
+
+    class Meta:
+        verbose_name = "Doctor"
+        verbose_name_plural = "Doctores"
+
+    def __str__(self):
+        return self.user.get_full_name() or self.user.username
+    
+
+# Recepcion
+class Receptions(models.Model):
+    user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
+
+    class Meta:
+        verbose_name = "Recepcion"
+        verbose_name_plural = "Recepcionistas"
+
+    def __str__(self):
+        return self.user.get_full_name() or self.user.username
+    
+# Administrador
+class Administrator(models.Model):
+    """Modelo para administradores del sistema hospitalario"""
+    user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
+    department = models.CharField(max_length=50, default="Administración") # Departamento del administrador
+    can_create_users = models.BooleanField(default=True)
+    can_create_groups = models.BooleanField(default=True)
+    can_assign_roles = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Administrador"
+        verbose_name_plural = "Administradores"
+
+    def __str__(self):
+        return self.user.get_full_name() or self.user.username
+    
