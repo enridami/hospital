@@ -24,9 +24,11 @@ def login_view(request):
                 return redirect('doctor_dashboard')
             elif hasattr(user, 'receptions'):
                 return redirect('reception_dashboard')
+            elif hasattr(user, 'administrator'):
+                return redirect('admin_dashboard')
+            else:
+                return render(request, 'users/dashboard.html')
             
-         
-        
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
             
