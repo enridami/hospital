@@ -1,11 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Dashboard de recepcion</h1>
-</body>
-</html>
+{% extends 'users/base.html' %}
+{% block title %}Dashboard Recepción{% endblock %}
+{% block content %}
+<div class="card shadow-lg mx-auto mt-5" style="max-width: 50rem">
+    <div class="card-body p-4">
+        <h1 class="fs-4 card-title fw-bold mb-3 text-center">Dashboard Recepción</h1>
+       
+        <div class="text-center mb-4">
+            <h3>¡Bienvenido {{ user.first_name }} {{ user.last_name }}!</h3>
+            <p class="text-success">Rol: Recepcionista</p>
+        </div>
+       
+        <div class="user-info mb-4">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Registrar Pacientes</h5>
+                        <p>Crear nuevos registros</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Agendar Citas</h5>
+                        <p>Programar citas médicas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="text-center mt-4">
+            <a href="{% url 'logout' %}" class="btn btn-secondary">
+                Cerrar sesión
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

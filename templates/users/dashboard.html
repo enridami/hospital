@@ -7,12 +7,11 @@
        
         <div class="text-center mb-4">
             <h3>¡Bienvenido, {{ user.username }}!</h3>
-                {% if is_doctor_group %}
-                    <p class="text-success">Tipo de usuario: Doctor</p>
-                {% else %}
-                    <p class="text-info">Tipo de usuario: Recepcionista</p>
-                {% endif %}
-        </div>
+                <p class="text-success">Tipo de usuario: {{ user_type }}</p>
+                {% if specialty %}
+                <p class="text-info">Especialidad: {{ specialty }}</p>
+                {% endif %}    
+            </div>
        
         <div class="user-info mb-4">
             <p><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name }}</p>
@@ -28,3 +27,4 @@
     </div>
 </div>
 {% endblock %}
+

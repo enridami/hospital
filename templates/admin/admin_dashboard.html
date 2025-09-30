@@ -1,11 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Dashboard de administrador</h1>
-</body>
-</html>
+{% extends 'users/base.html' %}
+{% block title %}Dashboard Administrador{% endblock %}
+{% block content %}
+<div class="card shadow-lg mx-auto mt-5" style="max-width: 50rem">
+    <div class="card-body p-4">
+        <h1 class="fs-4 card-title fw-bold mb-3 text-center">Dashboard Administrador</h1>
+       
+        <div class="text-center mb-4">
+            <h3>¡Bienvenido {{ user.first_name }} {{ user.last_name }}!</h3>
+            <p class="text-danger">Rol: Administrador</p>
+            <p class="text-info">Departamento: {{ administrator.department }}</p>
+        </div>
+       
+        <div class="user-info mb-4">
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Gestionar Usuarios</h5>
+                        <p>Crear y editar usuarios</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Asignar Roles</h5>
+                        <p>Gestionar permisos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Reportes</h5>
+                        <p>Ver estadísticas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="text-center mt-4">
+            <a href="{% url 'logout' %}" class="btn btn-secondary">
+                Cerrar sesión
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

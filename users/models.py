@@ -1,25 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-class Address(models.Model):
-    """Modelo para manejar direcciones de usuarios"""
-    id_address = models.AutoField(primary_key=True)
-    address_line = models.CharField(max_length=50)
-    region = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
-    code_postal = models.CharField(max_length=50)
-   
-    class Meta:
-        verbose_name = "Dirección"
-        verbose_name_plural = "Direcciones"
-       
-    def __str__(self):
-        return self.address_line
-
-
-
-
 class Specialty(models.Model):
     """Modelo para especialidades médicas"""
     name = models.CharField(max_length=25, unique=True)
@@ -31,7 +12,6 @@ class Specialty(models.Model):
        
     def __str__(self):
         return self.name
-
 
 
 
@@ -58,9 +38,13 @@ class Users(AbstractUser):
         default="users/profiles/default.png"
     )
    
-    # Relación con dirección
-    id_address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
-   
+    # Dirección
+    address_line = models.CharField(max_length=100, blank=True, null=True)
+    region = models.CharField(max_length=50, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    code_postal = models.CharField(max_length=20, blank=True, null=True)
+
+
     # *** SOLUCIÓN AL CONFLICTO: Agregar related_name ***
     groups = models.ManyToManyField(
         'auth.Group',
