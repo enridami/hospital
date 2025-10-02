@@ -143,6 +143,7 @@ class Patient(models.Model):
     
     # Identificación
     identification_type_choices = (
+        ("CI", "CI"),
         ("DNI", "DNI"),
         ("Passport", "Pasaporte"),
         ("License", "Licencia de Conducir"),
