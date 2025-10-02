@@ -38,11 +38,11 @@ def dashboard_view(request):
     elif hasattr(user, 'administrator'):
         return redirect('admin_dashboard')
     else:
-        return render(request, 'users/dashboard.html'), {
+        return render(request, 'users/dashboard.html', {
             'user': user,
             'user_type': 'Usuario sin rol',
             'specialty': None
-        }
+        })
 
 
 @login_required
@@ -87,7 +87,7 @@ def admin_dashboard_view(request):
         return redirect('dashboard')
     
     admin = request.user.administrator
-    return render(request, 'admin/admin_dashboard.html', {
+    return render(request, 'admin_backup/admin_dashboard.html', {
         'user': request.user,
         'administrator': admin,
     })
