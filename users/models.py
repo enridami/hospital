@@ -129,4 +129,117 @@ class Administrator(models.Model):
 
     def __str__(self):
         return self.user.get_full_name() or self.user.username
+
+
+# Paciente
+class Patient(models.Model):
+    """Modelo para pacientes del sistema hospitalario"""
+    
+    # Información personal básica
+    first_name = models.CharField(max_length=50, verbose_name="Nombre")
+    last_name = models.CharField(max_length=50, verbose_name="Apellido")
+    email = models.EmailField(max_length=100, blank=True, null=True, verbose_name="Email")
+    phone = models.CharField(max_length=20, verbose_name="Teléfono")
+    
+    # Identificación
+    identification_type_choices = (
+        ("DNI", "DNI"),
+        ("Passport", "Pasaporte"),
+        ("License", "Licencia de Conducir"),
+        ("Other", "Otro")
+    )
+    identification_type = models.CharField(
+        max_length=20, 
+        choices=identification_type_choices, 
+        default="DNI",
+        verbose_name="Tipo de Identificación"
+    )
+    identification_number = models.CharField(
+        max_length=50, 
+        unique=True, 
+        verbose_name="Número de Identificación"
+    )
+    
+    # Información demográfica
+    gender_choices = (("Male", "Masculino"), ("Female", "Femenino"), ("Other", "Otro"))
+    gender = models.CharField(
+        max_length=10, 
+        choices=gender_choices, 
+        verbose_name="Género"
+    )
+    date_of_birth = models.DateField(verbose_name="Fecha de Nacimiento")
+    
+    # Dirección
+    address_line = models.CharField(max_length=200, verbose_name="Dirección")
+    city = models.CharField(max_length=50, verbose_name="Ciudad")
+    region = models.CharField(max_length=50, verbose_name="Región/Estado")
+    postal_code = models.CharField(max_length=20, verbose_name="Código Postal")
+    country = models.CharField(max_length=50, default="Paraguay", verbose_name="País")
+    
+    # Información médica básica
+    blood_type_choices = (
+        ("A+", "A+"), ("A-", "A-"),
+        ("B+", "B+"), ("B-", "B-"),
+        ("AB+", "AB+"), ("AB-", "AB-"),
+        ("O+", "O+"), ("O-", "O-"),
+        ("Unknown", "Desconocido")
+    )
+    blood_type = models.CharField(
+        max_length=10, 
+        choices=blood_type_choices, 
+        default="Unknown",
+        verbose_name="Tipo de Sangre"
+    )
+    allergies = models.TextField(blank=True, null=True, verbose_name="Alergias")
+    medical_notes = models.TextField(blank=True, null=True, verbose_name="Notas Médicas")
+    
+    # Contacto de emergencia
+    emergency_contact_name = models.CharField(
+        max_length=100, 
+        verbose_name="Nombre del Contacto de Emergencia"
+    )
+    emergency_contact_relationship = models.CharField(
+        max_length=50, 
+        verbose_name="Relación del Contacto"
+    )
+    emergency_contact_phone = models.CharField(
+        max_length=20, 
+        verbose_name="Teléfono del Contacto de Emergencia"
+    )
+    
+    # Información del sistema
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Última Actualización")
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    
+    # Doctor asignado (opcional)
+    assigned_doctor = models.ForeignKey(
+        Doctor, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        verbose_name="Doctor Asignado"
+    )
+
+    class Meta:
+        verbose_name = "Paciente"
+        verbose_name_plural = "Pacientes"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.identification_number}"
+    
+    @property
+    def full_name(self):
+        """Retorna el nombre completo del paciente"""
+        return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def age(self):
+        """Calcula la edad del paciente"""
+        from datetime import date
+        today = date.today()
+        return today.year - self.date_of_birth.year - (
+            (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
+        )
     

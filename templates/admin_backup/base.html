@@ -33,38 +33,40 @@
             <ul>
                 <li>
                     <a href="{% url 'admin_dashboard' %}">
-                        <span>&nbsp;&nbsp;Inicio</span>
+                        <i class="bi bi-house"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Inicio</span>
                     </a>
                 </li>
                 <li>
                     <a href="#">
-                        <span>&nbsp;&nbsp;Perfil</span>
+                        <i class="bi bi-person-circle me-2"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Perfil</span>
                     </a>
                 </li>
                 <li>
                     <a href="#">
                         
-                        <span>&nbsp;&nbsp;Crear rol</span>
+                        <span class="menu-text">&nbsp;&nbsp;Crear rol</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="#">
-                        <span>&nbsp;&nbsp;Modificar rol</span>
+                        <span class="menu-text">&nbsp;&nbsp;Modificar rol</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="#">
-                        <span>&nbsp;&nbsp;Gestionar usuarios</span>
+                        <span class="menu-text">&nbsp;&nbsp;Gestionar usuarios</span>
                     </a>
                 </li>
                 <br><br>
 
                 <li>
                     <a href="{% url 'logout' %}" class="logout text-dark" data-bs-toggle="tooltip" data-bs-placement="right" title="logout">
-                        
-                        <span class="d-none d-md-inline"> &nbsp;&nbsp;Cerrar sesión </span>
+                        <i class="bi bi-box-arrow-left me-3"></i>
+                        <span class="menu-text">Cerrar sesión</span>
                     </a>
                 </li>
             </ul>
