@@ -152,7 +152,7 @@ class Patient(models.Model):
     identification_type = models.CharField(
         max_length=20, 
         choices=identification_type_choices, 
-        default="DNI",
+        default="CI",
         verbose_name="Tipo de Identificación"
     )
     identification_number = models.CharField(

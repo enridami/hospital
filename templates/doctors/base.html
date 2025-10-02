@@ -33,29 +33,37 @@
             <ul>
                 <li>
                     <a href="{% url 'doctor_dashboard' %}">
-                        <i class="bi bi-house"></i>
-                        <span class="menu-text">Inicio</span>
+                        &nbsp;&nbsp;<i class="bi bi-house"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Inicio</span>
                     </a>
                 </li>
                 <li>
                     <a href="#">
-                        <i class="bi bi-person-circle me-2"></i>
-                        <span class="menu-text">Perfil</span>
+                        &nbsp;&nbsp;<i class="bi bi-person-circle me-2"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Perfil</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="bi bi-file-medical-fill me-2"></i>
-                        <span class="menu-text">Consultas</span>
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#consultasMenu">
+                        &nbsp;&nbsp<i class="bi bi-file-medical me-2"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Consultas</span>
+                        <i class="bi bi-chevron-down ms-auto"></i>
                     </a>
+                    <div class="collapse" id="consultasMenu">
+                        <ul class="submenu">
+                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Mis Pacientes</span></a></li>
+                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Nueva Consulta</span></a></li>
+                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Historial Médico</span></a></li>
+                        </ul>
+                    </div>
                 </li>
 
                 <br><br>
 
                 <li>
                     <a href="{% url 'logout' %}" class="logout text-light" data-bs-toggle="tooltip" data-bs-placement="right" title="logout">
-                        <i class="bi bi-box-arrow-left me-2"></i> 
-                        <span class="menu-text">Cerrar sesión</span>
+                        &nbsp;&nbsp;<i class="bi bi-box-arrow-left me-2"></i> 
+                        <span class="menu-text">&nbsp;&nbsp;Cerrar sesión</span>
                     </a>
                 </li>
             </ul>
