@@ -589,8 +589,8 @@ tbody tr:nth-child(even) {
 
 /*New Form Write Notice */
 
-.role-text {
-    font-size: 0.6rem;
-    font-weight: 300;
+.card .table tbody td .role-text {
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--text-grey);
 }
