@@ -1,8 +1,8 @@
 {% extends 'reception/base.html' %}
 {% load static %}
 
-{% block title %} Dashboard {% endblock title %}
-{% block page_title %} Panel de Recepción {% endblock page_title %}
+{% block title %} Panel Recepción {% endblock title %}
+{% block page_title %} {{ request.user.first_name | safe | truncatechars:"20" }} {{ request.user.last_name | safe | truncatechars:"20" }} {% endblock page_title %}
 
 {% block content %}
 <main>
