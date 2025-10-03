@@ -44,14 +44,51 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#usersMenu" aria-expanded="false">
                         &nbsp;&nbsp;<i class="bi bi-kanban"></i>
                         <span class="menu-text">&nbsp;&nbsp;Gestionar usuarios</span>
+                        <i class="bi bi-chevron-down ms-auto"></i>
                     </a>
+                    <div class="collapse" id="usersMenu">
+                        <ul class="submenu">
+                            <li>
+                                <a href="#" class="text-center">
+                                    <span class="menu-text d-block text-center">Ver Usuarios</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-center">
+                                    <span class="menu-text d-block text-center">Crear Usuario</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-center">
+                                    <span class="menu-text d-block text-center">Asignar Roles</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-center">
+                                    <span class="menu-text d-block text-center">Gestionar Médicos</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-center">
+                                    <span class="menu-text d-block text-center">Gestionar Personal</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-center">
+                                    <span class="menu-text d-block text-center">Permisos</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
+
 
                 <br><br>
                 
+
                 <li>
                     <a href="{% url 'logout' %}" class="logout text-dark" data-bs-toggle="tooltip" data-bs-placement="right" title="logout">
                         &nbsp;&nbsp;<i class="bi bi-box-arrow-left me-3"></i>

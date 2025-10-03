@@ -8,14 +8,6 @@
     --secondary-color: #EFA323;
 }
 
-.sidebar-menu .submenu a {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-    padding-left: 0 !important;
-}
-
 * {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -57,13 +49,6 @@
     padding-top: 40px;
 }
 
-.sidebar-menu i {
-    margin-right: 15px !important; /* Separación entre icono y texto - Forzar prioridad */
-}
-
-.sidebar-menu a i {
-    margin-right: 15px !important; /* Regla más específica */
-}
 
 .sidebar li {
     margin-bottom: 1.2rem;
@@ -191,8 +176,9 @@ main {
 
 .dash-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-column-gap: 3rem;
+    margin-bottom: 3rem;
 }
 
 .card-single {
@@ -485,6 +471,12 @@ tbody tr:nth-child(even) {
     }
 }
 
+@media only screen and (max-width: 1200px) {
+    .dash-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media only screen and (max-width: 860px) {
     .dash-cards {
         grid-template-columns: repeat(2, 1fr);
@@ -505,7 +497,7 @@ tbody tr:nth-child(even) {
 
 @media only screen and (max-width: 600px) {
     .dash-cards {
-        grid-template-columns: 100%;
+        grid-template-columns: 1fr;
     }
 }
 
@@ -597,4 +589,8 @@ tbody tr:nth-child(even) {
 
 /*New Form Write Notice */
 
-
+.role-text {
+    font-size: 0.6rem;
+    font-weight: 300;
+    color: var(--text-grey);
+}

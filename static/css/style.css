@@ -176,8 +176,9 @@ main {
 
 .dash-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-column-gap: 3rem;
+    margin-bottom: 3rem;
 }
 
 .card-single {
@@ -470,6 +471,12 @@ tbody tr:nth-child(even) {
     }
 }
 
+@media only screen and (max-width: 1200px) {
+    .dash-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media only screen and (max-width: 860px) {
     .dash-cards {
         grid-template-columns: repeat(2, 1fr);
@@ -490,7 +497,7 @@ tbody tr:nth-child(even) {
 
 @media only screen and (max-width: 600px) {
     .dash-cards {
-        grid-template-columns: 100%;
+        grid-template-columns: 1fr;
     }
 }
 
@@ -582,4 +589,8 @@ tbody tr:nth-child(even) {
 
 /*New Form Write Notice */
 
-
+.role-text {
+    font-size: 0.6rem;
+    font-weight: 300;
+    color: var(--text-grey);
+}

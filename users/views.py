@@ -99,3 +99,46 @@ def logout_view(request):
     return redirect('login')
 
 
+# Acciones del dashboard de Admnistrador
+@login_required
+def admin_dashboard_view(request):
+    """Vista del dashboard para administradores"""
+    # Verificar que el usuario sea administrador
+    if not hasattr(request.user, 'administrator'):
+        messages.error(request, 'No tienes permisos para acceder al panel de administración.')
+        return redirect('dashboard')
+    
+    # Obtener estadísticas
+    from .models import Users, Doctor, Administrator, Receptions, Patient
+    
+    # Contar usuarios por tipo
+    total_users = Users.objects.count()
+    total_doctors = Users.objects.filter(is_doctor=True).count()
+    total_staff = Administrator.objects.count() + Receptions.objects.count()
+    total_patients = Patient.objects.count()
+    
+    # Usuarios recientes (últimos 10)
+    recent_users = Users.objects.order_by('-date_joined')[:10]
+    
+    # Calcular porcentajes para las barras de progreso
+    if total_users > 0:
+        doctors_percentage = round((total_doctors / total_users) * 100, 1)
+        admin_count = Administrator.objects.count()
+        reception_count = Receptions.objects.count()
+        admin_percentage = round((admin_count / total_users) * 100, 1)
+        staff_percentage = round((reception_count / total_users) * 100, 1)
+    else:
+        doctors_percentage = admin_percentage = staff_percentage = 0
+    
+    context = {
+        'total_users': total_users,
+        'total_doctors': total_doctors,
+        'total_staff': total_staff,
+        'total_patients': total_patients,
+        'recent_users': recent_users,
+        'doctors_percentage': doctors_percentage,
+        'admin_percentage': admin_percentage,
+        'staff_percentage': staff_percentage,
+    }
+    
+    return render(request, 'admin_backup/admin_dashboard.html', context)
