@@ -1,0 +1,257 @@
+{% extends 'admin_backup/base.html' %}
+{% load static %}
+
+{% block title %}Registrar Médico{% endblock title %}
+{% block page_title %}Registrar Nuevo Médico{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="card shadow-lg" style="max-width: 40rem; width: 100%;">
+            <div class="card-body p-4">
+                <h1 class="fs-4 card-title fw-bold mb-4 text-center">Registrar Nuevo Médico</h1>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if 'success' in message.tags %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="needs-validation" novalidate autocomplete="off">
+                    {% csrf_token %}
+                    
+                    <!-- Información de Usuario -->
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="username">Nombre de Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" required autofocus>
+                        <div class="invalid-feedback">El nombre de usuario es requerido</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="first_name">Nombres</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                <div class="invalid-feedback">Los nombres son requeridos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="last_name">Apellidos</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                <div class="invalid-feedback">Los apellidos son requeridos</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="email">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="invalid-feedback">Un email válido es requerido</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="password">Contraseña</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="invalid-feedback">La contraseña es requerida</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="conf_password">Confirmar Contraseña</label>
+                                <input type="password" class="form-control" id="conf_password" name="conf_password" required>
+                                <div class="invalid-feedback">Debe confirmar la contraseña</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Profesional -->
+                    <hr class="my-4">
+                    <h5 class="mb-3 text-muted">Información Profesional</h5>
+
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="specialty">Especialidad</label>
+                        <select class="form-select" id="specialty" name="specialty">
+                            <option value="">Selecciona una especialidad</option>
+                            {% for spec in specialties %}
+                            <option value="{{ spec.id }}">{{ spec.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Selecciona una especialidad</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="bio">Biografía Profesional</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="4" 
+                                  placeholder="Describa la experiencia, educación y especialización del médico..." required></textarea>
+                        <div class="invalid-feedback">La biografía es requerida para doctores</div>
+                    </div>
+
+                    <p class="form-text text-muted mb-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Al registrar este médico, se creará automáticamente su cuenta de acceso al sistema.
+                    </p>
+
+                    <div class="d-flex align-items-center justify-content-between">
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-person-plus me-1"></i>Registrar Médico
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card-footer py-3 border-0 bg-light">
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Información segura y confidencial
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Variable para controlar si ya se intentó enviar el formulario
+    let formSubmitted = false;
+    
+    // Validación de confirmación de contraseña
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('conf_password');
+    
+    function validatePassword() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity("Las contraseñas no coinciden");
+            if (formSubmitted) {
+                confirmPassword.classList.add('is-invalid');
+                confirmPassword.classList.remove('is-valid');
+            }
+        } else {
+            confirmPassword.setCustomValidity("");
+            if (formSubmitted) {
+                confirmPassword.classList.remove('is-invalid');
+                confirmPassword.classList.add('is-valid');
+            }
+        }
+    }
+    
+    password.addEventListener('change', validatePassword);
+    confirmPassword.addEventListener('keyup', validatePassword);
+    
+    // Validación de formulario en general
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+        // Marcar que se intentó enviar el formulario
+        formSubmitted = true;
+        
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        // Agregar la clase de validación SOLO después del primer intento
+        form.classList.add('was-validated');
+    });
+    
+    // Validación en tiempo real - SOLO después del primer intento de envío
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        // Validación al escribir (solo si ya se intentó enviar)
+        input.addEventListener('input', function() {
+            if (formSubmitted) {
+                validateField(this);
+            }
+        });
+        
+        // Validación al salir del campo (solo si ya se intentó enviar)
+        input.addEventListener('blur', function() {
+            if (formSubmitted) {
+                validateField(this);
+            }
+        });
+    });
+    
+    // Función auxiliar para validar un campo específico
+    function validateField(field) {
+        if (field.checkValidity()) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        } else {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+        }
+    }
+});
+</script>
+
+<style>
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+    padding: 10px 20px;
+}
+
+.btn-success:hover {
+    background-color: #157347;
+    border-color: #146c43;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* IMPORTANTE: Los mensajes de error solo aparecen cuando el formulario tiene was-validated */
+.invalid-feedback {
+    display: none;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback,
+.was-validated .form-control:invalid ~ .invalid-feedback {
+    display: block;
+}
+
+.card-footer {
+    border-radius: 0 0 12px 12px;
+}
+
+/* Estilos para campos válidos e inválidos */
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #198754;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+</style>
+{% endblock content %}

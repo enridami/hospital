@@ -5,227 +5,219 @@
 {% block page_title %}Panel Administrador{% endblock page_title %}
 
 {% block content %}
+
 <main>
-  <div class="container-fluid">
-      <!-- Tarjetas de estadísticas -->
-      <div class="col-lg-12">
-          <div class="dash-cards">
-          <div class="card-single">
-              <div class="card-body">
-                  <span class="text-primary"><i class="bi bi-people"></i></span>
-                  <h4>{{ total_users }}</h4>
-                  <h5>Total Usuarios</h5>
-              </div>
-          </div>
-          
-          <div class="card-single">
-              <div class="card-body">
-                  <span class="text-success"><i class="bi bi-heart-pulse"></i></span>
-                  <h4>{{ total_doctors }}</h4>
-                  <h5>Médicos Activos</h5>
-              </div>
-          </div>
-          
-          <div class="card-single">
-              <div class="card-body">
-                  <span class="text-warning"><i class="bi bi-briefcase"></i></span>
-                  <h4>{{ total_staff }}</h4>
-                  <h5>Personal Total</h5>
-              </div>
-          </div>
-          
-          <div class="card-single">
-              <div class="card-body">
-                  <span class="text-info"><i class="bi bi-clipboard-heart"></i></span>
-                  <h4>{{ total_patients }}</h4>
-                  <h5>Pacientes Registrados</h5>
-              </div>
-          </div>
-      </div>
+    <div class="container-fluid">
+    <!-- Tarjetas de estadísticas -->
+    <div class="dash-cards">
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-primary"><i class="bi bi-people" aria-hidden="true"></i></span>
+                <h4>{{ total_users }}</h4>
+                <h5>Total Usuarios</h5>
+            </div>
+        </div>
+        
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-success"><i class="bi bi-heart-pulse" aria-hidden="true"></i></span>
+                <h4>{{ total_doctors }}</h4>
+                <h5>Médicos Activos</h5>
+            </div>
+        </div>
+        
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-warning"><i class="bi bi-briefcase" aria-hidden="true"></i></span>
+                <h4>{{ total_staff }}</h4>
+                <h5>Personal Total</h5>
+            </div>
+        </div>
+        
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-info"><i class="bi bi-clipboard-heart" aria-hidden="true"></i></span>
+                <h4>{{ total_patients }}</h4>
+                <h5>Pacientes Registrados</h5>
+            </div>
+        </div>
+    </div>
 
-      <!-- Sección de gestión rápida -->
-      <div class="row">
-          <div class="col-lg-8">
-              <div class="card">
-                  <div class="card-header">
-                      <h5 class="card-title mb-0">Usuarios Recientes</h5>
-                  </div>
-                  <div class="card-body">
-                      <div class="table-responsive">
-                          <table class="table table-striped">
-                              <thead>
-                                  <tr>
-                                      <th>Usuario</th>
-                                      <th>Rol</th>
-                                      <th>Estado</th>
-                                      <th>Último Login</th>
-                                      <th>Acciones</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  {% for user in recent_users %}
-                                  <tr>
-                                      <td>
-                                          <div class="d-flex align-items-center">
-                                              {% if user.profile_avatar %}
-                                                  <img src="{{ user.profile_avatar.url }}" class="rounded-circle me-2" width="32" height="32">
-                                              {% else %}
-                                                  <div class="bg-secondary rounded-circle me-2" style="width: 32px; height: 32px;"></div>
-                                              {% endif %}
-                                              <div>
-                                                  <strong>{{ user.get_full_name }}</strong><br>
-                                                  <small class="text-muted">{{ user.email }}</small>
-                                              </div>
-                                          </div>
-                                      </td>
-                                      <td>
-                                          {% if user.is_doctor %}
-                                              <span class="role-text text-success">Médico</span>
-                                          {% elif user.administrator %}
-                                              <span class="role-text text-warning">Administrador</span>
-                                          {% elif user.receptions %}
-                                              <span class="role-text text-info">Recepcionista</span>
-                                          {% else %}
-                                              <span class="role-text">Usuario</span>
-                                          {% endif %}
-                                      </td>
-                                      <td>
-                                          {% if user.is_active %}
-                                              <span class="role-text text-success">Activo</span>
-                                          {% else %}
-                                              <span class="role-text text-danger">Inactivo</span>
-                                          {% endif %}
-                                      </td>
-                                      <td>{{ user.last_login|date:"d/m/Y H:i" }}</td>
-                                      <td>
-                                          <div class="btn-group" role="group">
-                                              <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                      onclick="editUser({{ user.id }})">
-                                                  <i class="bi bi-pencil"></i>
-                                              </button>
-                                              <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                      onclick="toggleUserStatus({{ user.id }})">
-                                                  <i class="bi bi-power"></i>
-                                              </button>
-                                          </div>
-                                      </td>
-                                  </tr>
-                                  {% empty %}
-                                  <tr>
-                                      <td colspan="5" class="text-center">No hay usuarios registrados</td>
-                                  </tr>
-                                  {% endfor %}
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          
-          <div class="col-lg-4">
-              <div class="card">
-                  <div class="card-header">
-                      <h5 class="card-title mb-0">Acciones Rápidas</h5>
-                  </div>
-                  <div class="card-body">
+    <!-- Sección de gestión rápida -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Usuarios Recientes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Usuario</th>
+                                    <th scope="col">Rol</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">Último Login</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if user.profile_avatar %}
+                                                <img src="{{ user.profile_avatar.url }}" 
+                                                     class="rounded-circle me-2" 
+                                                     width="32" 
+                                                     height="32"
+                                                     alt="Avatar de {{ user.get_full_name }}">
+                                            {% else %}
+                                                <div class="bg-secondary rounded-circle me-2" 
+                                                     style="width: 32px; height: 32px;"
+                                                     aria-label="Avatar por defecto"></div>
+                                            {% endif %}
+                                            <div>
+                                                <strong>{{ user.get_full_name }}</strong><br>
+                                                <small class="text-muted">{{ user.email }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if user.is_doctor %}
+                                            <span class="role-text text-success">Médico</span>
+                                        {% elif user.administrator %}
+                                            <span class="role-text text-warning">Administrador</span>
+                                        {% elif user.receptions %}
+                                            <span class="role-text text-info">Recepcionista</span>
+                                        {% else %}
+                                            <span class="role-text text-secondary">Usuario</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.is_active %}
+                                            <span class="role-text text-success">Activo</span>
+                                        {% else %}
+                                            <span class="role-text text-danger">Inactivo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.last_login %}
+                                            {{ user.last_login|date:"d/m/Y H:i" }}
+                                        {% else %}
+                                            <small class="text-muted">Nunca</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Acciones de usuario">
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-primary" 
+                                                    onclick="editUser({{ user.id }})"
+                                                    aria-label="Editar usuario {{ user.get_full_name }}">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </button>
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-danger" 
+                                                    onclick="toggleUserStatus({{ user.id }})"
+                                                    aria-label="Cambiar estado de {{ user.get_full_name }}">
+                                                <i class="bi bi-power" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No hay usuarios registrados</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Acciones Rápidas</h5>
+                </div>
+                <div class="card-body">
                     <div class="summary-single">
-                      <span class="text-primary"><i class="bi bi-person-plus"></i></span>
-                      <div>
-                          <h5><a href="#" class="text-decoration-none">Crear Nuevo Usuario</a></h5>
-                          <small>Registrar nuevo personal</small>
-                      </div>
+                        <span class="text-primary"><i class="bi bi-person-plus" aria-hidden="true"></i></span>
+                        <div>
+                            <h5><a href="{% url 'admin_create_user' %}" class="text-decoration-none">Crear Nuevo Usuario</a></h5>
+                            <small>Registrar nuevo personal</small>
+                        </div>
                     </div>
 
                     <div class="summary-single">
-                      <span class="text-success"><i class="bi bi-heart-pulse"></i></span>
-                      <div>
-                          <h5><a href="#" class="text-decoration-none">Registrar Médico</a></h5>
-                          <small>Añadir especialista</small>
-                      </div>
+                        <span class="text-success"><i class="bi bi-heart-pulse" aria-hidden="true"></i></span>
+                        <div>
+                            <h5><a href="{% url 'admin_create_doctor' %}" class="text-decoration-none">Registrar Médico</a></h5>
+                            <small>Añadir especialista</small>
+                        </div>
                     </div>
 
                     <div class="summary-single">
-                      <span class="text-info"><i class="bi bi-briefcase"></i></span>
-                      <div>
-                          <h5><a href="#" class="text-decoration-none">Registrar Personal</a></h5>
-                          <small>Añadir empleado</small>
-                      </div>
-                     </div>
-
-                     <div class="summary-single">
-                      <span class="text-secondary"><i class="bi bi-list"></i></span>
-                      <div>
-                          <h5><a href="#" class="text-decoration-none">Ver Todos los Usuarios</a></h5>
-                          <small>Lista completa</small>
-                      </div>
+                        <span class="text-info"><i class="bi bi-briefcase" aria-hidden="true"></i></span>
+                        <div>
+                            <h5><a href="{% url 'admin_create_staff' %}" class="text-decoration-none">Registrar Personal</a></h5>
+                            <small>Añadir empleado</small>
+                        </div>
                     </div>
-                  </div>
-              </div>
-              
-              <div class="card mt-3">
-                  <div class="card-header">
-                      <h5 class="card-title mb-0">Estadísticas por Rol</h5>
-                  </div>
-                  <div class="card-body">
-                      <div class="mb-3">
-                          <div class="d-flex justify-content-between">
-                              <span>Médicos</span>
-                              <span>{{ doctors_percentage }}%</span>
-                          </div>
-                          <div class="progress" style="height: 8px;">
-                              <div class="progress-bar bg-success" style="width: {{ doctors_percentage }}%"></div>
-                          </div>
-                      </div>
-                      
-                      <div class="mb-3">
-                          <div class="d-flex justify-content-between">
-                              <span>Personal</span>
-                              <span>{{ staff_percentage }}%</span>
-                          </div>
-                          <div class="progress" style="height: 8px;">
-                              <div class="progress-bar bg-info" style="width: {{ staff_percentage }}%"></div>
-                          </div>
-                      </div>
-                      
-                      <div class="mb-3">
-                          <div class="d-flex justify-content-between">
-                              <span>Administradores</span>
-                              <span>{{ admin_percentage }}%</span>
-                          </div>
-                          <div class="progress" style="height: 8px;">
-                              <div class="progress-bar bg-danger" style="width: {{ admin_percentage }}%"></div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
 
-  <script>
-  function editUser(userId) {
-      window.location.href = `/admin/users/edit/${userId}/`;
-  }
+                    <div class="summary-single">
+                        <span class="text-secondary"><i class="bi bi-list" aria-hidden="true"></i></span>
+                        <div>
+                            <h5><a href="{% url 'admin_users_list' %}" class="text-decoration-none">Ver Todos los Usuarios</a></h5>
+                            <small>Lista completa</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Estadísticas por Rol</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Médicos</span>
+                            <span>{{ doctors_percentage }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;" role="progressbar" aria-valuenow="{{ doctors_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-success" style="width: {{ doctors_percentage }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Personal</span>
+                            <span>{{ staff_percentage }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;" role="progressbar" aria-valuenow="{{ staff_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-info" style="width: {{ staff_percentage }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Administradores</span>
+                            <span>{{ admin_percentage }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;" role="progressbar" aria-valuenow="{{ admin_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-danger" style="width: {{ admin_percentage }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-  function toggleUserStatus(userId) {
-      if (confirm('¿Está seguro de cambiar el estado de este usuario?')) {
-          // AJAX call para cambiar estado
-          fetch(`/admin/users/toggle-status/${userId}/`, {
-              method: 'POST',
-              headers: {
-                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                  'Content-Type': 'application/json',
-              },
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.success) {
-                  location.reload();
-              }
-          });
-      }
-  }
-  </script>
-  {% endblock content %}
-
+{% csrf_token %}
+{% endblock content %}
 </main>

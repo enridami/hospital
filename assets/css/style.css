@@ -195,7 +195,7 @@ main {
 
 .card-body span {
     font-size: 1.5rem;
-    color: #777;
+    color: white;
     padding-right: 1.4rem;
 }
 
@@ -589,8 +589,31 @@ tbody tr:nth-child(even) {
 
 /*New Form Write Notice */
 
-.role-text {
-    font-size: 0.6rem;
-    font-weight: 300;
+.card .table tbody td .role-text {
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--text-grey);
+}
+
+
+
+
+.btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #fff !important;
+    padding: 10px 20px;
+}
+
+.btn-success:hover {
+    background-color: #157347 !important;
+    border-color: #146c43 !important;
+    color: #fff !important;
+}
+
+.btn-success:focus {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
 }

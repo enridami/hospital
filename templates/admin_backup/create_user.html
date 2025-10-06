@@ -1,0 +1,619 @@
+{% extends 'admin_backup/base.html' %}
+{% load static %}
+
+{% block title %}Crear Usuario{% endblock title %}
+{% block page_title %}Crear Nuevo Usuario{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="card shadow-lg" style="max-width: 50rem; width: 100%;">
+            <div class="card-body p-4">
+                <h1 class="fs-4 card-title fw-bold mb-4 text-center">Crear Nuevo Usuario</h1>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if 'success' in message.tags %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="needs-validation" novalidate autocomplete="off" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Selección de Tipo de Usuario -->
+                    <div class="mb-4">
+                        <label class="mb-2 text-muted" for="user_type">Tipo de Usuario</label>
+                        <select class="form-select" id="user_type" name="role" required>
+                            <option value="">Selecciona el tipo de usuario</option>
+                            <option value="doctor">Médico</option>
+                            <option value="admin">Administrador</option>
+                            <option value="reception">Recepcionista</option>
+                            <option value="patient">Paciente</option>
+                        </select>
+                        <div class="invalid-feedback">Debe seleccionar un tipo de usuario</div>
+                        <small class="form-text text-muted">
+                            <span id="type-description"></span>
+                        </small>
+                    </div>
+
+                    <!-- Información Básica (Común para todos) -->
+                    <div id="basic-info" style="display: none;">
+                        <hr class="my-4">
+                        <h5 class="mb-3 text-muted">Información Personal</h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="first_name">Nombres</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                    <div class="invalid-feedback">Los nombres son requeridos</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="last_name">Apellidos</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                    <div class="invalid-feedback">Los apellidos son requeridos</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="email">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <div class="invalid-feedback">Un email válido es requerido</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="gender">Género</label>
+                                    <select class="form-select" id="gender" name="gender" required>
+                                        <option value="">Seleccionar</option>
+                                        <option value="Male">Masculino</option>
+                                        <option value="Female">Femenino</option>
+                                    </select>
+                                    <div class="invalid-feedback">Seleccione un género</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="birthday">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="birthday" name="birthday" required>
+                                    <div class="invalid-feedback">La fecha de nacimiento es requerida</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="phone-field" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="phone">Teléfono</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone">
+                                    <div class="invalid-feedback">El teléfono es requerido</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos para Usuario del Sistema (Doctor, Admin, Reception) -->
+                    <div id="system-user-fields" style="display: none;">
+                        <hr class="my-4">
+                        <h5 class="mb-3 text-muted">Credenciales del Sistema</h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="username">Nombre de Usuario</label>
+                                    <input type="text" class="form-control" id="username" name="username">
+                                    <div class="invalid-feedback">El nombre de usuario es requerido</div>
+                                    <small class="form-text text-muted">Para acceder al sistema</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="password">Contraseña</label>
+                                    <input type="password" class="form-control" id="password" name="password">
+                                    <div class="invalid-feedback">La contraseña es requerida</div>
+                                    <small class="form-text text-muted">Mínimo 8 caracteres</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos para Doctor -->
+                    <div id="doctor-fields" style="display: none;">
+                        <hr class="my-4">
+                        <h5 class="mb-3 text-muted">Información Médica</h5>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted" for="specialty">Especialidad</label>
+                            <select class="form-select" id="specialty" name="specialty">
+                                <option value="">Selecciona una especialidad</option>
+                                {% for spec in specialties %}
+                                <option value="{{ spec.id }}">{{ spec.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">Selecciona una especialidad</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted" for="bio">Biografía Profesional</label>
+                            <textarea class="form-control" id="bio" name="bio" rows="4" 
+                                      placeholder="Describa la experiencia, educación y especialización del médico..."></textarea>
+                            <div class="invalid-feedback">La biografía es requerida para doctores</div>
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos para Personal (Admin/Reception) -->
+                    <div id="staff-fields" style="display: none;">
+                        <hr class="my-4">
+                        <h5 class="mb-3 text-muted">Información del Personal</h5>
+
+                        <div class="mb-3" id="staff-role-field" style="display: none;">
+                            <label class="mb-2 text-muted" for="staff_role">Rol Específico</label>
+                            <select class="form-select" id="staff_role" name="staff_role">
+                                <option value="admin">Administrador</option>
+                                <option value="reception">Recepcionista</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="department-field" style="display: none;">
+                            <label class="mb-2 text-muted" for="department">Departamento</label>
+                            <input type="text" class="form-control" id="department" name="department" value="Administración">
+                            <small class="form-text text-muted">Departamento asignado</small>
+                        </div>
+                    </div>
+
+                    <!-- Campos específicos para Paciente -->
+                    <div id="patient-fields" style="display: none;">
+                        <hr class="my-4">
+                        <h5 class="mb-3 text-muted">Información de Identificación</h5>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="identification_type">Tipo de Identificación</label>
+                                    <select class="form-select" id="identification_type" name="identification_type">
+                                        <option value="CI">CI</option>
+                                        <option value="DNI">DNI</option>
+                                        <option value="Passport">Pasaporte</option>
+                                        <option value="License">Licencia de Conducir</option>
+                                        <option value="Other">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="identification_number">Número de Identificación</label>
+                                    <input type="text" class="form-control" id="identification_number" name="identification_number">
+                                    <div class="invalid-feedback">El número de identificación es requerido</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3 text-muted mt-4">Dirección</h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="address_line">Dirección</label>
+                                    <input type="text" class="form-control" id="address_line" name="address_line" placeholder="Calle, número, barrio">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="city">Ciudad</label>
+                                    <input type="text" class="form-control" id="city" name="city">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="region">Región/Estado</label>
+                                    <input type="text" class="form-control" id="region" name="region">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="postal_code">Código Postal</label>
+                                    <input type="text" class="form-control" id="postal_code" name="postal_code">
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3 text-muted mt-4">Información Médica</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="blood_type">Tipo de Sangre</label>
+                                    <select class="form-select" id="blood_type" name="blood_type">
+                                        <option value="Unknown">Desconocido</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="assigned_doctor">Doctor Asignado (Opcional)</label>
+                                    <select class="form-select" id="assigned_doctor" name="assigned_doctor">
+                                        <option value="">Sin asignar</option>
+                                        <!-- Se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="allergies">Alergias</label>
+                                    <textarea class="form-control" id="allergies" name="allergies" rows="2" 
+                                              placeholder="Describa las alergias conocidas del paciente"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3 text-muted mt-4">Contacto de Emergencia</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="emergency_contact_name">Nombre del Contacto</label>
+                                    <input type="text" class="form-control" id="emergency_contact_name" name="emergency_contact_name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="emergency_contact_relationship">Relación</label>
+                                    <input type="text" class="form-control" id="emergency_contact_relationship" name="emergency_contact_relationship" placeholder="Ej: Madre, Esposo, Hermano">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted" for="emergency_contact_phone">Teléfono de Emergencia</label>
+                                    <input type="tel" class="form-control" id="emergency_contact_phone" name="emergency_contact_phone">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Imagen de perfil (opcional para todos) -->
+                    <div id="profile-image" style="display: none;">
+                        <hr class="my-4">
+                        <div class="mb-3">
+                            <label class="mb-2 text-muted" for="profile_avatar">Foto de Perfil (Opcional)</label>
+                            <input type="file" class="form-control" id="profile_avatar" name="profile_avatar" accept="image/*">
+                            <small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF</small>
+                        </div>
+                    </div>
+
+                    <p class="form-text text-muted mb-3" id="creation-info" style="display: none;">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <span id="creation-message"></span>
+                    </p>
+
+                    <div class="d-flex align-items-center justify-content-between" id="form-buttons" style="display: none;">
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-person-plus me-1"></i>
+                            <span id="submit-text">Crear Usuario</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card-footer py-3 border-0 bg-light">
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-hospital me-1"></i>
+                        Sistema de Gestión Hospitalaria - Registro de Usuarios
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const userTypeSelect = document.getElementById('user_type');
+    const typeDescription = document.getElementById('type-description');
+    const basicInfo = document.getElementById('basic-info');
+    const systemUserFields = document.getElementById('system-user-fields');
+    const doctorFields = document.getElementById('doctor-fields');
+    const staffFields = document.getElementById('staff-fields');
+    const patientFields = document.getElementById('patient-fields');
+    const profileImage = document.getElementById('profile-image');
+    const formButtons = document.getElementById('form-buttons');
+    const creationInfo = document.getElementById('creation-info');
+    const creationMessage = document.getElementById('creation-message');
+    const submitText = document.getElementById('submit-text');
+    const phoneField = document.getElementById('phone-field');
+    
+    // Variable para controlar si ya se intentó enviar el formulario
+    let formSubmitted = false;
+    
+    // Información de tipos de usuario
+    const userTypeInfo = {
+        'doctor': {
+            description: 'Profesional médico con acceso al sistema de gestión de pacientes y citas',
+            message: 'Se creará una cuenta de médico con acceso al panel de doctores',
+            submitText: 'Crear Médico',
+            systemUser: true
+        },
+        'admin': {
+            description: 'Personal administrativo con acceso completo al sistema',
+            message: 'Se creará una cuenta de administrador con permisos completos',
+            submitText: 'Crear Administrador',
+            systemUser: true
+        },
+        'reception': {
+            description: 'Personal de recepción para gestión de citas y atención al cliente',
+            message: 'Se creará una cuenta de recepcionista con acceso al panel de recepción',
+            submitText: 'Crear Recepcionista',
+            systemUser: true
+        },
+        'patient': {
+            description: 'Paciente del hospital - registro completo en la base de datos médica',
+            message: 'Se registrará como paciente en el sistema hospitalario',
+            submitText: 'Registrar Paciente',
+            systemUser: false
+        }
+    };
+    
+    // Actualizar campos según el tipo de usuario seleccionado
+    function updateFields() {
+        const selectedType = userTypeSelect.value;
+        
+        // Ocultar todos los campos específicos
+        systemUserFields.style.display = 'none';
+        doctorFields.style.display = 'none';
+        staffFields.style.display = 'none';
+        patientFields.style.display = 'none';
+        phoneField.style.display = 'none';
+        
+        if (selectedType && userTypeInfo[selectedType]) {
+            const info = userTypeInfo[selectedType];
+            
+            // Mostrar información básica
+            typeDescription.textContent = info.description;
+            basicInfo.style.display = 'block';
+            profileImage.style.display = 'block';
+            formButtons.style.display = 'flex';
+            creationInfo.style.display = 'block';
+            creationMessage.textContent = info.message;
+            submitText.textContent = info.submitText;
+            
+            // Mostrar campos según el tipo
+            if (info.systemUser) {
+                systemUserFields.style.display = 'block';
+                updateRequiredFields(true, ['username', 'password']);
+            } else {
+                updateRequiredFields(false, ['username', 'password']);
+            }
+            
+            if (selectedType === 'doctor') {
+                doctorFields.style.display = 'block';
+                updateRequiredFields(true, ['specialty', 'bio']);
+            }
+            
+            if (selectedType === 'admin' || selectedType === 'reception') {
+                staffFields.style.display = 'block';
+                document.getElementById('staff-role-field').style.display = 'block';
+                document.getElementById('staff_role').value = selectedType;
+                
+                if (selectedType === 'admin') {
+                    document.getElementById('department-field').style.display = 'block';
+                }
+            }
+            
+            if (selectedType === 'patient') {
+                patientFields.style.display = 'block';
+                phoneField.style.display = 'block';
+                updateRequiredFields(true, ['phone', 'identification_number', 'address_line', 'city', 'emergency_contact_name', 'emergency_contact_phone']);
+            }
+        } else {
+            // Ocultar todo
+            typeDescription.textContent = '';
+            basicInfo.style.display = 'none';
+            profileImage.style.display = 'none';
+            formButtons.style.display = 'none';
+            creationInfo.style.display = 'none';
+        }
+    }
+    
+    // Actualizar campos requeridos
+    function updateRequiredFields(required, fieldNames) {
+        fieldNames.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (field) {
+                if (required) {
+                    field.setAttribute('required', '');
+                } else {
+                    field.removeAttribute('required');
+                }
+            }
+        });
+    }
+    
+    userTypeSelect.addEventListener('change', updateFields);
+    
+    // Generar username sugerido para usuarios del sistema
+    const firstNameInput = document.getElementById('first_name');
+    const lastNameInput = document.getElementById('last_name');
+    const usernameInput = document.getElementById('username');
+    
+    function generateUsername() {
+        const userType = userTypeSelect.value;
+        if (userType && userTypeInfo[userType].systemUser) {
+            const firstName = firstNameInput.value.trim().toLowerCase();
+            const lastName = lastNameInput.value.trim().toLowerCase();
+            
+            if (firstName && lastName) {
+                const suggestion = firstName.charAt(0) + lastName;
+                if (!usernameInput.value) {
+                    usernameInput.value = suggestion;
+                }
+            }
+        }
+    }
+    
+    firstNameInput.addEventListener('blur', generateUsername);
+    lastNameInput.addEventListener('blur', generateUsername);
+    
+    // VALIDACIÓN MEJORADA - Solo se activa después del primer intento de envío
+    const form = document.querySelector('.needs-validation');
+    
+    form.addEventListener('submit', function(event) {
+        // Marcar que se intentó enviar el formulario
+        formSubmitted = true;
+        
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        // Agregar la clase de validación SOLO después del primer intento
+        form.classList.add('was-validated');
+    });
+    
+    // Validación en tiempo real - SOLO después del primer intento de envío
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        // Validación al escribir (solo si ya se intentó enviar)
+        input.addEventListener('input', function() {
+            if (formSubmitted) {
+                validateField(this);
+            }
+        });
+        
+        // Validación al salir del campo (solo si ya se intentó enviar)
+        input.addEventListener('blur', function() {
+            if (formSubmitted) {
+                validateField(this);
+            }
+        });
+    });
+    
+    // Función auxiliar para validar un campo específico
+    function validateField(field) {
+        if (field.checkValidity()) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        } else {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+        }
+    }
+    
+    // Limpiar validación al cambiar el tipo de usuario
+    userTypeSelect.addEventListener('change', function() {
+        if (formSubmitted) {
+            // Remover todas las clases de validación
+            const allInputs = form.querySelectorAll('input, select, textarea');
+            allInputs.forEach(input => {
+                input.classList.remove('is-valid', 'is-invalid');
+            });
+            
+            // Remover la clase was-validated del formulario
+            form.classList.remove('was-validated');
+            
+            // Resetear el estado de envío
+            formSubmitted = false;
+        }
+    });
+});
+</script>
+
+<style>
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* ✨ IMPORTANTE: Los mensajes de error solo aparecen cuando el formulario tiene was-validated */
+.invalid-feedback {
+    display: none;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback {
+    display: block;
+}
+
+.card-footer {
+    border-radius: 0 0 12px 12px;
+}
+
+.form-text {
+    font-size: 0.875rem;
+}
+
+hr {
+    border-color: #dee2e6;
+    opacity: 0.5;
+}
+
+h5.text-muted {
+    color: #495057 !important;
+    font-weight: 600;
+}
+
+/* Estilos para campos válidos e inválidos */
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #198754;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+</style>
+{% endblock content %}

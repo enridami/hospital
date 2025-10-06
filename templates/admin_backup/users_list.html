@@ -1,0 +1,151 @@
+{% extends 'admin_backup/base.html' %}
+{% load static %}
+
+{% block title %}Lista de Usuarios{% endblock title %}
+{% block page_title %}Gestión de Usuarios{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="container-fluid">
+        <!-- Header con estadísticas -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h4>Lista de Usuarios</h4>
+                <p class="text-muted">Total de usuarios registrados: {{ total_users }}</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{% url 'admin_create_user' %}" class="btn btn-primary">
+                    <i class="bi bi-person-plus me-2"></i>Nuevo Usuario
+                </a>
+            </div>
+        </div>
+
+        <!-- Tabla de usuarios -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Todos los Usuarios</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Usuario</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Rol</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Fecha Registro</th>
+                                <th scope="col">Último Login</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        {% if user.profile_avatar %}
+                                            <img src="{{ user.profile_avatar.url }}" 
+                                                 class="rounded-circle me-2" 
+                                                 width="32" 
+                                                 height="32"
+                                                 alt="Avatar de {{ user.get_full_name }}">
+                                        {% else %}
+                                            <div class="bg-secondary rounded-circle me-2" 
+                                                 style="width: 32px; height: 32px;"></div>
+                                        {% endif %}
+                                        <div>
+                                            <strong>{{ user.get_full_name }}</strong><br>
+                                            <small class="text-muted">@{{ user.username }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    {% if user.is_doctor %}
+                                        <span class="role-text text-success">Médico</span>
+                                    {% elif user.administrator %}
+                                        <span class="role-text text-warning">Administrador</span>
+                                    {% elif user.receptions %}
+                                        <span class="role-text text-info">Recepcionista</span>
+                                    {% else %}
+                                        <span class="role-text text-secondary">Usuario</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.is_active %}
+                                        <span class="role-text text-success">Activo</span>
+                                    {% else %}
+                                        <span class="role-text text-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                                <td>
+                                    {% if user.last_login %}
+                                        {{ user.last_login|date:"d/m/Y H:i" }}
+                                    {% else %}
+                                        <small class="text-muted">Nunca</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'admin_edit_user' user.id %}" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="Editar usuario">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                onclick="toggleUserStatus({{ user.id }})"
+                                                title="Cambiar estado">
+                                            <i class="bi bi-power"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No hay usuarios registrados</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% csrf_token %}
+
+<script>
+function toggleUserStatus(userId) {
+    if (!userId) return;
+    
+    if (confirm('¿Está seguro de cambiar el estado de este usuario?')) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) return;
+        
+        fetch(`/admin/users/toggle-status/${userId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken.value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al cambiar el estado del usuario');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al procesar la solicitud');
+        });
+    }
+}
+</script>
+{% endblock content %}

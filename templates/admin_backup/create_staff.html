@@ -1,0 +1,360 @@
+{% extends 'admin_backup/base.html' %}
+{% load static %}
+
+{% block title %}Registrar Personal{% endblock title %}
+{% block page_title %}Registrar Nuevo Personal{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="card shadow-lg" style="max-width: 40rem; width: 100%;">
+            <div class="card-body p-4">
+                <h1 class="fs-4 card-title fw-bold mb-4 text-center">Registrar Nuevo Personal</h1>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if 'success' in message.tags %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="needs-validation" novalidate autocomplete="off">
+                    {% csrf_token %}
+                    
+                    <!-- Tipo de Personal -->
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="role">Tipo de Personal</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="">Selecciona el tipo de personal</option>
+                            <option value="admin">Administrador</option>
+                            <option value="reception">Recepcionista</option>
+                        </select>
+                        <div class="invalid-feedback">Debe seleccionar un tipo de personal</div>
+                        <small class="form-text text-muted">
+                            <span id="role-description"></span>
+                        </small>
+                    </div>
+
+                    <!-- Información de Usuario -->
+                    <hr class="my-4">
+                    <h5 class="mb-3 text-muted">Información Personal</h5>
+
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="username">Nombre de Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" required autofocus>
+                        <div class="invalid-feedback">El nombre de usuario es requerido</div>
+                        <small class="form-text text-muted">Este será usado para iniciar sesión en el sistema</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="first_name">Nombres</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                <div class="invalid-feedback">Los nombres son requeridos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="last_name">Apellidos</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                <div class="invalid-feedback">Los apellidos son requeridos</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="email">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="invalid-feedback">Un email válido es requerido</div>
+                    </div>
+
+                    <!-- Información de Acceso -->
+                    <hr class="my-4">
+                    <h5 class="mb-3 text-muted">Credenciales de Acceso</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="password">Contraseña</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="invalid-feedback">La contraseña es requerida</div>
+                                <small class="form-text text-muted">Mínimo 8 caracteres</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="mb-2 text-muted" for="conf_password">Confirmar Contraseña</label>
+                                <input type="password" class="form-control" id="conf_password" name="conf_password" required>
+                                <div class="invalid-feedback">Debe confirmar la contraseña</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información sobre permisos según rol -->
+                    <div class="alert alert-info" id="permissions-info" style="display: none;">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <span id="permissions-title"></span>
+                        </h6>
+                        <p class="mb-0" id="permissions-description"></p>
+                    </div>
+
+                    <p class="form-text text-muted mb-3">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Al registrar este personal, se creará automáticamente su cuenta con los permisos correspondientes a su rol.
+                    </p>
+
+                    <div class="d-flex align-items-center justify-content-between">
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-info">
+                            <i class="bi bi-person-plus me-1"></i>Registrar Personal</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card-footer py-3 border-0 bg-light">
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-building me-1"></i>
+                        Sistema de Gestión Hospitalaria - Administración de Personal
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Variable para controlar si ya se intentó enviar el formulario
+    let formSubmitted = false;
+    
+    const roleSelect = document.getElementById('role');
+    const roleDescription = document.getElementById('role-description');
+    const permissionsInfo = document.getElementById('permissions-info');
+    const permissionsTitle = document.getElementById('permissions-title');
+    const permissionsDescription = document.getElementById('permissions-description');
+    const submitText = document.getElementById('submit-text');
+    
+    // Información de roles
+    const roleInfo = {
+        'admin': {
+            description: 'Acceso completo al sistema - gestión de usuarios, reportes y configuración',
+            permissionsTitle: 'Permisos de Administrador',
+            permissionsText: 'Tendrá acceso completo al panel de administración, gestión de usuarios, reportes del sistema y configuraciones avanzadas.',
+            submitText: 'Registrar Administrador'
+        },
+        'reception': {
+            description: 'Gestión de citas, pacientes y atención al cliente',
+            permissionsTitle: 'Permisos de Recepcionista',
+            permissionsText: 'Podrá gestionar citas médicas, registrar pacientes, consultar horarios de doctores y manejar la atención al cliente.',
+            submitText: 'Registrar Recepcionista'
+        }
+    };
+    
+    // Actualizar información según el rol seleccionado
+    function updateRoleInfo() {
+        const selectedRole = roleSelect.value;
+        
+        if (selectedRole && roleInfo[selectedRole]) {
+            const info = roleInfo[selectedRole];
+            roleDescription.textContent = info.description;
+            permissionsTitle.textContent = info.permissionsTitle;
+            permissionsDescription.textContent = info.permissionsText;
+            submitText.textContent = info.submitText;
+            permissionsInfo.style.display = 'block';
+        } else {
+            roleDescription.textContent = '';
+            permissionsInfo.style.display = 'none';
+            submitText.textContent = 'Registrar Personal';
+        }
+    }
+    
+    roleSelect.addEventListener('change', updateRoleInfo);
+    
+    // Validación de confirmación de contraseña
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('conf_password');
+    
+    function validatePassword() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity("Las contraseñas no coinciden");
+            if (formSubmitted) {
+                confirmPassword.classList.add('is-invalid');
+                confirmPassword.classList.remove('is-valid');
+            }
+        } else {
+            confirmPassword.setCustomValidity("");
+            if (formSubmitted) {
+                confirmPassword.classList.remove('is-invalid');
+                confirmPassword.classList.add('is-valid');
+            }
+        }
+    }
+    
+    password.addEventListener('change', validatePassword);
+    confirmPassword.addEventListener('keyup', validatePassword);
+    
+    // Validación de longitud de contraseña
+    password.addEventListener('input', function() {
+        if (this.value.length > 0 && this.value.length < 8) {
+            this.setCustomValidity("La contraseña debe tener al menos 8 caracteres");
+        } else {
+            this.setCustomValidity("");
+        }
+        
+        if (formSubmitted) {
+            validateField(this);
+        }
+    });
+    
+    // Validación de formulario en general
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+        // Marcar que se intentó enviar el formulario
+        formSubmitted = true;
+        
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        // Agregar la clase de validación SOLO después del primer intento
+        form.classList.add('was-validated');
+    });
+    
+    // Validación en tiempo real - SOLO después del primer intento de envío
+    const inputs = form.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        // Validación al escribir (solo si ya se intentó enviar)
+        input.addEventListener('input', function() {
+            if (formSubmitted) {
+                validateField(this);
+            }
+        });
+        
+        // Validación al salir del campo (solo si ya se intentó enviar)
+        input.addEventListener('blur', function() {
+            if (formSubmitted) {
+                validateField(this);
+            }
+        });
+    });
+    
+    // Función auxiliar para validar un campo específico
+    function validateField(field) {
+        if (field.checkValidity()) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        } else {
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+        }
+    }
+    
+    // Generar username sugerido basado en nombres
+    const firstNameInput = document.getElementById('first_name');
+    const lastNameInput = document.getElementById('last_name');
+    const usernameInput = document.getElementById('username');
+    
+    function generateUsername() {
+        const firstName = firstNameInput.value.trim().toLowerCase();
+        const lastName = lastNameInput.value.trim().toLowerCase();
+        
+        if (firstName && lastName) {
+            const suggestion = firstName.charAt(0) + lastName;
+            if (!usernameInput.value) {
+                usernameInput.value = suggestion;
+            }
+        }
+    }
+    
+    firstNameInput.addEventListener('blur', generateUsername);
+    lastNameInput.addEventListener('blur', generateUsername);
+});
+</script>
+
+<style>
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+}
+
+.btn-info {
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+    color: #000;
+    padding: 10px 20px;
+}
+
+.btn-info:hover {
+    background-color: #31d2f2;
+    border-color: #25cff2;
+    color: #000;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* IMPORTANTE: Los mensajes de error solo aparecen cuando el formulario tiene was-validated */
+.invalid-feedback {
+    display: none;
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback {
+    display: block;
+}
+
+.card-footer {
+    border-radius: 0 0 12px 12px;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+#role option {
+    padding: 10px;
+}
+
+.form-text {
+    font-size: 0.875rem;
+}
+
+/* Estilos para campos válidos e inválidos */
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #0dcaf0;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+
+</style>
+{% endblock content %}
