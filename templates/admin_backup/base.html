@@ -38,7 +38,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'admin_profile' %}">
                         &nbsp;&nbsp;<i class="bi bi-person-circle me-2"> </i>
                         <span class="menu-text">&nbsp;&nbsp;Perfil</span>
                     </a>
@@ -52,12 +52,12 @@
                     <div class="collapse" id="usersMenu">
                         <ul class="submenu">
                             <li>
-                                <a href="#" class="text-center">
+                                <a href="{% url 'admin_users_list' %}" class="text-center">
                                     <span class="menu-text d-block text-center">Ver Usuarios</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="text-center">
+                                <a href="{% url 'admin_create_user' %}" class="text-center">
                                     <span class="menu-text d-block text-center">Crear Usuario</span>
                                 </a>
                             </li>

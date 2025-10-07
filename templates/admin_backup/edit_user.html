@@ -7,53 +7,214 @@
 {% block content %}
 <main>
     <div class="container-fluid">
+        <!-- Header del usuario -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center py-5" style="background: linear-gradient(135deg, var(--primary-color), #3aaad3);">
+                        <div class="position-relative d-inline-block mb-3">
+                            {% if user_to_edit.profile_avatar %}
+                                <img src="{{ user_to_edit.profile_avatar.url }}" 
+                                     class="rounded-circle border border-4 border-white shadow" 
+                                     style="width: 120px; height: 120px; object-fit: cover;"
+                                     alt="Avatar de {{ user_to_edit.get_full_name }}">
+                            {% else %}
+                                <div class="rounded-circle border border-4 border-white shadow mx-auto bg-white d-flex align-items-center justify-content-center" 
+                                     style="width: 120px; height: 120px;">
+                                    <i class="bi bi-person-fill text-secondary" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            <span class="position-absolute bottom-0 end-0 {% if user_to_edit.is_active %}bg-success{% else %}bg-danger{% endif %} rounded-circle border border-2 border-white" 
+                                  style="width: 25px; height: 25px;" title="{% if user_to_edit.is_active %}Activo{% else %}Inactivo{% endif %}"></span>
+                        </div>
+                        <h3 class="text-white mb-1">{{ user_to_edit.get_full_name|default:"Sin nombre" }}</h3>
+                        <p class="text-white-50 mb-0">
+                            {% if user_to_edit.is_doctor %}
+                                <i class="bi bi-heart-pulse me-2"></i> Médico
+                            {% elif user_to_edit.administrator %}
+                                <i class="bi bi-shield-check me-2"></i> Administrador del Sistema
+                            {% elif user_to_edit.receptions %}
+                                <i class="bi bi-headset me-2"></i> Recepcionista
+                            {% else %}
+                                <i class="bi bi-person me-2"></i> Usuario
+                            {% endif %}
+                        </p>
+                        <small class="text-white-50">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            Miembro desde {{ user_to_edit.date_joined|date:"F Y" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas rápidas del usuario -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-primary mb-2">
+                            <i class="bi bi-clock-history" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Último acceso</h6>
+                        <small class="fw-bold">
+                            {% if user_to_edit.last_login %}
+                                {{ user_to_edit.last_login|date:"d/m/Y H:i" }}
+                            {% else %}
+                                Nunca
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="{% if user_to_edit.is_active %}text-success{% else %}text-danger{% endif %} mb-2">
+                            <i class="bi bi-{% if user_to_edit.is_active %}check-circle-fill{% else %}x-circle-fill{% endif %}" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Estado</h6>
+                        <small class="fw-bold {% if user_to_edit.is_active %}text-success{% else %}text-danger{% endif %}">
+                            {% if user_to_edit.is_active %}Activo{% else %}Inactivo{% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-2">
+                            <i class="bi bi-envelope-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Email</h6>
+                        <small class="fw-bold">{{ user_to_edit.email|truncatechars:20 }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-2">
+                            <i class="bi bi-person-badge-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Usuario</h6>
+                        <small class="fw-bold">@{{ user_to_edit.username }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de edición -->
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Editar Usuario: {{ user_to_edit.get_full_name }}</h5>
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom-0 py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-pencil-square text-primary me-2"></i>
+                            Editar Información del Usuario
+                        </h5>
                     </div>
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
                             
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="first_name" class="form-label">Nombres</label>
-                                        <input type="text" class="form-control" id="first_name" name="first_name" 
-                                               value="{{ user_to_edit.first_name }}" required>
+                            <!-- Alerta de rol -->
+                            <div class="alert alert-info border-0 mb-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        {% if user_to_edit.is_doctor %}
+                                            <i class="bi bi-heart-pulse text-info" style="font-size: 1.5rem;"></i>
+                                        {% elif user_to_edit.administrator %}
+                                            <i class="bi bi-shield-check text-info" style="font-size: 1.5rem;"></i>
+                                        {% elif user_to_edit.receptions %}
+                                            <i class="bi bi-headset text-info" style="font-size: 1.5rem;"></i>
+                                        {% else %}
+                                            <i class="bi bi-person text-info" style="font-size: 1.5rem;"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">Tipo de Usuario</h6>
+                                        <small class="text-muted">
+                                            {% if user_to_edit.is_doctor %}
+                                                Este usuario tiene permisos de médico en el sistema
+                                            {% elif user_to_edit.administrator %}
+                                                Este usuario tiene permisos de administrador completo
+                                            {% elif user_to_edit.receptions %}
+                                                Este usuario tiene permisos de recepcionista
+                                            {% else %}
+                                                Usuario estándar sin permisos especiales
+                                            {% endif %}
+                                        </small>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="last_name" class="form-label">Apellidos</label>
-                                        <input type="text" class="form-control" id="last_name" name="last_name" 
-                                               value="{{ user_to_edit.last_name }}" required>
-                                    </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name" class="form-label fw-bold text-dark">
+                                        <i class="bi bi-person me-1"></i>Nombres
+                                    </label>
+                                    <input type="text" class="form-control border-0 bg-light" 
+                                           id="first_name" name="first_name" 
+                                           value="{{ user_to_edit.first_name }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name" class="form-label fw-bold text-dark">
+                                        <i class="bi bi-person me-1"></i>Apellidos
+                                    </label>
+                                    <input type="text" class="form-control border-0 bg-light" 
+                                           id="last_name" name="last_name" 
+                                           value="{{ user_to_edit.last_name }}" required>
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" 
+                                <label for="email" class="form-label fw-bold text-dark">
+                                    <i class="bi bi-envelope me-1"></i>Correo Electrónico
+                                </label>
+                                <input type="email" class="form-control border-0 bg-light" 
+                                       id="email" name="email" 
                                        value="{{ user_to_edit.email }}" required>
                             </div>
 
-                            <div class="alert alert-info">
-                                <strong>Usuario:</strong> {{ user_to_edit.username }}<br>
-                                <strong>Fecha de registro:</strong> {{ user_to_edit.date_joined|date:"d/m/Y H:i" }}<br>
-                                <strong>Último login:</strong> 
-                                {% if user_to_edit.last_login %}
-                                    {{ user_to_edit.last_login|date:"d/m/Y H:i" }}
-                                {% else %}
-                                    Nunca
-                                {% endif %}
+                            <!-- Información adicional del usuario -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="bi bi-person-vcard me-1"></i>Nombre de Usuario
+                                    </label>
+                                    <input type="text" class="form-control border-0 bg-light" 
+                                           value="{{ user_to_edit.username }}" readonly>
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        El nombre de usuario no se puede modificar
+                                    </small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold text-dark">
+                                        <i class="bi bi-calendar-check me-1"></i>Fecha de Registro
+                                    </label>
+                                    <input type="text" class="form-control border-0 bg-light" 
+                                           value="{{ user_to_edit.date_joined|date:'d/m/Y H:i' }}" readonly>
+                                </div>
                             </div>
 
-                            <div class="d-flex justify-content-end">
-                                <a href="{% url 'admin_users_list' %}" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
+                            <!-- Botones de acción -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'admin_users_list' %}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="bi bi-arrow-left me-2"></i>Volver a Lista
+                                </a>
+                                <div>
+                                    <button type="button" class="btn btn-outline-warning btn-lg me-2" 
+                                            onclick="toggleUserStatus({{ user_to_edit.id }})"
+                                            title="Cambiar estado del usuario">
+                                        <i class="bi bi-power me-2"></i>
+                                        {% if user_to_edit.is_active %}Desactivar{% else %}Activar{% endif %}
+                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-check-lg me-2"></i>Actualizar Usuario
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -62,4 +223,41 @@
         </div>
     </div>
 </main>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(66, 74, 91, 0.25);
+}
+
+.btn-primary {
+    background: #7fc3d4;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-outline-warning:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+</style>
 {% endblock content %}

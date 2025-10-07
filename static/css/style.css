@@ -614,3 +614,9 @@ tbody tr:nth-child(even) {
 .custom-success-btn i {
     color: #ffffff !important;
 }
+
+
+.card-body .d-flex span {
+    color: var(--color-dark) !important;
+    font-size: 1.3rem;
+}

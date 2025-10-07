@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.http import JsonResponse
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.db import transaction
 from .models import Users, Doctor, Administrator, Receptions, Specialty, Patient
+from django.views.decorators.http import require_POST
 
 # Obtener el modelo de usuario personalizado
 Users = get_user_model()
@@ -329,26 +330,85 @@ def admin_edit_user(request, user_id):
     context = {'user_to_edit': user}
     return render(request, 'admin_backup/edit_user.html', context)
 
+
+# Boton para cambiar estado de usuarios
 @login_required
+@require_POST
 def admin_toggle_user_status(request, user_id):
     """Cambiar estado activo/inactivo del usuario (AJAX)"""
     if not hasattr(request.user, 'administrator'):
         return JsonResponse({'success': False, 'error': 'Sin permisos'})
     
-    if request.method == 'POST':
-        try:
-            user = get_object_or_404(Users, id=user_id)
-            user.is_active = not user.is_active
-            user.save()
-            
-            status = 'activado' if user.is_active else 'desactivado'
-            return JsonResponse({
-                'success': True, 
-                'message': f'Usuario {status} exitosamente.',
-                'new_status': user.is_active
-            })
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+    try:
+        user = get_object_or_404(Users, id=user_id)
+        user.is_active = not user.is_active
+        user.save()
+        
+        status = 'activado' if user.is_active else 'desactivado'
+        return JsonResponse({
+            'success': True, 
+            'message': f'Usuario {status} exitosamente.',
+            'new_status': user.is_active
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
     
-    return JsonResponse({'success': False, 'error': 'Método no permitido'})
 
+@login_required
+def admin_profile_view(request):
+    """Vista del perfil del administrador"""
+    if not hasattr(request.user, 'administrator'):
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('dashboard')
+    
+    updated_profile_successfully = False
+    updated_password_successfully = False
+    
+    if request.method == 'POST':
+        if 'update_profile' in request.POST:
+            # Actualizar información del perfil
+            user = request.user
+            user.first_name = request.POST.get('user_firstname', user.first_name)
+            user.last_name = request.POST.get('user_lastname', user.last_name)
+            user.email = request.POST.get('user_email', user.email)
+            user.username = request.POST.get('username', user.username)
+            
+            # Manejar archivo de imagen si se subió
+            if 'profile_pic' in request.FILES:
+                user.profile_avatar = request.FILES['profile_pic']
+            
+            try:
+                user.save()
+                updated_profile_successfully = True
+                messages.success(request, 'Perfil actualizado exitosamente.')
+            except Exception as e:
+                messages.error(request, f'Error al actualizar el perfil: {str(e)}')
+        
+        elif 'update_password' in request.POST:
+            # Cambiar contraseña
+            current_password = request.POST.get('current_password')
+            new_password = request.POST.get('new_password')
+            confirm_new_password = request.POST.get('confirm_new_password')
+            
+            if not request.user.check_password(current_password):
+                messages.error(request, 'La contraseña actual es incorrecta.')
+            elif new_password != confirm_new_password:
+                messages.error(request, 'Las nuevas contraseñas no coinciden.')
+            elif len(new_password) < 8:
+                messages.error(request, 'La nueva contraseña debe tener al menos 8 caracteres.')
+            else:
+                try:
+                    request.user.set_password(new_password)
+                    request.user.save()
+                    update_session_auth_hash(request, request.user)  # Mantener la sesión activa
+                    updated_password_successfully = True
+                    messages.success(request, 'Contraseña cambiada exitosamente.')
+                except Exception as e:
+                    messages.error(request, f'Error al cambiar la contraseña: {str(e)}')
+    
+    context = {
+        'updated_profile_successfully': updated_profile_successfully,
+        'updated_password_successfully': updated_password_successfully,
+    }
+    
+    return render(request, 'admin_backup/admin_profile.html', context)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import login_view, logout_view, dashboard_view, doctor_dashboard_view, reception_dashboard_view, admin_dashboard_view, admin_users_list, admin_create_user, admin_edit_user, admin_toggle_user_status, admin_create_staff, admin_create_doctor
+from .views import login_view, logout_view, dashboard_view, doctor_dashboard_view, reception_dashboard_view, admin_dashboard_view, admin_users_list, admin_create_user, admin_edit_user, admin_toggle_user_status, admin_create_staff, admin_create_doctor, admin_profile_view
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -23,6 +23,10 @@ urlpatterns = [
     # URLs para gestión de doctores y personal
     path('admin-dashboard/doctors/create/', admin_create_doctor, name='admin_create_doctor'),
     path('admin-dashboard/staff/create/', admin_create_staff, name='admin_create_staff'),
+
+    # URLs para gestión de administrador
+    path('admin-dashboard/profile/', admin_profile_view, name='admin_profile'),
+    
     
 ]
 

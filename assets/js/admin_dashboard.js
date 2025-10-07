@@ -19,7 +19,7 @@ function toggleUserStatus(userId) {
             return;
         }
         
-        fetch(`/admin/users/toggle-status/${userId}/`, {
+        fetch(`/admin-dashboard/users/toggle-status/${userId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken.value,

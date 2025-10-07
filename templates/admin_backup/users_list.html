@@ -126,7 +126,8 @@ function toggleUserStatus(userId) {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
         if (!csrfToken) return;
         
-        fetch(`/admin/users/toggle-status/${userId}/`, {
+        // Usar la URL correcta que coincida con urls.py
+        fetch(`/admin-dashboard/users/toggle-status/${userId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken.value,

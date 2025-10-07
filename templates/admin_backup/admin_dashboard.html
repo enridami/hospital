@@ -22,7 +22,7 @@
             <div class="card-body">
                 <span class="text-success"><i class="bi bi-heart-pulse" aria-hidden="true"></i></span>
                 <h4>{{ total_doctors }}</h4>
-                <h5>Médicos Activos</h5>
+                <h5>Médicos Registrados</h5>
             </div>
         </div>
         
@@ -111,17 +111,16 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Acciones de usuario">
-                                            <button type="button" 
-                                                    class="btn btn-sm btn-outline-primary" 
-                                                    onclick="editUser({{ user.id }})"
-                                                    aria-label="Editar usuario {{ user.get_full_name }}">
-                                                <i class="bi bi-pencil" aria-hidden="true"></i>
-                                            </button>
+                                            <a href="{% url 'admin_edit_user' user.id %}" 
+                                            class="btn btn-sm btn-outline-primary"
+                                            title="Editar usuario">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
                                             <button type="button" 
                                                     class="btn btn-sm btn-outline-danger" 
                                                     onclick="toggleUserStatus({{ user.id }})"
-                                                    aria-label="Cambiar estado de {{ user.get_full_name }}">
-                                                <i class="bi bi-power" aria-hidden="true"></i>
+                                                    title="Cambiar estado">
+                                                <i class="bi bi-power"></i>
                                             </button>
                                         </div>
                                     </td>
