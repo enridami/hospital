@@ -195,7 +195,7 @@ main {
 
 .card-body span {
     font-size: 1.5rem;
-    color: white;
+    color: #ffffff;
     padding-right: 1.4rem;
 }
 
@@ -597,23 +597,20 @@ tbody tr:nth-child(even) {
 
 
 
-
-.btn-success {
+/* Clase personalizada para botón success */
+.custom-success-btn {
     background-color: #198754 !important;
     border-color: #198754 !important;
-    color: #fff !important;
-    padding: 10px 20px;
+    color: #ffffff !important;
 }
 
-.btn-success:hover {
+.custom-success-btn:hover {
     background-color: #157347 !important;
     border-color: #146c43 !important;
-    color: #fff !important;
+    color: #ffffff !important;
 }
 
-.btn-success:focus {
-    background-color: #198754 !important;
-    border-color: #198754 !important;
-    color: #fff !important;
-    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+.custom-success-btn span,
+.custom-success-btn i {
+    color: #ffffff !important;
 }

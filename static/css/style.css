@@ -195,7 +195,7 @@ main {
 
 .card-body span {
     font-size: 1.5rem;
-    color: white;
+    color: #ffffff;
     padding-right: 1.4rem;
 }
 
@@ -593,4 +593,24 @@ tbody tr:nth-child(even) {
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-grey);
+}
+
+
+
+/* Clase personalizada para botón success */
+.custom-success-btn {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #ffffff !important;
+}
+
+.custom-success-btn:hover {
+    background-color: #157347 !important;
+    border-color: #146c43 !important;
+    color: #ffffff !important;
+}
+
+.custom-success-btn span,
+.custom-success-btn i {
+    color: #ffffff !important;
 }
