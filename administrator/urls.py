@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import admin_dashboard_view, admin_users_list, admin_create_user, admin_edit_user, admin_toggle_user_status, admin_create_staff, admin_create_doctor, admin_profile_view
+from .views import admin_dashboard_view, admin_users_list, admin_create_user, admin_edit_user, admin_toggle_user_status, admin_create_staff, admin_create_doctor, admin_profile_view, admin_assign_role, admin_select_user_for_role, admin_permissions_list
 
 
 
@@ -18,4 +18,12 @@ urlpatterns = [
 
     # URLs para gestión de administrador
     path('admin-dashboard/profile/', admin_profile_view, name='admin_profile'),
+
+    # URLs para Asignar Roles
+    path('admin-dashboard/users/assign-role/<int:user_id>/', admin_assign_role, name='admin_assign_role'),
+    path('admin-dashboard/users/assign-role/', admin_select_user_for_role, name='admin_select_user_for_role'),
+
+    # URL para Permisos
+    path('admin-dashboard/users/permissions/', admin_permissions_list, name='admin_permissions_list'),
+
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, get_user_model
 from django.http import JsonResponse
 from django.db import transaction
 from users.models import Users, Doctor, Administrator, Receptions, Specialty, Patient
@@ -12,7 +12,6 @@ from django.views.decorators.http import require_POST
 def admin_dashboard_view(request):
     """Dashboard específico para administradores - PROTEGIDO"""
     # Primera protección: @login_required
-    
     # Segunda protección: verificar que sea administrador
     if not hasattr(request.user, 'administrator'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
@@ -333,3 +332,56 @@ def admin_profile_view(request):
     }
     
     return render(request, 'admin_backup/admin_profile.html', context)
+
+
+
+# Asignar Roles
+@login_required
+def admin_assign_role(request, user_id):
+    if not hasattr(request.user, 'administrator'):
+        messages.error(request, 'No tienes permisos.')
+        return redirect('dashboard')
+
+    user = get_object_or_404(Users, id=user_id)
+    specialties = Specialty.objects.all()
+    if request.method == 'POST':
+        role = request.POST.get('role')
+        specialty_id = request.POST.get('specialty')
+        # Limpia roles previos
+        user.is_doctor = False
+        Administrator.objects.filter(user=user).delete()
+        Receptions.objects.filter(user=user).delete()
+        Doctor.objects.filter(user=user).delete()
+        # Asigna nuevo rol
+        if role == 'doctor':
+            user.is_doctor = True
+            user.save()
+            specialty = Specialty.objects.get(id=specialty_id) if specialty_id else None
+            Doctor.objects.create(user=user, specialty=specialty)
+        elif role == 'admin':
+            Administrator.objects.get_or_create(user=user)
+        elif role == 'reception':
+            Receptions.objects.get_or_create(user=user)
+        user.save()
+        messages.success(request, f'Rol asignado correctamente a {user.username}.')
+        return redirect('admin_users_list')
+    return render(request, 'admin_backup/assign_role.html', {'user': user, 'specialties': specialties})
+
+@login_required
+def admin_select_user_for_role(request):
+    if not hasattr(request.user, 'administrator'):
+        messages.error(request, 'No tienes permisos.')
+        return redirect('dashboard')
+    users = Users.objects.all().order_by('username')
+    return render(request, 'admin_backup/select_user_for_role.html', {'users': users})
+
+
+# Permisos
+@login_required
+def admin_permissions_list(request):
+    if not hasattr(request.user, 'administrator'):
+        messages.error(request, 'No tienes permisos.')
+        return redirect('dashboard')
+    User = get_user_model()
+    users = User.objects.all().order_by('username')
+    return render(request, 'admin_backup/permissions_list.html', {'users': users})

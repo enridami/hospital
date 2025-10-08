@@ -1,0 +1,56 @@
+{% extends "admin_backup/base.html" %}
+{% block title %}Seleccionar Usuario{% endblock %}
+{% block page_title %}Asignar Roles{% endblock %}
+{% block content %}
+<main>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Usuarios disponibles</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol actual</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.get_full_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.is_doctor %}
+                                    <span class="role-text text-success">Doctor</span>
+                                {% elif user.administrator %}
+                                    <span class="role-text text-warning">Administrador</span>
+                                {% elif user.receptions %}
+                                    <span class="role-text text-info">Recepcionista</span>
+                                {% else %}
+                                    <span class="role-text text-secondary">Sin rol</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'admin_assign_role' user_id=user.id %}" class="btn btn-sm btn-primary">
+                                    Asignar Rol
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No hay usuarios disponibles.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
