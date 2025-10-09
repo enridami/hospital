@@ -91,7 +91,7 @@ def admin_users_list(request):
 @login_required
 def admin_create_user(request):
     """Crear nuevo usuario"""
-    if not hasattr(request.user, 'administrator'):
+    if not hasattr(request.user, 'administrator') or not request.user.has_perm('users.add_users'):
         messages.error(request, 'No tienes permisos.')
         return redirect('dashboard')
     
@@ -119,7 +119,7 @@ def admin_create_user(request):
                 if role == 'doctor':
                     user.is_doctor = True
                     user.save()
-                    # Crear perfil de doctor (necesitarás specialty)
+                    # Crear perfil de doctor 
                     Doctor.objects.create(user=user)
                 elif role == 'admin':
                     Administrator.objects.create(user=user)
@@ -139,7 +139,7 @@ def admin_create_user(request):
 @login_required
 def admin_create_doctor(request):
     """Crear nuevo doctor"""
-    if not hasattr(request.user, 'administrator'):
+    if not hasattr(request.user, 'administrator') or not request.user.has_perm('users.add_users'):
         messages.error(request, 'No tienes permisos.')
         return redirect('dashboard')
     
@@ -190,7 +190,7 @@ def admin_create_doctor(request):
 @login_required
 def admin_create_staff(request):
     """Crear personal administrativo"""
-    if not hasattr(request.user, 'administrator'):
+    if not hasattr(request.user, 'administrator') or not request.user.has_perm('users.add_users'):
         messages.error(request, 'No tienes permisos.')
         return redirect('dashboard')
     

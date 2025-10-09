@@ -17,3 +17,5 @@ def reception_dashboard_view(request):
     return render(request, 'reception/reception_dashboard.html', {
         'user': request.user,
     })
+
+
