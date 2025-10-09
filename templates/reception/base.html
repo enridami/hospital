@@ -32,20 +32,20 @@
         <div class="sidebar-menu">
             <ul>
                 <li>
-                    <a href="{% url 'admin_dashboard' %}">
+                    <a href="{% url 'reception:reception_dashboard' %}">
                         &nbsp;&nbsp;<i class="bi bi-house"></i>
                         <span class="menu-text">&nbsp;&nbsp;Inicio</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'reception:profile' %}">
                         &nbsp;&nbsp;<i class="bi bi-person-circle me-2"> </i>
                         <span class="menu-text">&nbsp;&nbsp;Perfil</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{% url 'reception:consultation_list' %}">
                         &nbsp;&nbsp;<i class="bi bi-clipboard2-pulse"> </i>
                         <span class="menu-text">&nbsp;Gestionar turno médico</span>
                     </a>
@@ -60,9 +60,9 @@
                     <div class="collapse" id="consultasMenu">
                         <ul class="submenu">
                             <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Ver pacientes</span></a></li>
-                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Registrar pacientes</span></a></li>
+                            <li><a href="{% url 'reception:patient_create' %}" class="text-center"><span class="menu-text d-block text-center">Registrar pacientes</span></a></li>
                             <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Buscar paciente</span></a></li>
-                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Nueva consulta</span></a></li>
+                            <li><a href="{% url 'reception:consultation_create' %}" class="text-center"><span class="menu-text d-block text-center">Nueva consulta</span></a></li>
                         </ul>
                     </div>
                 </li>

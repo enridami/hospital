@@ -1,0 +1,307 @@
+{% extends 'reception/base.html' %}
+{% load static %}
+
+{% block title %}Perfil{% endblock title %}
+{% block page_title %}Mi Perfil{% endblock page_title %}
+
+{% block content %}
+<main>
+    <div class="container-fluid">
+        <!-- Header del perfil -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center py-5" style="background: linear-gradient(135deg, var(--primary-color), #3aaad3);">
+                        <div class="position-relative d-inline-block mb-3">
+                            {% if request.user.profile_avatar %}
+                                <img src="{{ request.user.profile_avatar.url }}" 
+                                     class="rounded-circle border border-4 border-white shadow" 
+                                     style="width: 120px; height: 120px; object-fit: cover;"
+                                     alt="Avatar de {{ request.user.get_full_name }}">
+                            {% else %}
+                                <div class="rounded-circle border border-4 border-white shadow mx-auto bg-white d-flex align-items-center justify-content-center" 
+                                     style="width: 120px; height: 120px;">
+                                    <i class="bi bi-person-fill text-secondary" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            <span class="position-absolute bottom-0 end-0 bg-success rounded-circle border border-2 border-white" 
+                                  style="width: 25px; height: 25px;" title="En línea"></span>
+                        </div>
+                        <h3 class="text-white mb-1">{{ request.user.get_full_name|default:"Sin nombre" }}</h3>
+                        <p class="text-white-50 mb-0">
+                            <i class="bi bi-shield-check me-2"></i>Recepcionista
+                        </p>
+                        <small class="text-white-50">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            Miembro desde {{ request.user.date_joined|date:"F Y" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-primary mb-2">
+                            <i class="bi bi-clock-history" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Último acceso</h6>
+                        <small class="fw-bold">
+                            {% if request.user.last_login %}
+                                {{ request.user.last_login|date:"d/m/Y H:i" }}
+                            {% else %}
+                                Nunca
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-success mb-2">
+                            <i class="bi bi-check-circle-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Estado</h6>
+                        <small class="fw-bold text-success">Activo</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-info mb-2">
+                            <i class="bi bi-envelope-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Email</h6>
+                        <small class="fw-bold">{{ request.user.email|truncatechars:20 }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <div class="text-warning mb-2">
+                            <i class="bi bi-person-badge-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-muted mb-1">Usuario</h6>
+                        <small class="fw-bold">@{{ request.user.username }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="row">
+            <!-- Información Personal -->
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom-0 py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-person-lines-fill text-primary me-2"></i>
+                            Información Personal
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            {% if updated_profile_successfully %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                ¡Perfil actualizado exitosamente!
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold text-dark" for="first_name">
+                                        <i class="bi bi-person me-1"></i>Nombre
+                                    </label>
+                                    <input id="first_name" type="text" class="form-control border-0 bg-light" 
+                                           name="user_firstname" value="{{ request.user.first_name }}" required />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold text-dark" for="last_name">
+                                        <i class="bi bi-person me-1"></i>Apellido
+                                    </label>
+                                    <input id="last_name" type="text" class="form-control border-0 bg-light" 
+                                           name="user_lastname" value="{{ request.user.last_name }}" required />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold text-dark" for="email">
+                                        <i class="bi bi-envelope me-1"></i>Email
+                                    </label>
+                                    <input id="email" type="email" class="form-control border-0 bg-light" 
+                                           name="user_email" value="{{ request.user.email }}" required />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold text-dark" for="username">
+                                        <i class="bi bi-at me-1"></i>Nombre de Usuario
+                                    </label>
+                                    <input id="username" type="text" class="form-control border-0 bg-light" 
+                                           name="username" value="{{ request.user.username }}" required />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark" for="date_joined">
+                                    <i class="bi bi-calendar-check me-1"></i>Fecha de Registro
+                                </label>
+                                <input type="text" class="form-control border-0 bg-light" 
+                                       value="{{ request.user.date_joined|date:'d/m/Y H:i' }}" readonly />
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="pic" class="form-label fw-bold text-dark">
+                                    <i class="bi bi-image me-1"></i>Avatar de Perfil
+                                </label>
+                                <input type="file" class="form-control border-0 bg-light" 
+                                       name="profile_pic" id="pic" accept="image/*">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB
+                                </small>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg" name="update_profile">
+                                    <i class="bi bi-check-lg me-2"></i>Actualizar Perfil
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cambiar Contraseña -->
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom-0 py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-shield-lock text-warning me-2"></i>
+                            Seguridad
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+
+                            {% if updated_password_successfully %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                ¡Contraseña actualizada!
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endif %}
+
+                            {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark" for="current_password">
+                                    <i class="bi bi-key me-1"></i>Contraseña Actual
+                                </label>
+                                <input type="password" class="form-control border-0 bg-light" 
+                                       name="current_password" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark" for="new_password">
+                                    <i class="bi bi-key-fill me-1"></i>Nueva Contraseña
+                                </label>
+                                <input type="password" class="form-control border-0 bg-light" 
+                                       name="new_password" required />
+                                <small class="text-muted">Mínimo 8 caracteres</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-dark" for="confirm_new_password">
+                                    <i class="bi bi-check2-square me-1"></i>Confirmar Nueva
+                                </label>
+                                <input type="password" class="form-control border-0 bg-light" 
+                                       name="confirm_new_password" required />
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-warning btn-lg" name="update_password">
+                                    <i class="bi bi-shield-check me-2"></i>Cambiar Contraseña
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Información adicional de seguridad -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-info-circle text-info me-2"></i>
+                                Consejos de Seguridad
+                            </h6>
+                            <ul class="list-unstyled small text-muted mb-0">
+                                <li><i class="bi bi-check text-success me-2"></i>Usa al menos 8 caracteres</li>
+                                <li><i class="bi bi-check text-success me-2"></i>Incluye números y símbolos</li>
+                                <li><i class="bi bi-check text-success me-2"></i>Evita información personal</li>
+                                <li><i class="bi bi-check text-success me-2"></i>Cambia tu contraseña regularmente</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(66, 74, 91, 0.25);
+}
+
+.btn-primary {
+    background: #7fc3d4;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-warning {
+    background: #7fc3d4;
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    color: white;
+}
+</style>
+{% endblock %}

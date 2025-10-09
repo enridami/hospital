@@ -1,0 +1,16 @@
+{% extends "reception/base.html" %}
+{% block content %}
+
+<main>
+    <div class="container mt-4">
+        <h2>Eliminar Consulta</h2>
+        <p>¿Estás seguro que deseas eliminar la consulta de <strong>{{ object.patient.full_name }}</strong> con el doctor <strong>{{ object.doctor }}</strong>?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a href="{% url 'reception:consultation_list' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</main>
+
+{% endblock %}

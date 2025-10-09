@@ -244,3 +244,105 @@ class Patient(models.Model):
             (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
         )
     
+
+
+
+# Creación de modelos de tabla Consultas y Recetas
+
+class Consultation(models.Model):
+    """Modelo para consultas médicas"""
+    description = models.TextField(verbose_name="Descripción")
+    date = models.DateField(verbose_name="Fecha")
+    time = models.TimeField(verbose_name="Hora")
+
+    # Campo de turno
+    shift_choices = (
+        ("MAÑANA", "Mañana"),
+        ("TARDE", "Tarde"),
+        ("NOCHE", "Noche"),
+    )
+    shift = models.CharField(
+        max_length=10,
+        choices=shift_choices,
+        default="MAÑANA",
+        verbose_name="Turno"
+    )
+
+    # Campo de orden en la cola de atención
+    order = models.PositiveIntegerField(verbose_name="Orden", default=1)
+    
+    # Opciones de prioridad
+    priority_choices = (
+        ("NIVEL I", "Nivel i"),
+        ("Nivel II", "Nivel ii"),
+        ("Nivel III", "Nivel iii"),
+        ("Nivel IV", "Nivel iv"),
+        ("Nivel V", "Nivel v"),
+    )
+    priority = models.CharField(
+        max_length=10,
+        choices=priority_choices,
+        default="Nivel IV",
+        verbose_name="Prioridad"
+    )
+    
+    # Opciones de estado
+    status_choices = (
+        ("EN_ESPERA", "En espera"),
+        ("ATENDIDA", "Atendida"),
+        ("CANCELADA", "Cancelada"),
+    )
+    status = models.CharField(
+        max_length=15,
+        choices=status_choices,
+        default="EN_ESPERA",
+        verbose_name="Estado"
+    )
+    
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="Médico"
+    )
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.CASCADE,
+        verbose_name="Paciente"
+    )
+
+    class Meta:
+        verbose_name = "Consulta"
+        verbose_name_plural = "Consultas"
+        ordering = ['-date', '-time']
+
+    def __str__(self):
+        return f"Consulta de {self.patient.full_name} con {self.doctor} el {self.date} a las {self.time}"
+
+
+
+# TABLA RECETAS
+class Prescription(models.Model):
+    """Modelo para recetas médicas"""
+    medication = models.CharField(max_length=100, verbose_name="Medicamento")
+    description = models.TextField(verbose_name="Descripción")
+    doctor = models.ForeignKey(
+        Doctor,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="Médico"
+    )
+    consultation = models.ForeignKey(
+        Consultation,
+        on_delete=models.CASCADE,
+        verbose_name="Consulta"
+    )
+
+    class Meta:
+        verbose_name = "Receta"
+        verbose_name_plural = "Recetas"
+        ordering = ['-id']
+
+    def __str__(self):
+        return f"Receta para {self.consultation.patient.full_name} - {self.medication}"
+    

@@ -15,6 +15,9 @@ urlpatterns = [
     path('reception/', include('reception.urls')),
     path('administrator/', include('administrator.urls')),
     path('', include('administrator.urls')),
+
+    path('reception/', include(('reception.urls', 'reception'), namespace='reception')),
+
     
 ]
 
