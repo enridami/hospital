@@ -2,6 +2,10 @@ from django import forms
 from users.models import Patient, Consultation
 
 class PatientForm(forms.ModelForm):
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label="Fecha de Nacimiento"
+    )
     class Meta:
         model = Patient
         fields = [
@@ -15,6 +19,14 @@ class PatientForm(forms.ModelForm):
         ]
 
 class ConsultationForm(forms.ModelForm):
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        label="Fecha"
+    )
+    time = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type': 'time'}),
+        label="Hora"
+    )
     class Meta:
         model = Consultation
         fields = [
