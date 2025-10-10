@@ -47,7 +47,7 @@
                 <li>
                     <a href="{% url 'reception:consultation_list' %}">
                         &nbsp;&nbsp;<i class="bi bi-clipboard2-pulse"> </i>
-                        <span class="menu-text">&nbsp;Gestionar turno médico</span>
+                        <span class="menu-text">&nbsp;Agendamiento</span>
                     </a>
                 </li>
 
@@ -59,9 +59,8 @@
                     </a>
                     <div class="collapse" id="consultasMenu">
                         <ul class="submenu">
-                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Ver pacientes</span></a></li>
+                            <li><a href="{% url 'reception:patient_list' %}" class="text-center"><span class="menu-text d-block text-center">Ver pacientes</span></a></li>
                             <li><a href="{% url 'reception:patient_create' %}" class="text-center"><span class="menu-text d-block text-center">Registrar pacientes</span></a></li>
-                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Buscar paciente</span></a></li>
                             <li><a href="{% url 'reception:consultation_create' %}" class="text-center"><span class="menu-text d-block text-center">Nueva consulta</span></a></li>
                         </ul>
                     </div>

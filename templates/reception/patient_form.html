@@ -1,9 +1,13 @@
 {% extends "reception/base.html" %}
+
+{% block title %}Registrar Paciente{% endblock title %}
+{% block page_title %}Registrar Paciente{% endblock page_title %}
+
 {% block content %}
 
 <main>
     <div class="container mt-4">
-        <h2>Registrar Paciente</h2>
+        <h2>Ingresar datos</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

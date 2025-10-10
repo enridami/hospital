@@ -14,8 +14,7 @@ class PatientForm(forms.ModelForm):
             'gender', 'date_of_birth', 'address_line', 'city',
             'region', 'postal_code', 'country', 'blood_type',
             'allergies', 'medical_notes', 'emergency_contact_name',
-            'emergency_contact_relationship', 'emergency_contact_phone',
-            'assigned_doctor', 'is_active'
+            'emergency_contact_relationship', 'emergency_contact_phone'
         ]
 
 class ConsultationForm(forms.ModelForm):

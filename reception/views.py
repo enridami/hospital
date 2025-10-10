@@ -1,18 +1,28 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import Consultation, Patient, Doctor
 from .forms import PatientForm, ConsultationForm
+import datetime
 
 # Dashboard principal
 @login_required
 def reception_dashboard_view(request):
-    """Dashboard específico para recepcionistas - PROTEGIDO"""
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
-        return redirect('dashboard')
+        return redirect('reception:reception_dashboard')
+    pacientes_count = Patient.objects.count()
+    doctores_count = Doctor.objects.count()
+    consultas_count = Consultation.objects.count()
+    consultas_hoy = Consultation.objects.filter(date__exact=datetime.date.today()).count()
+
     return render(request, 'reception/reception_dashboard.html', {
         'user': request.user,
+        'pacientes_count': pacientes_count,
+        'doctores_count': doctores_count,
+        'consultas_count': consultas_count,
+        'consultas_hoy': consultas_hoy,
     })
 
 # Listar consultas
@@ -167,3 +177,55 @@ def reception_profile_view(request):
     }
     
     return render(request, 'reception/profile.html', context)
+
+
+@login_required
+def patient_list_view(request):
+    if not hasattr(request.user, 'receptions'):
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('reception:reception_dashboard')
+    query = request.GET.get('ci', '')
+    if query:
+        pacientes = Patient.objects.filter(identification_number__icontains=query).order_by('-created_at')
+    else:
+        pacientes = Patient.objects.all().order_by('-created_at')
+    return render(request, 'reception/patient_list.html', {
+        'patients': pacientes,
+        'user': request.user,
+        'ci_query': query,
+    })
+
+
+@login_required
+def patient_edit_view(request, pk):
+    if not hasattr(request.user, 'receptions'):
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('reception:reception_dashboard')
+    paciente = get_object_or_404(Patient, pk=pk)
+    if request.method == 'POST':
+        form = PatientForm(request.POST, instance=paciente)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Paciente actualizado correctamente.')
+            return redirect('reception:patient_list')
+    else:
+        form = PatientForm(instance=paciente)
+    return render(request, 'reception/patient_edit.html', {
+        'form': form,
+        'user': request.user,
+    })
+
+@login_required
+def patient_delete_view(request, pk):
+    if not hasattr(request.user, 'receptions'):
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('reception:reception_dashboard')
+    paciente = get_object_or_404(Patient, pk=pk)
+    if request.method == 'POST':
+        paciente.delete()
+        messages.success(request, 'Paciente eliminado correctamente.')
+        return redirect('reception:patient_list')
+    return render(request, 'reception/patient_confirm_delete.html', {
+        'object': paciente,
+        'user': request.user,
+    })

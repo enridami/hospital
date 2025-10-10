@@ -1,14 +1,58 @@
-{% extends 'reception/base.html' %}
-{% load static %}
-
-{% block title %} Panel Recepción {% endblock title %}
-{% block page_title %} {{ request.user.first_name | safe | truncatechars:"20" }} {{ request.user.last_name | safe | truncatechars:"20" }} {% endblock page_title %}
+{% extends "reception/base.html" %}
+{% block title %}Dashboard Recepción{% endblock title %}
+{% block page_title %}Panel de Recepcionista{% endblock page_title %}
 
 {% block content %}
 <main>
-  {% comment %} <h2 class="dash-title">Admin Dashboard</h2> {% endcomment %}
-    
-  <div class="row justify-content-between">
-    
+  <div class="container mt-4">
+      <div class="row mb-4">
+          <div class="col-md-3">
+              <div class="card text-center shadow">
+                  <div class="card-body">
+                      <h5 class="card-title"><i class="bi bi-people-fill"></i> Pacientes</h5>
+                      <p class="display-6 fw-bold">{{ pacientes_count }}</p>
+                      <a href="{% url 'reception:patient_list' %}" class="btn btn-outline-primary btn-sm">Ver pacientes</a>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="card text-center shadow">
+                  <div class="card-body">
+                      <h5 class="card-title"><i class="bi bi-person-badge"></i> Doctores</h5>
+                      <p class="display-6 fw-bold">{{ doctores_count }}</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="card text-center shadow">
+                  <div class="card-body">
+                      <h5 class="card-title"><i class="bi bi-clipboard2-pulse"></i> Consultas totales</h5>
+                      <p class="display-6 fw-bold">{{ consultas_count }}</p>
+                      <a href="{% url 'reception:consultation_list' %}" class="btn btn-outline-success btn-sm">Ver consultas</a>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="card text-center shadow">
+                  <div class="card-body">
+                      <h5 class="card-title"><i class="bi bi-calendar-event"></i> Consultas hoy</h5>
+                      <p class="display-6 fw-bold">{{ consultas_hoy }}</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="row mt-4">
+          <div class="col-md-6">
+              <a href="{% url 'reception:patient_create' %}" class="btn btn-primary w-100 mb-2">
+                  <i class="bi bi-person-plus"></i> Registrar paciente
+              </a>
+          </div>
+          <div class="col-md-6">
+              <a href="{% url 'reception:consultation_create' %}" class="btn btn-success w-100 mb-2">
+                  <i class="bi bi-calendar-plus"></i> Agendar consulta
+              </a>
+          </div>
+      </div>
+  </div>
 </main>
-{% endblock  %}
+{% endblock %}
