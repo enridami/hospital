@@ -1,0 +1,73 @@
+{% extends "doctors/base.html" %}
+{% block title %}Lista de Pacientes{% endblock %}
+{% block page_title %}Pacientes Asignados{% endblock %}
+
+{% block content %}
+
+<main>
+
+    <div class="container mt-4">
+        <form method="get" class="row mb-3">
+            <div class="col-md-8">
+                <input type="text" name="ci" class="form-control" placeholder="Buscar por CI" value="{{ ci_query }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+            </div>
+            <div class="col-md-2">
+            {% if ci_query %}
+                <a href="{% url 'doctor_patient_list' %}" class="btn btn-secondary w-100">Limpiar</a>
+            {% endif %}
+        </div>
+        </form>
+
+        <div class="card shadow">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>CI</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        {% for consulta in patient.consultation_set.all %}
+                            {% if consulta.doctor.user == user %}
+                            <tr>
+                                <td>{{ patient.identification_number }}</td>
+                                <td>{{ patient.first_name }}</td>
+                                <td>{{ patient.last_name }}</td>
+                                <td>{{ patient.phone }}</td>
+                                <td>{{ patient.email }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'change_consultation_status' consulta.id %}">
+                                        {% csrf_token %}
+                                        <select name="nuevo_estado" class="form-select form-select-sm d-inline w-auto">
+                                            {% for key, value in consulta.status_choices %}
+                                                <option value="{{ key }}" {% if consulta.status == key %}selected{% endif %}>{{ value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-success btn-sm">Cambiar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No hay pacientes asignados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

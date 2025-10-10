@@ -38,7 +38,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{% url 'doctor_profile' %}">
                         &nbsp;&nbsp;<i class="bi bi-person-circle me-2"></i>
                         <span class="menu-text">&nbsp;&nbsp;Perfil</span>
                     </a>
@@ -52,7 +52,7 @@
                     </a>
                     <div class="collapse" id="consultasMenu">
                         <ul class="submenu">
-                            <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Lista de Pacientes</span></a></li>
+                            <li><a href="{% url 'doctor_patient_list' %}" class="text-center"><span class="menu-text d-block text-center">Lista de Pacientes</span></a></li>
                             <li><a href="#" class="text-center"><span class="menu-text d-block text-center">Historial de consulta</span></a></li>
                         </ul>
                     </div>
@@ -74,7 +74,7 @@
     <div class="main-content">
     <header class="d-flex  align-items-center">
       <h2>{% block page_title %}{% endblock page_title %}</h2>
-      <a href="#">
+      <a href="{% url 'doctor_profile' %}">
         {% if request.user.profile_avatar %}
           <img src="{{ request.user.profile_avatar.url }}" style="width: 30px; height: 30px; border-radius: 50%; overflow: hidden; background-color: blue; display: inline-block; vertical-align: middle; border: 3px solid #424a5b;">
         {% else %}
