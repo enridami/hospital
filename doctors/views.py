@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from users.models import Doctor
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from users.models import Consultation, Patient, Doctor
+from users.models import Consultation, Patient, Doctor, Specialty
 from django.shortcuts import get_object_or_404
+from .forms import ConsultationAttendForm
 
 # Create your views here.
 @login_required
@@ -82,22 +83,23 @@ def doctor_patient_list_view(request):
     try:
         doctor = Doctor.objects.get(user=request.user)
     except Doctor.DoesNotExist:
-        # Si el usuario no es doctor, muestra lista vacía o error
         return render(request, 'doctors/patient_list.html', {
-            'patients': [],
+            'consultations': [],
             'ci_query': '',
             'user': request.user,
+            'especialidades': Specialty.objects.all(),
             'error': 'No tienes perfil de doctor.'
         })
-    consultas = Consultation.objects.filter(doctor=doctor)
-    pacientes = Patient.objects.filter(consultation__in=consultas).distinct()
+    consultas = Consultation.objects.filter(doctor=doctor, status="EN ESPERA")
     query = request.GET.get('ci', '')
     if query:
-        pacientes = pacientes.filter(identification_number__icontains=query)
+        consultas = consultas.filter(patient__identification_number__icontains=query)
+    especialidades = Specialty.objects.all()
     return render(request, 'doctors/patient_list.html', {
-        'patients': pacientes,
+        'consultations': consultas,
         'ci_query': query,
         'user': request.user,
+        'especialidades': especialidades,
     })
 
 
@@ -113,3 +115,43 @@ def change_consultation_status_view(request, consultation_id):
         else:
             messages.error(request, "Estado inválido.")
     return redirect('doctor_patient_list')
+
+
+@login_required
+def doctor_consultation_history_view(request):
+    # Obtener solo consultas atendidas del doctor actual
+    consultas = Consultation.objects.filter(
+        doctor__user=request.user,
+        status="ATENDIDO"
+    ).order_by('-date', '-time')
+    query = request.GET.get('ci', '')
+    if query:
+        consultas = consultas.filter(patient__identification_number__icontains=query)
+    return render(request, 'doctors/consultation_history.html', {
+        'consultations': consultas,
+        'ci_query': query,
+        'user': request.user,
+    })
+
+
+@login_required
+def attend_consultation_view(request, consultation_id):
+    consulta = get_object_or_404(Consultation, id=consultation_id, doctor__user=request.user)
+    if request.method == "POST":
+        form = ConsultationAttendForm(request.POST, instance=consulta)
+        if form.is_valid():
+            consulta = form.save(commit=False)
+            consulta.status = "ATENDIDO"
+            consulta.save()
+            messages.success(request, "Consulta atendida y guardada correctamente.")
+            return redirect('doctor_patient_list')
+        else:
+            messages.error(request, "Corrige los errores del formulario.")
+    else:
+        form = ConsultationAttendForm(instance=consulta)
+    especialidades = Specialty.objects.all()
+    return render(request, 'doctors/attend_consultation.html', {
+        'form': form,
+        'consulta': consulta,
+        'especialidades': especialidades,
+    })

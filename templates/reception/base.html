@@ -47,24 +47,33 @@
                 <li>
                     <a href="{% url 'reception:consultation_list' %}">
                         &nbsp;&nbsp;<i class="bi bi-clipboard2-pulse"> </i>
-                        <span class="menu-text">&nbsp;Agendamiento</span>
+                        <span class="menu-text">&nbsp;Agenda</span>
                     </a>
                 </li>
 
-                 <li>
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#consultasMenu">
-                    &nbsp;&nbsp<i class="bi bi-people-fill me-2"></i>
-                    <span class="menu-text">&nbsp;&nbsp;Gestionar pacientes</span>
-                    <i class="bi bi-chevron-down ms-auto"></i>
+                <li>
+                    <a href="{% url 'reception:patient_list' %}">
+                        &nbsp;&nbsp;<i class="bi bi-person"></i>
+                        <span class="menu-text">&nbsp;Pacientes</span>
                     </a>
-                    <div class="collapse" id="consultasMenu">
-                        <ul class="submenu">
-                            <li><a href="{% url 'reception:patient_list' %}" class="text-center"><span class="menu-text d-block text-center">Ver pacientes</span></a></li>
-                            <li><a href="{% url 'reception:patient_create' %}" class="text-center"><span class="menu-text d-block text-center">Registrar pacientes</span></a></li>
-                            <li><a href="{% url 'reception:consultation_create' %}" class="text-center"><span class="menu-text d-block text-center">Nueva consulta</span></a></li>
-                        </ul>
-                    </div>
                 </li>
+
+                <li>
+                    <a href="{% url 'reception:patient_create' %}">
+                        &nbsp;&nbsp;<i class="bi bi-person-add"></i>
+                        <span class="menu-text">&nbsp;Registrar Paciente</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'reception:consultation_create' %}">
+                        &nbsp;&nbsp;<i class="bi bi-journal-medical"></i>
+                        <span class="menu-text">&nbsp;Nueva consulta</span>
+                    </a>
+                </li>
+
+
+                 
 
                 <br><br>
                 
@@ -81,7 +90,7 @@
     <div class="main-content">
     <header class="d-flex  align-items-center">
       <h2>{% block page_title %}{% endblock page_title %}</h2>
-      <a href="#">
+      <a href="{% url 'reception:profile' %}">
         {% if request.user.profile_avatar %}
           <img src="{{ request.user.profile_avatar.url }}" style="width: 30px; height: 30px; border-radius: 50%; overflow: hidden; background-color: blue; display: inline-block; vertical-align: middle; border: 3px solid #424a5b;">
         {% else %}

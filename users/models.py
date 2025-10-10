@@ -273,11 +273,11 @@ class Consultation(models.Model):
     
     # Opciones de prioridad
     priority_choices = (
-        ("NIVEL I", "Nivel i"),
-        ("Nivel II", "Nivel ii"),
-        ("Nivel III", "Nivel iii"),
-        ("Nivel IV", "Nivel iv"),
-        ("Nivel V", "Nivel v"),
+        ("NIVEL I", "Nivel I"),
+        ("Nivel II", "Nivel II"),
+        ("Nivel III", "Nivel III"),
+        ("Nivel IV", "Nivel IV"),
+        ("Nivel V", "Nivel V"),
     )
     priority = models.CharField(
         max_length=10,
@@ -286,16 +286,34 @@ class Consultation(models.Model):
         verbose_name="Prioridad"
     )
     
+    consultorio = models.CharField(max_length=10, blank=False, null=False, default="")
+    servicio = models.ForeignKey('Specialty', on_delete=models.SET_NULL, null=True, blank=True)
+    temperatura = models.FloatField(blank=False, null=False, default=0)
+    presion_sistolica = models.IntegerField(blank=False, null=False, default=0)
+    presion_diastolica = models.IntegerField(blank=False, null=False, default=0)
+    frecuencia_respiratoria = models.IntegerField(blank=False, null=False, default=0)
+    pulso = models.IntegerField(blank=False, null=False, default=0)
+    saturacion_oxigeno = models.IntegerField(blank=False, null=False, default=0)
+    peso = models.FloatField(blank=False, null=False, default=0)
+    talla = models.FloatField(blank=False, null=False, default=0)
+    circunferencia_abdominal = models.FloatField(blank=False, null=False, default=0)
+    historia_actual = models.TextField(blank=False, null=False, default="")
+    evolucion = models.TextField(blank=False, null=False, default="")
+    impresion_diagnostica = models.TextField(blank=False, null=False, default="")
+    hba1c = models.FloatField(blank=False, null=False, default=0)
+    indicaciones = models.TextField(blank=False, null=False, default="")
+
+
     # Opciones de estado
     status_choices = (
-        ("EN_ESPERA", "En espera"),
-        ("ATENDIDA", "Atendida"),
+        ("EN ESPERA", "En espera"),
+        ("ATENDIDO", "Atendido"),
         ("CANCELADA", "Cancelada"),
     )
     status = models.CharField(
         max_length=15,
         choices=status_choices,
-        default="EN_ESPERA",
+        default="EN ESPERA",
         verbose_name="Estado"
     )
     
