@@ -1,172 +1,183 @@
 {% extends "doctors/base.html" %}
+{% load form_tags %}
 {% block title %}Atender Consulta{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <h3 class="mb-4">Atender consulta de {{ consulta.patient.full_name }}</h3>
-    <form method="post" class="card shadow p-4">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
 
-        <!-- Datos principales -->
-        <div class="row mb-4">
-            <div class="col-md-6 mb-2">
-                {{ form.description.label_tag }} 
-                {{ form.description }}
-                {% if form.description.errors %}
-                    <div class="text-danger small">{{ form.description.errors|striptags }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-3 mb-2">
-                {{ form.consultorio.label_tag }}
-                {{ form.consultorio }}
-                {% if form.consultorio.errors %}
-                    <div class="text-danger small">{{ form.consultorio.errors|striptags }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-3 mb-2">
-                <label class="form-label fw-bold">N° de consulta</label>
-                <input type="text" class="form-control" value="{{ consulta.order }}" readonly>
-            </div>
-        </div>
-        <div class="row mb-4">
-            <div class="col-md-3 mb-2">
-                <label class="form-label fw-bold">Edad</label>
-                <input type="text" class="form-control" value="{{ consulta.patient.age }}" readonly>
-            </div>
-            <div class="col-md-5 mb-2">
-                {{ form.servicio.label_tag }}
-                {{ form.servicio }}
-                {% if form.servicio.errors %}
-                    <div class="text-danger small">{{ form.servicio.errors|striptags }}</div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Signos vitales (acordeón abierto) -->
-        <div class="accordion mb-4" id="preconsultaAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingPreconsulta">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePreconsulta" aria-expanded="true" aria-controls="collapsePreconsulta">
-                        Signos vitales
-                    </button>
-                </h2>
-                <div id="collapsePreconsulta" class="accordion-collapse collapse show" aria-labelledby="headingPreconsulta" data-bs-parent="#preconsultaAccordion">
-                    <div class="accordion-body">
+<main>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header text-white d-flex align-items-center">
+                        
+                        <h4 class="mb-0">Atender consulta</h4>
+                    </div>
+                    <div class="card-body">
+                        
                         <div class="row mb-4">
-                            <div class="col-md-3 mb-2">
-                                {{ form.temperatura.label_tag }}
-                                {{ form.temperatura }}
-                                {% if form.temperatura.errors %}
-                                    <div class="text-danger small">{{ form.temperatura.errors|striptags }}</div>
-                                {% endif %}
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label fw-bold">Nombre del paciente</label>
+                                <input type="text" class="form-control" value="{{ consulta.patient.full_name }}" readonly>
                             </div>
                             <div class="col-md-3 mb-2">
-                                <label class="form-label">Presión Arterial (PA) [mmHg]</label>
-                                <div class="input-group">
-                                    {{ form.presion_sistolica }}
-                                    {{ form.presion_diastolica }}
-                                </div>
-                                {% if form.presion_sistolica.errors %}
-                                    <div class="text-danger small">{{ form.presion_sistolica.errors|striptags }}</div>
-                                {% endif %}
-                                {% if form.presion_diastolica.errors %}
-                                    <div class="text-danger small">{{ form.presion_diastolica.errors|striptags }}</div>
-                                {% endif %}
+                                <label class="form-label fw-bold">N° de consulta</label>
+                                <input type="text" class="form-control" value="{{ consulta.order }}" readonly>
                             </div>
                             <div class="col-md-3 mb-2">
-                                {{ form.frecuencia_respiratoria.label_tag }}
-                                {{ form.frecuencia_respiratoria }}
-                                {% if form.frecuencia_respiratoria.errors %}
-                                    <div class="text-danger small">{{ form.frecuencia_respiratoria.errors|striptags }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                {{ form.pulso.label_tag }}
-                                {{ form.pulso }}
-                                {% if form.pulso.errors %}
-                                    <div class="text-danger small">{{ form.pulso.errors|striptags }}</div>
-                                {% endif %}
+                                <label class="form-label fw-bold">Consultorio</label>
+                                    <input type="text" class="form-control" name="consultorio" placeholder="Ej: 20" required>
                             </div>
                         </div>
-                        <div class="row mb-4">
-                            <div class="col-md-3 mb-2">
-                                {{ form.saturacion_oxigeno.label_tag }}
-                                <div class="input-group">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="this.nextElementSibling.stepDown()">-</button>
-                                    {{ form.saturacion_oxigeno }}
-                                    <button type="button" class="btn btn-outline-secondary" onclick="this.previousElementSibling.stepUp()">+</button>
+
+
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+    
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Motivo de la consulta</label>
+                                    {{ form.description|add_class:"form-control" }}
+                                    {% if form.description.errors %}
+                                        <div class="text-danger small">{{ form.description.errors|striptags }}</div>
+                                    {% endif %}
                                 </div>
-                                {% if form.saturacion_oxigeno.errors %}
-                                    <div class="text-danger small">{{ form.saturacion_oxigeno.errors|striptags }}</div>
+                                
+                                <div class="col-md-5 mb-2">
+                                    <label class="form-label fw-bold">Servicio</label>
+                                    <select class="form-select" name="servicio" required>
+                                         {% for especialidad in especialidades %}
+                                            <option value="{{ especialidad.name }}">{{ especialidad.name }}</option>
+                                         {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+    
+                            <div class="accordion mb-4" id="vitalAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingVital">
+                                        <button class="btn btn-outline-info btn-m" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVital" aria-expanded="true" aria-controls="collapseVital">
+                                            <i class="bi bi-heart-pulse me-2"></i> Signos vitales
+                                        </button>
+                                    </h2>
+                                    <div id="collapseVital" class="accordion-collapse collapse show" aria-labelledby="headingVital" data-bs-parent="#vitalAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row g-3">
+                                                <div class="col-md-2">
+                                                    {{ form.temperatura.label_tag }}
+                                                    {{ form.temperatura|add_class:"form-control" }}
+                                                    {% if form.temperatura.errors %}
+                                                        <div class="text-danger small">{{ form.temperatura.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">PA Sistólica</label>
+                                                    {{ form.presion_sistolica|add_class:"form-control" }}
+                                                    {% if form.presion_sistolica.errors %}
+                                                        <div class="text-danger small">{{ form.presion_sistolica.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">PA Diastólica</label>
+                                                    {{ form.presion_diastolica|add_class:"form-control" }}
+                                                    {% if form.presion_diastolica.errors %}
+                                                        <div class="text-danger small">{{ form.presion_diastolica.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    {{ form.frecuencia_respiratoria.label_tag }}
+                                                    {{ form.frecuencia_respiratoria|add_class:"form-control" }}
+                                                    {% if form.frecuencia_respiratoria.errors %}
+                                                        <div class="text-danger small">{{ form.frecuencia_respiratoria.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    {{ form.pulso.label_tag }}
+                                                    {{ form.pulso|add_class:"form-control" }}
+                                                    {% if form.pulso.errors %}
+                                                        <div class="text-danger small">{{ form.pulso.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    {{ form.saturacion_oxigeno.label_tag }}
+                                                    {{ form.saturacion_oxigeno|add_class:"form-control" }}
+                                                    {% if form.saturacion_oxigeno.errors %}
+                                                        <div class="text-danger small">{{ form.saturacion_oxigeno.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="row g-3 mt-2">
+                                                <div class="col-md-3">
+                                                    {{ form.peso.label_tag }}
+                                                    {{ form.peso|add_class:"form-control" }}
+                                                    {% if form.peso.errors %}
+                                                        <div class="text-danger small">{{ form.peso.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ form.talla.label_tag }}
+                                                    {{ form.talla|add_class:"form-control" }}
+                                                    {% if form.talla.errors %}
+                                                        <div class="text-danger small">{{ form.talla.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ form.circunferencia_abdominal.label_tag }}
+                                                    {{ form.circunferencia_abdominal|add_class:"form-control" }}
+                                                    {% if form.circunferencia_abdominal.errors %}
+                                                        <div class="text-danger small">{{ form.circunferencia_abdominal.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {{ form.hba1c.label_tag }}
+                                                    {{ form.hba1c|add_class:"form-control" }}
+                                                    {% if form.hba1c.errors %}
+                                                        <div class="text-danger small">{{ form.hba1c.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="mb-3">
+                                {{ form.historia_actual.label_tag }}
+                                {{ form.historia_actual|add_class:"form-control" }}
+                                {% if form.historia_actual.errors %}
+                                    <div class="text-danger small">{{ form.historia_actual.errors|striptags }}</div>
                                 {% endif %}
                             </div>
-                            <div class="col-md-3 mb-2">
-                                {{ form.peso.label_tag }}
-                                {{ form.peso }}
-                                {% if form.peso.errors %}
-                                    <div class="text-danger small">{{ form.peso.errors|striptags }}</div>
+                            <div class="mb-3">
+                                {{ form.evolucion.label_tag }}
+                                {{ form.evolucion|add_class:"form-control" }}
+                                {% if form.evolucion.errors %}
+                                    <div class="text-danger small">{{ form.evolucion.errors|striptags }}</div>
                                 {% endif %}
                             </div>
-                            <div class="col-md-3 mb-2">
-                                {{ form.talla.label_tag }}
-                                {{ form.talla }}
-                                {% if form.talla.errors %}
-                                    <div class="text-danger small">{{ form.talla.errors|striptags }}</div>
+                            <div class="mb-3">
+                                {{ form.impresion_diagnostica.label_tag }}
+                                {{ form.impresion_diagnostica|add_class:"form-control" }}
+                                {% if form.impresion_diagnostica.errors %}
+                                    <div class="text-danger small">{{ form.impresion_diagnostica.errors|striptags }}</div>
                                 {% endif %}
                             </div>
-                            <div class="col-md-3 mb-2">
-                                {{ form.circunferencia_abdominal.label_tag }}
-                                {{ form.circunferencia_abdominal }}
-                                {% if form.circunferencia_abdominal.errors %}
-                                    <div class="text-danger small">{{ form.circunferencia_abdominal.errors|striptags }}</div>
+                            <div class="mb-3">
+                                {{ form.indicaciones.label_tag }}
+                                {{ form.indicaciones|add_class:"form-control" }}
+                                {% if form.indicaciones.errors %}
+                                    <div class="text-danger small">{{ form.indicaciones.errors|striptags }}</div>
                                 {% endif %}
                             </div>
-                        </div>
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="submit" class="btn btn-success px-4"><i class="bi bi-check2-circle me-1"></i> Guardar y marcar como atendido</button>
+                                <a href="{% url 'doctor_patient_list' %}" class="btn btn-secondary px-4"><i class="bi bi-x-circle me-1"></i> Cancelar</a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Campos adicionales -->
-        <div class="mb-4">
-            {{ form.historia_actual.label_tag }}
-            {{ form.historia_actual }}
-            {% if form.historia_actual.errors %}
-                <div class="text-danger small">{{ form.historia_actual.errors|striptags }}</div>
-            {% endif %}
-        </div>
-        <div class="mb-4">
-            {{ form.evolucion.label_tag }}
-            {{ form.evolucion }}
-            {% if form.evolucion.errors %}
-                <div class="text-danger small">{{ form.evolucion.errors|striptags }}</div>
-            {% endif %}
-        </div>
-        <div class="mb-4">
-            {{ form.impresion_diagnostica.label_tag }}
-            {{ form.impresion_diagnostica }}
-            {% if form.impresion_diagnostica.errors %}
-                <div class="text-danger small">{{ form.impresion_diagnostica.errors|striptags }}</div>
-            {% endif %}
-        </div>
-        <div class="mb-4">
-            {{ form.hba1c.label_tag }}
-            {{ form.hba1c }}
-            {% if form.hba1c.errors %}
-                <div class="text-danger small">{{ form.hba1c.errors|striptags }}</div>
-            {% endif %}
-        </div>
-        <div class="mb-4">
-            {{ form.indicaciones.label_tag }}
-            {{ form.indicaciones }}
-            {% if form.indicaciones.errors %}
-                <div class="text-danger small">{{ form.indicaciones.errors|striptags }}</div>
-            {% endif %}
-        </div>
-        <div class="d-flex justify-content-end gap-2">
-            <button type="submit" class="btn btn-success">Guardar y marcar como atendido</button>
-            <a href="{% url 'doctor_patient_list' %}" class="btn btn-secondary">Cancelar</a>
-        </div>
-    </form>
-</div>
+    </div>
+</main>
 {% endblock %}
