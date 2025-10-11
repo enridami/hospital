@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from users.models import Consultation, Patient, Doctor
+from users.models import Consultation, Patient, Doctor, Specialty
 from .forms import PatientForm, ConsultationForm
 import datetime
 
@@ -59,6 +59,13 @@ def patient_create_view(request):
 # Registrar consulta
 @login_required
 def consultation_create_view(request):
+    especialidades = Specialty.objects.all()
+    especialidad_id = request.GET.get('especialidad')
+    doctores = Doctor.objects.none()
+    if especialidad_id:
+        doctores = Doctor.objects.filter(specialty_id=especialidad_id)
+    
+
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
@@ -78,9 +85,24 @@ def consultation_create_view(request):
             return redirect('reception:consultation_list')
     else:
         form = ConsultationForm()
+
+    ci_query = request.GET.get('ci_query', '')
+    paciente_encontrado = None
+    if ci_query:
+        paciente_encontrado = Patient.objects.filter(identification_number=ci_query).first()
+    
+    # Al crear el formulario, limita los doctores si hay especialidad seleccionada
+    form = ConsultationForm(request.POST or None)
+    form.fields['doctor'].queryset = doctores if especialidad_id else Doctor.objects.none()
+    
+
     return render(request, 'reception/consultation_form.html', {
         'form': form,
         'user': request.user,
+        'ci_query': ci_query,
+        'paciente_encontrado': paciente_encontrado,
+        'especialidades': especialidades,
+        'especialidad_id': especialidad_id,
     })
 
 

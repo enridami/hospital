@@ -94,6 +94,7 @@ class Doctor(models.Model):
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE)
     bio = models.TextField()
+    consultorio = models.CharField(max_length=20, blank=True, null=True)  # Nuevo campo
 
     class Meta:
         verbose_name = "Doctor"
@@ -288,20 +289,20 @@ class Consultation(models.Model):
     
     consultorio = models.CharField(max_length=10, blank=False, null=False, default="")
     servicio = models.ForeignKey('Specialty', on_delete=models.SET_NULL, null=True, blank=True)
-    temperatura = models.FloatField(blank=False, null=False, default=0)
-    presion_sistolica = models.IntegerField(blank=False, null=False, default=0)
-    presion_diastolica = models.IntegerField(blank=False, null=False, default=0)
-    frecuencia_respiratoria = models.IntegerField(blank=False, null=False, default=0)
-    pulso = models.IntegerField(blank=False, null=False, default=0)
-    saturacion_oxigeno = models.IntegerField(blank=False, null=False, default=0)
-    peso = models.FloatField(blank=False, null=False, default=0)
-    talla = models.FloatField(blank=False, null=False, default=0)
-    circunferencia_abdominal = models.FloatField(blank=False, null=False, default=0)
-    historia_actual = models.TextField(blank=False, null=False, default="")
-    evolucion = models.TextField(blank=False, null=False, default="")
-    impresion_diagnostica = models.TextField(blank=False, null=False, default="")
-    hba1c = models.FloatField(blank=False, null=False, default=0)
-    indicaciones = models.TextField(blank=False, null=False, default="")
+    temperatura = models.FloatField(blank=True, null=True)
+    presion_sistolica = models.IntegerField(blank=True, null=True)
+    presion_diastolica = models.IntegerField(blank=True, null=True)
+    frecuencia_respiratoria = models.IntegerField(blank=True, null=True)
+    pulso = models.IntegerField(blank=True, null=True)
+    saturacion_oxigeno = models.IntegerField(blank=True, null=True)
+    peso = models.FloatField(blank=True, null=True)
+    talla = models.FloatField(blank=True, null=True)
+    circunferencia_abdominal = models.FloatField(blank=True, null=True)
+    historia_actual = models.TextField(blank=True, null=True, default="")
+    evolucion = models.TextField(blank=True, null=True, default="")
+    impresion_diagnostica = models.TextField(blank=True, null=True, default="")
+    hba1c = models.FloatField(blank=True, null=True)
+    indicaciones = models.TextField(blank=True, null=True, default="")
 
 
     # Opciones de estado

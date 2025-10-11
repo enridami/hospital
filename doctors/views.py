@@ -150,6 +150,9 @@ def attend_consultation_view(request, consultation_id):
     else:
         form = ConsultationAttendForm(instance=consulta)
     especialidades = Specialty.objects.all()
+
+
+
     return render(request, 'doctors/attend_consultation.html', {
         'form': form,
         'consulta': consulta,

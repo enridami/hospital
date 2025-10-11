@@ -16,16 +16,16 @@
                         
                         <div class="row mb-4">
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-bold">Nombre del paciente</label>
+                                <label class="form-label fw-bold text-dark">Nombre del paciente</label>
                                 <input type="text" class="form-control" value="{{ consulta.patient.full_name }}" readonly>
                             </div>
                             <div class="col-md-3 mb-2">
-                                <label class="form-label fw-bold">N° de consulta</label>
+                                <label class="form-label fw-bold text-dark">N° de consulta</label>
                                 <input type="text" class="form-control" value="{{ consulta.order }}" readonly>
                             </div>
                             <div class="col-md-3 mb-2">
-                                <label class="form-label fw-bold">Consultorio</label>
-                                    <input type="text" class="form-control" name="consultorio" placeholder="Ej: 20" required>
+                                <label class="form-label fw-bold text-dark">Consultorio</label>
+                                    <input type="text" class="form-control" value="{{ consulta.doctor.consultorio }}" readonly>
                             </div>
                         </div>
 
@@ -34,17 +34,21 @@
                             {% csrf_token %}
                             {{ form.non_field_errors }}
     
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Motivo de la consulta</label>
-                                    {{ form.description|add_class:"form-control" }}
-                                    {% if form.description.errors %}
-                                        <div class="text-danger small">{{ form.description.errors|striptags }}</div>
-                                    {% endif %}
+                            <div class="row gy-2 gx-3 align-items-center mb-4">
+                                
+                                <div class="col-auto">
+                                    <label class="form-label fw-bold text-dark">Edad: </label>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="text" class="form-control" value="{{ consulta.patient.age }}" readonly>
                                 </div>
                                 
-                                <div class="col-md-5 mb-2">
-                                    <label class="form-label fw-bold">Servicio</label>
+                                <div class="col-auto">
+                                    <p class="fw-bold text-dark">años</p>
+                                </div>
+
+                                <div class="col-auto ms-auto">
+                                    <label class="form-label fw-bold text-dark">Servicio</label>
                                     <select class="form-select" name="servicio" required>
                                          {% for especialidad in especialidades %}
                                             <option value="{{ especialidad.name }}">{{ especialidad.name }}</option>
@@ -52,87 +56,103 @@
                                     </select>
                                 </div>
                             </div>
-    
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                        <label class="form-label fw-bold text-dark">Motivo de la consulta</label>
+                                        {{ form.description|add_class:"form-control" }}
+                                        {% if form.description.errors %}
+                                            <div class="text-danger small">{{ form.description.errors|striptags }}</div>
+                                        {% endif %}
+                                </div>
+                            </div>
+
+                            
                             <div class="accordion mb-4" id="vitalAccordion">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingVital">
-                                        <button class="btn btn-outline-info btn-m" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVital" aria-expanded="true" aria-controls="collapseVital">
+                                        <button class="btn btn-outline-info btn-m " type="button" data-bs-toggle="collapse" data-bs-target="#collapseVital" aria-expanded="true" aria-controls="collapseVital">
                                             <i class="bi bi-heart-pulse me-2"></i> Signos vitales
                                         </button>
                                     </h2>
                                     <div id="collapseVital" class="accordion-collapse collapse show" aria-labelledby="headingVital" data-bs-parent="#vitalAccordion">
                                         <div class="accordion-body">
-                                            <div class="row g-3">
-                                                <div class="col-md-2">
-                                                    {{ form.temperatura.label_tag }}
-                                                    {{ form.temperatura|add_class:"form-control" }}
+                                            <!-- Fila 1: Temperatura corporal | Presión arterial -->
+                                            <div class="row g-3 mt-2 align-items-end">
+                                                <div class="col-md-4">
+                                                    <label class="form-label text-dark">Temperatura Corporal [°C]</label>
+                                                    {{ form.temperatura|add_attrs:"class=form-control,value=" }}
                                                     {% if form.temperatura.errors %}
                                                         <div class="text-danger small">{{ form.temperatura.errors|striptags }}</div>
                                                     {% endif %}
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">PA Sistólica</label>
-                                                    {{ form.presion_sistolica|add_class:"form-control" }}
+                                                <div class="col-md-5">
+                                                    <label class="form-label fw-bold text-dark">Presión Arterial (PA) [mmHg]</label>
+                                                    <div class="input-group">
+                                                        {{ form.presion_sistolica|add_attrs:"class=form-control text-center,placeholder=Sistólica,value=" }}
+                                                        {{ form.presion_diastolica|add_attrs:"class=form-control text-center,placeholder=Diastólica,value=" }}
+                                                    </div>
                                                     {% if form.presion_sistolica.errors %}
                                                         <div class="text-danger small">{{ form.presion_sistolica.errors|striptags }}</div>
                                                     {% endif %}
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">PA Diastólica</label>
-                                                    {{ form.presion_diastolica|add_class:"form-control" }}
                                                     {% if form.presion_diastolica.errors %}
                                                         <div class="text-danger small">{{ form.presion_diastolica.errors|striptags }}</div>
                                                     {% endif %}
                                                 </div>
-                                                <div class="col-md-2">
-                                                    {{ form.frecuencia_respiratoria.label_tag }}
-                                                    {{ form.frecuencia_respiratoria|add_class:"form-control" }}
+                                            </div>
+                                            <!-- Fila 2: Frecuencia respiratoria -->
+                                            <div class="row g-3 mt-2">
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold text-dark">Frecuencia Respiratoria (FR) [lat/min]</label>
+                                                    {{ form.frecuencia_respiratoria|add_attrs:"class=form-control,value=" }}
                                                     {% if form.frecuencia_respiratoria.errors %}
                                                         <div class="text-danger small">{{ form.frecuencia_respiratoria.errors|striptags }}</div>
                                                     {% endif %}
                                                 </div>
+                                            </div>
+                                            <!-- Fila 3: Pulso | Saturación de oxígeno -->
+                                            <div class="row g-3 mt-2 align-items-end">
                                                 <div class="col-md-2">
-                                                    {{ form.pulso.label_tag }}
-                                                    {{ form.pulso|add_class:"form-control" }}
+                                                    <label class="form-label fw-bold text-dark">Pulso [bpm]</label>
+                                                    {{ form.pulso|add_attrs:"class=form-control,value=" }}
                                                     {% if form.pulso.errors %}
                                                         <div class="text-danger small">{{ form.pulso.errors|striptags }}</div>
                                                     {% endif %}
                                                 </div>
-                                                <div class="col-md-2">
-                                                    {{ form.saturacion_oxigeno.label_tag }}
-                                                    {{ form.saturacion_oxigeno|add_class:"form-control" }}
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold text-dark">Saturación de Oxígeno (%)</label>
+                                                    {{ form.saturacion_oxigeno|add_class:"d-none" }} <!-- Oculto -->
                                                     {% if form.saturacion_oxigeno.errors %}
                                                         <div class="text-danger small">{{ form.saturacion_oxigeno.errors|striptags }}</div>
                                                     {% endif %}
+                                                    <div class="input-group">
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="stepSaturacion(-1)">-</button>
+                                                        <input type="number" id="saturacion_visible" class="form-control text-center" min="0" max="100" value="" required>
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="stepSaturacion(1)">+</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="row g-3 mt-2">
+                                            <!-- Fila 4: Peso | Talla | Circunferencia abdominal -->
+                                            <div class="row g-3 mt-2 align-items-end">
                                                 <div class="col-md-3">
-                                                    {{ form.peso.label_tag }}
-                                                    {{ form.peso|add_class:"form-control" }}
+                                                    <label class="form-label fw-bold text-dark">Peso [Kg]</label>
+                                                    {{ form.peso|add_attrs:"class=form-control,value=" }}
                                                     {% if form.peso.errors %}
                                                         <div class="text-danger small">{{ form.peso.errors|striptags }}</div>
                                                     {% endif %}
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ form.talla.label_tag }}
-                                                    {{ form.talla|add_class:"form-control" }}
+                                                    <label class="form-label fw-bold text-dark">Talla [cm]</label>
+                                                    {{ form.talla|add_attrs:"class=form-control,value=" }}
                                                     {% if form.talla.errors %}
                                                         <div class="text-danger small">{{ form.talla.errors|striptags }}</div>
                                                     {% endif %}
                                                 </div>
                                                 <div class="col-md-3">
-                                                    {{ form.circunferencia_abdominal.label_tag }}
-                                                    {{ form.circunferencia_abdominal|add_class:"form-control" }}
+                                                    <label class="form-label fw-bold text-dark">Circunferencia Abdominal [cm]</label>
+                                                    {{ form.circunferencia_abdominal|add_attrs:"class=form-control,value=" }}
                                                     {% if form.circunferencia_abdominal.errors %}
                                                         <div class="text-danger small">{{ form.circunferencia_abdominal.errors|striptags }}</div>
-                                                    {% endif %}
-                                                </div>
-                                                <div class="col-md-3">
-                                                    {{ form.hba1c.label_tag }}
-                                                    {{ form.hba1c|add_class:"form-control" }}
-                                                    {% if form.hba1c.errors %}
-                                                        <div class="text-danger small">{{ form.hba1c.errors|striptags }}</div>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -141,37 +161,49 @@
                                 </div>
                             </div>
     
-                            <div class="mb-3">
-                                {{ form.historia_actual.label_tag }}
-                                {{ form.historia_actual|add_class:"form-control" }}
-                                {% if form.historia_actual.errors %}
-                                    <div class="text-danger small">{{ form.historia_actual.errors|striptags }}</div>
-                                {% endif %}
+                            <div class="row gy-2 gx-3 align-items-center mb-4">
+
+                                <div class="col-auto">
+                                    <label class="form-label fw-bold text-dark">Historia actual:</label>
+                                    {{ form.historia_actual|add_class:"form-control" }}
+                                    {% if form.historia_actual.errors %}
+                                        <div class="text-danger small">{{ form.historia_actual.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label fw-bold text-dark">Evolución / Otros Datos (Examen Físico):</label>
+                                    {{ form.evolucion|add_class:"form-control" }}
+                                    {% if form.evolucion.errors %}
+                                        <div class="text-danger small">{{ form.evolucion.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+
                             </div>
+
                             <div class="mb-3">
-                                {{ form.evolucion.label_tag }}
-                                {{ form.evolucion|add_class:"form-control" }}
-                                {% if form.evolucion.errors %}
-                                    <div class="text-danger small">{{ form.evolucion.errors|striptags }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="mb-3">
-                                {{ form.impresion_diagnostica.label_tag }}
+                                <label class="form-label fw-bold text-dark">Impresión Diagnóstica:</label>
                                 {{ form.impresion_diagnostica|add_class:"form-control" }}
                                 {% if form.impresion_diagnostica.errors %}
                                     <div class="text-danger small">{{ form.impresion_diagnostica.errors|striptags }}</div>
                                 {% endif %}
                             </div>
                             <div class="mb-3">
-                                {{ form.indicaciones.label_tag }}
+                                <label class="form-label fw-bold text-dark">Indicaciones:</label>
                                 {{ form.indicaciones|add_class:"form-control" }}
                                 {% if form.indicaciones.errors %}
                                     <div class="text-danger small">{{ form.indicaciones.errors|striptags }}</div>
                                 {% endif %}
                             </div>
-                            <div class="d-flex justify-content-end gap-2 mt-4">
-                                <button type="submit" class="btn btn-success px-4"><i class="bi bi-check2-circle me-1"></i> Guardar y marcar como atendido</button>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-dark">HbA1c [%]</label>
+                                {{ form.hba1c|add_attrs:"class=form-control,value=" }}
+                                {% if form.hba1c.errors %}
+                                    <div class="text-danger small">{{ form.hba1c.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer py-3">
                                 <a href="{% url 'doctor_patient_list' %}" class="btn btn-secondary px-4"><i class="bi bi-x-circle me-1"></i> Cancelar</a>
+                                <button type="submit" class="btn btn-success px-4"><i class="bi bi-check2-circle me-1"></i> Guardar y marcar como atendido</button>
                             </div>
                         </form>
                     </div>
@@ -179,5 +211,6 @@
             </div>
         </div>
     </div>
+
 </main>
 {% endblock %}
