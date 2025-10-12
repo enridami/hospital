@@ -5,21 +5,18 @@ class ConsultationAttendForm(forms.ModelForm):
     class Meta:
         model = Consultation
         fields = [
-            'description', 'servicio', 'temperatura', 'presion_sistolica', 'presion_diastolica',
+            'description', 'temperatura', 'presion_sistolica', 'presion_diastolica',
             'frecuencia_respiratoria', 'pulso', 'saturacion_oxigeno', 'peso', 'talla', 'circunferencia_abdominal',
             'historia_actual', 'evolucion', 'impresion_diagnostica', 'hba1c', 'indicaciones'
         ]
         widgets = {
-            'servicio': forms.Select(),
             'description': forms.Textarea(attrs={'readonly': True, 'rows': 3}),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        required_fields = [
-            'consultorio', 'servicio', 'temperatura', 'presion_sistolica', 'presion_diastolica',
-            'frecuencia_respiratoria', 'pulso', 'saturacion_oxigeno', 'peso', 'talla', 'circunferencia_abdominal'
-        ]
+        # Solo estos signos vitales son obligatorios 
+        required_fields = ['temperatura', 'frecuencia_respiratoria', 'pulso']
         for field in required_fields:
             if not cleaned_data.get(field):
                 self.add_error(field, "Este campo es obligatorio.")

@@ -132,7 +132,7 @@
                                                     {% endif %}
                                                     <div class="input-group">
                                                         <button type="button" class="btn btn-outline-secondary" onclick="stepSaturacion(-1)">-</button>
-                                                        <input type="number" id="saturacion_visible" class="form-control text-center" min="0" max="100" value="" required>
+                                                        <input type="number" id="saturacion_visible" class="form-control text-center" min="0" max="100" value="">
                                                         <button type="button" class="btn btn-outline-secondary" onclick="stepSaturacion(1)">+</button>
                                                     </div>
                                                 </div>
@@ -211,6 +211,30 @@
                                 <button type="submit" class="btn btn-success px-4"><i class="bi bi-check2-circle me-1"></i> Guardar y marcar como atendido</button>
                             </div>
                         </form>
+                        <script>
+                            // Sincroniza el campo visible con el del formulario antes de enviar
+                            (function() {
+                                const formEl = document.querySelector('form');
+                                if (!formEl) return;
+                                const hidden = document.getElementById('id_saturacion_oxigeno');
+                                const visible = document.getElementById('saturacion_visible');
+                                // Inicializar visible con el valor oculto si existe
+                                if (hidden && visible && hidden.value) {
+                                    visible.value = hidden.value;
+                                }
+                                formEl.addEventListener('submit', function() {
+                                    if (hidden && visible) {
+                                        hidden.value = visible.value;
+                                    }
+                                });
+                                window.stepSaturacion = function(delta) {
+                                    if (!visible) return;
+                                    const current = parseInt(visible.value || '0', 10);
+                                    const next = Math.min(100, Math.max(0, current + delta));
+                                    visible.value = next;
+                                }
+                            })();
+                        </script>
                     </div>
                 </div>
             </div>

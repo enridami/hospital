@@ -150,6 +150,11 @@ def attend_consultation_view(request, consultation_id):
         form = ConsultationAttendForm(request.POST, instance=consulta)
         if form.is_valid():
             consulta = form.save(commit=False)
+            # Asegurar que consultorio y servicio se asignen desde el doctor
+            if consulta.doctor and hasattr(consulta.doctor, 'consultorio'):
+                consulta.consultorio = consulta.doctor.consultorio or consulta.consultorio
+            if consulta.doctor and hasattr(consulta.doctor, 'specialty'):
+                consulta.servicio = consulta.doctor.specialty
             consulta.status = "ATENDIDO"
             consulta.save()
             messages.success(request, "Consulta atendida y guardada correctamente.")
