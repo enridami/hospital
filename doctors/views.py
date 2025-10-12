@@ -5,6 +5,7 @@ from django.contrib import messages
 from users.models import Consultation, Patient, Doctor, Specialty
 from django.shortcuts import get_object_or_404
 from .forms import ConsultationAttendForm
+import datetime
 
 # Create your views here.
 @login_required
@@ -18,10 +19,18 @@ def doctor_dashboard_view(request):
         return redirect('dashboard')
     
     doctor = request.user.doctor
+
+    hoy = datetime.date.today()
+    consultas_hoy = Consultation.objects.filter(
+        doctor=request.user.doctor,  # Asumiendo que el usuario tiene relación con Doctor
+        date=hoy
+    ).order_by('shift', 'order')
+    
     return render(request, 'doctors/doctor_dashboard.html',{
         'user': request.user,
         'doctor': doctor,
         'specialty': doctor.specialty.name,
+        'consultas_hoy': consultas_hoy,
     })
 
 

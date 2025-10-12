@@ -34,28 +34,33 @@
                             {% csrf_token %}
                             {{ form.non_field_errors }}
     
-                            <div class="row gy-2 gx-3 align-items-center mb-4">
-                                
-                                <div class="col-auto">
-                                    <label class="form-label fw-bold text-dark">Edad: </label>
-                                </div>
-                                <div class="col-md-1">
-                                    <input type="text" class="form-control" value="{{ consulta.patient.age }}" readonly>
-                                </div>
-                                
-                                <div class="col-auto">
-                                    <p class="fw-bold text-dark">años</p>
-                                </div>
+                             
 
-                                <div class="col-auto ms-auto">
+                                <!-- <div class="col-auto ms-auto">
                                     <label class="form-label fw-bold text-dark">Servicio</label>
                                     <select class="form-select" name="servicio" required>
                                          {% for especialidad in especialidades %}
                                             <option value="{{ especialidad.name }}">{{ especialidad.name }}</option>
                                          {% endfor %}
                                     </select>
+                                </div> -->
+
+                            <div class="row gy-2 gx-3 align-items-center mb-4">
+                                <div class="col-auto">
+                                    <label class="form-label fw-bold text-dark">Edad: </label>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="text" class="form-control" value="{{ consulta.patient.age }}" readonly>
+                                </div>
+                                <div class="col-auto">
+                                    <p class="fw-bold text-dark">años</p>
+                                </div>
+                                <div class="col-md-5 ms-auto d-flex align-items-center justify-content-end">
+                                    <label class="form-label fw-bold text-dark mb-0 me-2">Servicio</label>
+                                    <input type="text" class="form-control w-auto" value="{{ consulta.doctor.specialty.name }}" readonly>
                                 </div>
                             </div>
+
 
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
