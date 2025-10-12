@@ -1,5 +1,5 @@
 {% extends "reception/base.html" %}
-{% load form_tags %}
+{% load form_tags_reception %}
 {% block content %}
 <main>
     <div class="container mt-4">
@@ -32,9 +32,7 @@
                             </div>
                         </form>
                         {% if paciente_encontrado %}
-                            <div class="alert alert-success">
-                                <strong>Paciente encontrado:</strong> {{ paciente_encontrado.full_name }} (CI: {{ paciente_encontrado.identification_number }})
-                            </div>
+                            
                         {% elif ci_query %}
                             <div class="alert alert-danger">
                                 No se encontró ningún paciente con ese número de CI.

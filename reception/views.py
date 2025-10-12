@@ -60,17 +60,28 @@ def patient_create_view(request):
 @login_required
 def consultation_create_view(request):
     especialidades = Specialty.objects.all()
-    especialidad_id = request.GET.get('especialidad')
+    # Obtener especialidad tanto por GET como por POST
+    especialidad_id = request.POST.get('especialidad') or request.GET.get('especialidad')
     doctores = Doctor.objects.none()
     if especialidad_id:
         doctores = Doctor.objects.filter(specialty_id=especialidad_id)
-    
 
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
+
+    ci_query = request.GET.get('ci_query', '')
+    paciente_encontrado = None
+    if ci_query:
+        paciente_encontrado = Patient.objects.filter(identification_number=ci_query).first()
+
+    # Inicializar el formulario con los doctores filtrados
     if request.method == 'POST':
         form = ConsultationForm(request.POST)
+        form.fields['doctor'].queryset = doctores
+        # Asignar el paciente si está presente
+        if paciente_encontrado:
+            form.instance.patient = paciente_encontrado
         if form.is_valid():
             consulta = form.save(commit=False)
             # Asignar el orden automáticamente según el turno y fecha
@@ -85,16 +96,7 @@ def consultation_create_view(request):
             return redirect('reception:consultation_list')
     else:
         form = ConsultationForm()
-
-    ci_query = request.GET.get('ci_query', '')
-    paciente_encontrado = None
-    if ci_query:
-        paciente_encontrado = Patient.objects.filter(identification_number=ci_query).first()
-    
-    # Al crear el formulario, limita los doctores si hay especialidad seleccionada
-    form = ConsultationForm(request.POST or None)
-    form.fields['doctor'].queryset = doctores if especialidad_id else Doctor.objects.none()
-    
+        form.fields['doctor'].queryset = doctores
 
     return render(request, 'reception/consultation_form.html', {
         'form': form,
