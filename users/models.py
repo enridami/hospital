@@ -94,7 +94,6 @@ class Doctor(models.Model):
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE)
     bio = models.TextField()
-    consultorio = models.CharField(max_length=20, blank=True, null=True)  # Nuevo campo
 
     class Meta:
         verbose_name = "Doctor"
@@ -365,3 +364,27 @@ class Prescription(models.Model):
     def __str__(self):
         return f"Receta para {self.consultation.patient.full_name} - {self.medication}"
     
+
+class DoctorSchedule(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='schedules')
+    day_choices = [
+        ('LUNES', 'Lunes'),
+        ('MARTES', 'Martes'),
+        ('MIERCOLES', 'Miércoles'),
+        ('JUEVES', 'Jueves'),
+        ('VIERNES', 'Viernes'),
+        ('SABADO', 'Sábado'),
+        ('DOMINGO', 'Domingo'),
+    ]
+    day = models.CharField(max_length=10, choices=day_choices)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    consultorio = models.CharField(max_length=20)  # Consultorio asignado en ese horario
+
+    class Meta:
+        verbose_name = "Horario de Doctor"
+        verbose_name_plural = "Horarios de Doctores"
+        ordering = ['doctor', 'day', 'start_time']
+
+    def __str__(self):
+        return f"{self.doctor} - {self.day} {self.start_time} a {self.end_time} ({self.consultorio})"

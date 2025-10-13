@@ -1,5 +1,5 @@
 from django import forms
-from users.models import Patient, Consultation, Doctor
+from users.models import Patient, Consultation, Doctor, DoctorSchedule
 
 class PatientForm(forms.ModelForm):
     date_of_birth = forms.DateField(
@@ -26,20 +26,41 @@ class ConsultationForm(forms.ModelForm):
         widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
         label="Hora"
     )
+    # Si consultorio no está en el modelo, agrégalo como campo extra:
+    consultorio = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label="Consultorio"
+    )
 
     class Meta:
         model = Consultation
-        fields = ['doctor', 'date', 'time', 'shift', 'status', 'description']
-        # No incluyas 'patient' aquí, lo asignas desde la vista
+        fields = ['doctor', 'date', 'time', 'shift', 'status', 'description', 'consultorio']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Puedes personalizar widgets aquí si lo necesitas
         self.fields['doctor'].queryset = Doctor.objects.none()
 
-    # Validar que el paciente esté presente si es nuevo, si el paciente no esta se muestra un error general en el formulario
     def clean(self):
         cleaned_data = super().clean()
+        doctor = cleaned_data.get('doctor')
+        date = cleaned_data.get('date')
+        time = cleaned_data.get('time')
+        consultorio = cleaned_data.get('consultorio')
+
         if not self.instance.pk and not getattr(self.instance, 'patient', None):
             raise forms.ValidationError("Debes seleccionar un paciente antes de agendar la consulta.")
+
+        if doctor and date and time and consultorio:
+            day_name = date.strftime('%A').upper()
+            day_map = {
+                'MONDAY': 'LUNES', 'TUESDAY': 'MARTES', 'WEDNESDAY': 'MIERCOLES',
+                'THURSDAY': 'JUEVES', 'FRIDAY': 'VIERNES', 'SATURDAY': 'SABADO', 'SUNDAY': 'DOMINGO'
+            }
+            day = day_map.get(day_name, day_name)
+            horarios = DoctorSchedule.objects.filter(
+                doctor=doctor, day=day, consultorio=consultorio,
+                start_time__lte=time, end_time__gte=time
+            )
+            if not horarios.exists():
+                raise forms.ValidationError("El doctor no está disponible en ese horario y consultorio.")
         return cleaned_data

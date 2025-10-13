@@ -99,6 +99,41 @@
                         <div class="invalid-feedback">La biografía es requerida para doctores</div>
                     </div>
 
+
+
+                    <hr class="my-4">
+                        <h5 class="mb-3 text-muted">Horarios y Consultorios</h5>
+
+                        <div id="horarios-container">
+                            <div class="row mb-2 horario-row">
+                                <div class="col-md-3">
+                                    <select name="horario_day[]" class="form-select" required>
+                                        <option value="">Día</option>
+                                        <option value="LUNES">Lunes</option>
+                                        <option value="MARTES">Martes</option>
+                                        <option value="MIERCOLES">Miércoles</option>
+                                        <option value="JUEVES">Jueves</option>
+                                        <option value="VIERNES">Viernes</option>
+                                        <option value="SABADO">Sábado</option>
+                                        <!-- ... -->
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="time" name="horario_start[]" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="time" name="horario_end[]" class="form-control" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="horario_consultorio[]" class="form-control" placeholder="Consultorio" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary mb-3" onclick="addHorarioRow()">Agregar horario</button>
+
+
+
+
                     <p class="form-text text-muted mb-3">
                         <i class="bi bi-info-circle me-1"></i>
                         Al registrar este médico, se creará automáticamente su cuenta de acceso al sistema.
@@ -197,8 +232,16 @@ document.addEventListener("DOMContentLoaded", function() {
             field.classList.remove('is-valid');
             field.classList.add('is-invalid');
         }
+        }
+     });
+
+    function addHorarioRow() {
+        const container = document.getElementById('horarios-container');
+        const row = document.querySelector('.horario-row').cloneNode(true);
+        // Limpiar los valores
+        row.querySelectorAll('input, select').forEach(el => el.value = '');
+        container.appendChild(row);
     }
-});
 </script>
 
 <style>

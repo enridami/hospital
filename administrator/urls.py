@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import admin_dashboard_view, admin_users_list, admin_create_user, admin_edit_user, admin_toggle_user_status, admin_create_staff, admin_create_doctor, admin_profile_view, admin_assign_role, admin_select_user_for_role, admin_permissions_list
-
+from . import views
 
 
 urlpatterns = [
@@ -25,5 +25,8 @@ urlpatterns = [
 
     # URL para Permisos
     path('admin-dashboard/users/permissions/', admin_permissions_list, name='admin_permissions_list'),
+
+    # Eliminar usuarios
+    path('admin-dashboard/users/delete/<int:user_id>/', views.admin_delete_user, name='admin_delete_user'),
 
 ]

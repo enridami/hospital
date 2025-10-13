@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash, get_user_model
 from django.http import JsonResponse
 from django.db import transaction
-from users.models import Users, Doctor, Administrator, Receptions, Specialty, Patient
+from users.models import Users, Doctor, Administrator, Receptions, Specialty, Patient, DoctorSchedule
 from django.views.decorators.http import require_POST
 # Create your views here.
 
@@ -138,7 +138,7 @@ def admin_create_user(request):
 # Crear doctor desde Acciones rapidas
 @login_required
 def admin_create_doctor(request):
-    """Crear nuevo doctor"""
+    """Crear nuevo doctor y asignar horarios"""
     if not hasattr(request.user, 'administrator') or not request.user.has_perm('users.add_users'):
         messages.error(request, 'No tienes permisos.')
         return redirect('dashboard')
@@ -151,6 +151,73 @@ def admin_create_doctor(request):
         password = request.POST.get('password')
         specialty_id = request.POST.get('specialty')
         bio = request.POST.get('bio', '')
+
+        # Arrays de horarios y consultorios
+        horario_days = request.POST.getlist('horario_day[]')
+        horario_starts = request.POST.getlist('horario_start[]')
+        horario_ends = request.POST.getlist('horario_end[]')
+        horario_consultorios = request.POST.getlist('horario_consultorio[]')
+
+        errores = []
+
+        # Validación de contraseñas
+        if password != request.POST.get('conf_password'):
+            errores.append("Las contraseñas no coinciden.")
+        if len(password) < 8:
+            errores.append("La contraseña debe tener al menos 8 caracteres.")
+
+        # Validación de email único
+        if Users.objects.filter(email=email).exists():
+            errores.append("El correo ya está registrado.")
+
+        # Validación de nombre de usuario único
+        if Users.objects.filter(username=username).exists():
+            errores.append("El nombre de usuario ya está registrado.")
+
+        # Validación de horarios
+        for i in range(len(horario_days)):
+            start = horario_starts[i]
+            end = horario_ends[i]
+            if start >= end:
+                errores.append(f"En el horario {i+1}, la hora de inicio debe ser menor que la de fin.")
+           
+
+        # Validación de solapamiento de horarios para evitar que un doctor tenga dos turnos que se crucen el mismo día
+        for i in range(len(horario_days)):
+            for j in range(i + 1, len(horario_days)):
+                if horario_days[i] == horario_days[j]:
+                    start_i = horario_starts[i]
+                    end_i = horario_ends[i]
+                    start_j = horario_starts[j]
+                    end_j = horario_ends[j]
+                    # Si se solapan
+                    if (start_i < end_j) and (end_i > start_j):
+                        errores.append(
+                            f"Los horarios {i+1} y {j+1} se solapan el día {horario_days[i]}."
+                        )
+
+        # Validación de consultorio repetido en el mismo horario
+        for i in range(len(horario_days)):
+            for j in range(i + 1, len(horario_days)):
+                if (
+                    horario_days[i] == horario_days[j] and
+                    horario_starts[i] == horario_starts[j] and
+                    horario_ends[i] == horario_ends[j] and
+                    horario_consultorios[i].strip().lower() == horario_consultorios[j].strip().lower()
+                ):
+                    errores.append(
+                        f"El consultorio '{horario_consultorios[i]}' está repetido en el mismo horario ({horario_days[i]}, {horario_starts[i]} - {horario_ends[i]})."
+                    )
+
+
+
+        if errores:
+            for error in errores:
+                messages.error(request, error)
+            specialties = Specialty.objects.all()
+            context = {'specialties': specialties}
+            return render(request, 'admin_backup/create_doctor.html', context)
+        
         
         try:
             with transaction.atomic():
@@ -169,13 +236,24 @@ def admin_create_doctor(request):
                 if specialty_id:
                     specialty = Specialty.objects.get(id=specialty_id)
                 
-                Doctor.objects.create(
+                doctor = Doctor.objects.create(
                     user=user,
                     specialty=specialty,
                     bio=bio
                 )
+
+                # Crear horarios del doctor
+                for day, start, end, consultorio in zip(horario_days, horario_starts, horario_ends, horario_consultorios):
+                    if day and start and end and consultorio:
+                        DoctorSchedule.objects.create(
+                            doctor=doctor,
+                            day=day,
+                            start_time=start,
+                            end_time=end,
+                            consultorio=consultorio
+                        )
                 
-                messages.success(request, f'Doctor {user.get_full_name()} creado exitosamente.')
+                messages.success(request, f'Doctor {user.get_full_name()} creado exitosamente con horarios asignados.')
                 return redirect('admin_users_list')
                 
         except Exception as e:
@@ -184,7 +262,6 @@ def admin_create_doctor(request):
     specialties = Specialty.objects.all()
     context = {'specialties': specialties}
     return render(request, 'admin_backup/create_doctor.html', context)
-
 
 # Crear personal desde Acciones rapidas
 @login_required
@@ -385,3 +462,18 @@ def admin_permissions_list(request):
     User = get_user_model()
     users = User.objects.all().order_by('username')
     return render(request, 'admin_backup/permissions_list.html', {'users': users})
+
+
+
+# Eliminar usuario
+@login_required
+@require_POST
+def admin_delete_user(request, user_id):
+    if not hasattr(request.user, 'administrator'):
+        return JsonResponse({'success': False, 'error': 'Sin permisos'})
+    try:
+        user = get_object_or_404(Users, id=user_id)
+        user.delete()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
