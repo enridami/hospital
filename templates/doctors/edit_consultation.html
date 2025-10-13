@@ -1,0 +1,226 @@
+{% extends "doctors/base.html" %}
+{% load form_tags %}
+{% block title %}Editar Consulta{% endblock %}
+{% block content %}
+
+<main>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header text-white d-flex align-items-center">
+                        <h4 class="mb-0">Editar consulta</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label fw-bold text-dark">Nombre del paciente</label>
+                                <input type="text" class="form-control" value="{{ consulta.patient.full_name }}" readonly>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label class="form-label fw-bold text-dark">N° de consulta</label>
+                                <input type="text" class="form-control" value="{{ consulta.order }}" readonly>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label class="form-label fw-bold text-dark">Consultorio</label>
+                                <input type="text" class="form-control" value="{{ consulta.consultorio }}" readonly>
+                            </div>
+                        </div>
+
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+
+                            <div class="row gy-2 gx-3 align-items-center mb-4">
+                                <div class="col-auto">
+                                    <label class="form-label fw-bold text-dark">Edad: </label>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="text" class="form-control" value="{{ consulta.patient.age }}" readonly>
+                                </div>
+                                <div class="col-auto">
+                                    <p class="fw-bold text-dark">años</p>
+                                </div>
+                                <div class="col-md-5 ms-auto d-flex align-items-center justify-content-end">
+                                    <label class="form-label fw-bold text-dark mb-0 me-2">Servicio</label>
+                                    <input type="text" class="form-control w-auto" value="{{ consulta.doctor.specialty.name }}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Motivo de la consulta</label>
+                                    {{ form.description|add_class:"form-control" }}
+                                    {% if form.description.errors %}
+                                        <div class="text-danger small">{{ form.description.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="accordion mb-4" id="vitalAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingVital">
+                                        <button class="btn btn-outline-info btn-m " type="button" data-bs-toggle="collapse" data-bs-target="#collapseVital" aria-expanded="true" aria-controls="collapseVital">
+                                            <i class="bi bi-heart-pulse me-2"></i> Signos vitales
+                                        </button>
+                                    </h2>
+                                    <div id="collapseVital" class="accordion-collapse collapse show" aria-labelledby="headingVital" data-bs-parent="#vitalAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Fila 1: Temperatura corporal | Presión arterial -->
+                                            <div class="row g-3 mt-2 align-items-end">
+                                                <div class="col-md-4">
+                                                    <label class="form-label text-dark">Temperatura Corporal [°C]</label>
+                                                    {{ form.temperatura|add_attrs:"class=form-control,value=" }}
+                                                    {% if form.temperatura.errors %}
+                                                        <div class="text-danger small">{{ form.temperatura.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label class="form-label fw-bold text-dark">Presión Arterial (PA) [mmHg]</label>
+                                                    <div class="input-group">
+                                                        {{ form.presion_sistolica|add_attrs:"class=form-control text-center,placeholder=Sistólica,value=" }}
+                                                        {{ form.presion_diastolica|add_attrs:"class=form-control text-center,placeholder=Diastólica,value=" }}
+                                                    </div>
+                                                    {% if form.presion_sistolica.errors %}
+                                                        <div class="text-danger small">{{ form.presion_sistolica.errors|striptags }}</div>
+                                                    {% endif %}
+                                                    {% if form.presion_diastolica.errors %}
+                                                        <div class="text-danger small">{{ form.presion_diastolica.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <!-- Fila 2: Frecuencia respiratoria -->
+                                            <div class="row g-3 mt-2">
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold text-dark">Frecuencia Respiratoria (FR) [lat/min]</label>
+                                                    {{ form.frecuencia_respiratoria|add_attrs:"class=form-control,value=" }}
+                                                    {% if form.frecuencia_respiratoria.errors %}
+                                                        <div class="text-danger small">{{ form.frecuencia_respiratoria.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <!-- Fila 3: Pulso | Saturación de oxígeno -->
+                                            <div class="row g-3 mt-2 align-items-end">
+                                                <div class="col-md-2">
+                                                    <label class="form-label fw-bold text-dark">Pulso [bpm]</label>
+                                                    {{ form.pulso|add_attrs:"class=form-control,value=" }}
+                                                    {% if form.pulso.errors %}
+                                                        <div class="text-danger small">{{ form.pulso.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-bold text-dark">Saturación de Oxígeno (%)</label>
+                                                    {{ form.saturacion_oxigeno|add_class:"d-none" }} <!-- Oculto -->
+                                                    {% if form.saturacion_oxigeno.errors %}
+                                                        <div class="text-danger small">{{ form.saturacion_oxigeno.errors|striptags }}</div>
+                                                    {% endif %}
+                                                    <div class="input-group">
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="stepSaturacion(-1)">-</button>
+                                                        <input type="number" id="saturacion_visible" class="form-control text-center" min="0" max="100" value="">
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="stepSaturacion(1)">+</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Fila 4: Peso | Talla | Circunferencia abdominal -->
+                                            <div class="row g-3 mt-2 align-items-end">
+                                                <div class="col-md-3">
+                                                    <label class="form-label fw-bold text-dark">Peso [Kg]</label>
+                                                    {{ form.peso|add_attrs:"class=form-control,value=" }}
+                                                    {% if form.peso.errors %}
+                                                        <div class="text-danger small">{{ form.peso.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label fw-bold text-dark">Talla [cm]</label>
+                                                    {{ form.talla|add_attrs:"class=form-control,value=" }}
+                                                    {% if form.talla.errors %}
+                                                        <div class="text-danger small">{{ form.talla.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label fw-bold text-dark">Circunferencia Abdominal [cm]</label>
+                                                    {{ form.circunferencia_abdominal|add_attrs:"class=form-control,value=" }}
+                                                    {% if form.circunferencia_abdominal.errors %}
+                                                        <div class="text-danger small">{{ form.circunferencia_abdominal.errors|striptags }}</div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row gy-2 gx-3 align-items-center mb-4">
+                                <div class="col-auto">
+                                    <label class="form-label fw-bold text-dark">Historia actual:</label>
+                                    {{ form.historia_actual|add_class:"form-control" }}
+                                    {% if form.historia_actual.errors %}
+                                        <div class="text-danger small">{{ form.historia_actual.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-label fw-bold text-dark">Evolución / Otros Datos (Examen Físico):</label>
+                                    {{ form.evolucion|add_class:"form-control" }}
+                                    {% if form.evolucion.errors %}
+                                        <div class="text-danger small">{{ form.evolucion.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark">Impresión Diagnóstica:</label>
+                                {{ form.impresion_diagnostica|add_class:"form-control" }}
+                                {% if form.impresion_diagnostica.errors %}
+                                    <div class="text-danger small">{{ form.impresion_diagnostica.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark">Indicaciones:</label>
+                                {{ form.indicaciones|add_class:"form-control" }}
+                                {% if form.indicaciones.errors %}
+                                    <div class="text-danger small">{{ form.indicaciones.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-dark">HbA1c [%]</label>
+                                {{ form.hba1c|add_attrs:"class=form-control,value=" }}
+                                {% if form.hba1c.errors %}
+                                    <div class="text-danger small">{{ form.hba1c.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer py-3">
+                                <a href="{% url 'doctor_consultation_history' %}" class="btn btn-secondary px-4"><i class="bi bi-x-circle me-1"></i> Cancelar</a>
+                                <button type="submit" class="btn btn-success px-4"><i class="bi bi-check2-circle me-1"></i> Guardar Cambios</button>
+                            </div>
+                        </form>
+                        <script>
+                            // Sincroniza el campo visible con el del formulario antes de enviar
+                            (function() {
+                                const formEl = document.querySelector('form');
+                                if (!formEl) return;
+                                const hidden = document.getElementById('id_saturacion_oxigeno');
+                                const visible = document.getElementById('saturacion_visible');
+                                // Inicializar visible con el valor oculto si existe
+                                if (hidden && visible && hidden.value) {
+                                    visible.value = hidden.value;
+                                }
+                                formEl.addEventListener('submit', function() {
+                                    if (hidden && visible) {
+                                        hidden.value = visible.value;
+                                    }
+                                });
+                                window.stepSaturacion = function(delta) {
+                                    if (!visible) return;
+                                    const current = parseInt(visible.value || '0', 10);
+                                    const next = Math.min(100, Math.max(0, current + delta));
+                                    visible.value = next;
+                                }
+                            })();
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

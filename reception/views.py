@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from users.models import Consultation, Patient, Doctor, Specialty
+from users.models import Consultation, Patient, Doctor, Specialty, DoctorSchedule
 from .forms import PatientForm, ConsultationForm
 import datetime
 
@@ -31,7 +31,7 @@ def consultation_list_view(request):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
-    consultas = Consultation.objects.all().order_by('date', 'shift', 'order')
+    consultas = Consultation.objects.exclude(status="ATENDIDO").order_by('date', 'shift', 'order')
     return render(request, 'reception/manage_medical_shifts.html', {
         'consultations': consultas,
         'user': request.user,
@@ -60,9 +60,10 @@ def patient_create_view(request):
 @login_required
 def consultation_create_view(request):
     especialidades = Specialty.objects.all()
-    # Obtener especialidad tanto por GET como por POST
     especialidad_id = request.POST.get('especialidad') or request.GET.get('especialidad')
     doctores = Doctor.objects.none()
+    consultorio_asignado = None
+
     if especialidad_id:
         doctores = Doctor.objects.filter(specialty_id=especialidad_id)
 
@@ -75,25 +76,49 @@ def consultation_create_view(request):
     if ci_query:
         paciente_encontrado = Patient.objects.filter(identification_number=ci_query).first()
 
-    # Inicializar el formulario con los doctores filtrados
     if request.method == 'POST':
         form = ConsultationForm(request.POST)
         form.fields['doctor'].queryset = doctores
-        # Asignar el paciente si está presente
         if paciente_encontrado:
             form.instance.patient = paciente_encontrado
-        if form.is_valid():
+        else:
+            messages.error(request, "Debes buscar y seleccionar un paciente antes de agendar la consulta.")
+        if form.is_valid() and paciente_encontrado:
             consulta = form.save(commit=False)
-            # Asignar el orden automáticamente según el turno y fecha
-            mismo_turno = Consultation.objects.filter(
-                date=consulta.date,
-                shift=consulta.shift,
-                doctor=consulta.doctor
-            ).count()
-            consulta.order = mismo_turno + 1
-            consulta.save()
-            messages.success(request, 'Consulta agendada correctamente.')
-            return redirect('reception:consultation_list')
+            # Asignar consultorio automáticamente según el horario del doctor
+            day_name = consulta.date.strftime('%A').upper()
+            day_map = {
+                'MONDAY': 'LUNES', 'TUESDAY': 'MARTES', 'WEDNESDAY': 'MIERCOLES',
+                'THURSDAY': 'JUEVES', 'FRIDAY': 'VIERNES', 'SATURDAY': 'SABADO', 'SUNDAY': 'DOMINGO'
+            }
+            day = day_map.get(day_name, day_name)
+            horario = DoctorSchedule.objects.filter(
+                doctor=consulta.doctor,
+                day=day,
+                start_time__lte=consulta.time,
+                end_time__gte=consulta.time
+            ).first()
+            if not horario:
+                messages.error(request, "El doctor no está disponible en ese horario.")
+            else:
+                consulta.consultorio = horario.consultorio
+                mismo_turno = Consultation.objects.filter(
+                    date=consulta.date,
+                    shift=consulta.shift,
+                    doctor=consulta.doctor
+                ).count()
+                consulta.order = mismo_turno + 1
+                consulta.save()
+                messages.success(request, 'Consulta agendada correctamente.')
+                return redirect('reception:consultation_list')
+            
+            if horario:
+             consultorio_asignado = horario.consultorio
+
+        elif not paciente_encontrado:
+            pass
+        else:
+            messages.error(request, "Corrige los errores del formulario.")
     else:
         form = ConsultationForm()
         form.fields['doctor'].queryset = doctores
@@ -105,26 +130,55 @@ def consultation_create_view(request):
         'paciente_encontrado': paciente_encontrado,
         'especialidades': especialidades,
         'especialidad_id': especialidad_id,
+        'consultorio_asignado': consultorio_asignado,
     })
 
-
+# Editar consulta ya agendada
 @login_required
 def consultation_edit_view(request, pk):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
+
     consulta = get_object_or_404(Consultation, pk=pk)
+    especialidades = Specialty.objects.all()
+
+    # Obtener especialidad seleccionada (por GET, POST o la actual de la consulta)
+    especialidad_id = (
+        request.POST.get('especialidad')
+        or request.GET.get('especialidad')
+        or (str(consulta.doctor.specialty.id) if consulta.doctor and consulta.doctor.specialty else '')
+    )
+
+    # Filtrar doctores según la especialidad seleccionada
+    doctores = Doctor.objects.none()
+    if especialidad_id:
+        doctores = Doctor.objects.filter(specialty_id=especialidad_id)
+    else:
+        doctores = Doctor.objects.all()
+
+    # Paciente y CI
+    ci_query = consulta.patient.identification_number if consulta.patient else ''
+    paciente_encontrado = consulta.patient if consulta.patient else None
+
     if request.method == 'POST':
         form = ConsultationForm(request.POST, instance=consulta)
+        form.fields['doctor'].queryset = doctores
         if form.is_valid():
             form.save()
             messages.success(request, 'Consulta actualizada correctamente.')
             return redirect('reception:consultation_list')
     else:
         form = ConsultationForm(instance=consulta)
+        form.fields['doctor'].queryset = doctores
+
     return render(request, 'reception/consultation_form.html', {
         'form': form,
         'user': request.user,
+        'ci_query': ci_query,
+        'paciente_encontrado': paciente_encontrado,
+        'especialidades': especialidades,
+        'especialidad_id': especialidad_id,
     })
 
 # Eliminar consulta
@@ -239,6 +293,8 @@ def patient_edit_view(request, pk):
         'user': request.user,
     })
 
+
+# Eliminar paciente
 @login_required
 def patient_delete_view(request, pk):
     if not hasattr(request.user, 'receptions'):
@@ -251,5 +307,18 @@ def patient_delete_view(request, pk):
         return redirect('reception:patient_list')
     return render(request, 'reception/patient_confirm_delete.html', {
         'object': paciente,
+        'user': request.user,
+    })
+
+
+# Historial de consultas realizadas
+@login_required
+def consultation_history_view(request):
+    if not hasattr(request.user, 'receptions'):
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('dashboard')
+    consultas = Consultation.objects.filter(status="ATENDIDO").order_by('-date', '-time')
+    return render(request, 'reception/consultation_history.html', {
+        'consultations': consultas,
         'user': request.user,
     })

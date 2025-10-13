@@ -26,15 +26,11 @@ class ConsultationForm(forms.ModelForm):
         widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
         label="Hora"
     )
-    # Si consultorio no está en el modelo, agrégalo como campo extra:
-    consultorio = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
-        label="Consultorio"
-    )
+    # El campo consultorio ya no se incluye aquí
 
     class Meta:
         model = Consultation
-        fields = ['doctor', 'date', 'time', 'shift', 'status', 'description', 'consultorio']
+        fields = ['doctor', 'date', 'time', 'shift', 'status', 'description']  # consultorio excluido
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,22 +41,10 @@ class ConsultationForm(forms.ModelForm):
         doctor = cleaned_data.get('doctor')
         date = cleaned_data.get('date')
         time = cleaned_data.get('time')
-        consultorio = cleaned_data.get('consultorio')
+        # consultorio se obtiene en la vista, no del formulario
 
         if not self.instance.pk and not getattr(self.instance, 'patient', None):
             raise forms.ValidationError("Debes seleccionar un paciente antes de agendar la consulta.")
 
-        if doctor and date and time and consultorio:
-            day_name = date.strftime('%A').upper()
-            day_map = {
-                'MONDAY': 'LUNES', 'TUESDAY': 'MARTES', 'WEDNESDAY': 'MIERCOLES',
-                'THURSDAY': 'JUEVES', 'FRIDAY': 'VIERNES', 'SATURDAY': 'SABADO', 'SUNDAY': 'DOMINGO'
-            }
-            day = day_map.get(day_name, day_name)
-            horarios = DoctorSchedule.objects.filter(
-                doctor=doctor, day=day, consultorio=consultorio,
-                start_time__lte=time, end_time__gte=time
-            )
-            if not horarios.exists():
-                raise forms.ValidationError("El doctor no está disponible en ese horario y consultorio.")
+        # La validación de consultorio se debe hacer en la vista, no aquí
         return cleaned_data

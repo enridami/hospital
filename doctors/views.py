@@ -3,7 +3,7 @@ from users.models import Doctor
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import Consultation, Patient, Doctor, Specialty
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from .forms import ConsultationAttendForm
 import datetime
 
@@ -170,3 +170,15 @@ def attend_consultation_view(request, consultation_id):
         'consulta': consulta,
         'especialidades': especialidades,
     })
+
+@login_required
+def edit_consultation(request, id):
+    consulta = get_object_or_404(Consultation, id=id)
+    if request.method == 'POST':
+        form = ConsultationAttendForm(request.POST, instance=consulta)
+        if form.is_valid():
+            form.save()
+            return redirect('doctor_consultation_history')
+    else:
+        form = ConsultationAttendForm(instance=consulta)
+    return render(request, 'doctors/edit_consultation.html', {'form': form, 'consulta': consulta})
