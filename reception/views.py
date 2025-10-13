@@ -11,7 +11,7 @@ import datetime
 def reception_dashboard_view(request):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
-        return redirect('reception:reception_dashboard')
+        return redirect('dashboard')
     pacientes_count = Patient.objects.count()
     doctores_count = Doctor.objects.count()
     consultas_count = Consultation.objects.count()
@@ -207,7 +207,7 @@ def reception_profile_view(request):
 def patient_list_view(request):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
-        return redirect('reception:reception_dashboard')
+        return redirect('dashboard')
     query = request.GET.get('ci', '')
     if query:
         pacientes = Patient.objects.filter(identification_number__icontains=query).order_by('-created_at')
@@ -224,7 +224,7 @@ def patient_list_view(request):
 def patient_edit_view(request, pk):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
-        return redirect('reception:reception_dashboard')
+        return redirect('dashboard')
     paciente = get_object_or_404(Patient, pk=pk)
     if request.method == 'POST':
         form = PatientForm(request.POST, instance=paciente)
@@ -243,7 +243,7 @@ def patient_edit_view(request, pk):
 def patient_delete_view(request, pk):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
-        return redirect('reception:reception_dashboard')
+        return redirect('dashboard')
     paciente = get_object_or_404(Patient, pk=pk)
     if request.method == 'POST':
         paciente.delete()
