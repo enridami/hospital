@@ -25,6 +25,7 @@ urlpatterns = [
 
     # URL para Permisos
     path('admin-dashboard/users/permissions/', admin_permissions_list, name='admin_permissions_list'),
+    path('admin-dashboard/users/assign_permission/', views.assign_permission, name='assign_permission'),
 
     # Eliminar usuarios
     path('admin-dashboard/users/delete/<int:user_id>/', views.admin_delete_user, name='admin_delete_user'),

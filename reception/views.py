@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import Consultation, Patient, Doctor, Specialty, DoctorSchedule
 from .forms import PatientForm, ConsultationForm
-import datetime
+from datetime import datetime, timedelta, date
 
 # Dashboard principal
 @login_required
@@ -15,7 +15,7 @@ def reception_dashboard_view(request):
     pacientes_count = Patient.objects.count()
     doctores_count = Doctor.objects.count()
     consultas_count = Consultation.objects.count()
-    consultas_hoy = Consultation.objects.filter(date__exact=datetime.date.today()).count()
+    consultas_hoy = Consultation.objects.filter(date__exact=date.today()).count()
 
     return render(request, 'reception/reception_dashboard.html', {
         'user': request.user,
@@ -85,6 +85,13 @@ def consultation_create_view(request):
             messages.error(request, "Debes buscar y seleccionar un paciente antes de agendar la consulta.")
         if form.is_valid() and paciente_encontrado:
             consulta = form.save(commit=False)
+
+            # Asignar el turno automáticamente si viene en el POST
+            turno_auto = request.POST.get('turno_auto')
+            if turno_auto:
+                consulta.shift = turno_auto
+
+
             # Asignar consultorio automáticamente según el horario del doctor
             day_name = consulta.date.strftime('%A').upper()
             day_map = {
@@ -321,4 +328,76 @@ def consultation_history_view(request):
     return render(request, 'reception/consultation_history.html', {
         'consultations': consultas,
         'user': request.user,
+    })
+
+
+
+
+@login_required
+def doctor_schedule_view(request, doctor_id):
+    doctor = get_object_or_404(Doctor, pk=doctor_id)
+    horarios = DoctorSchedule.objects.filter(doctor=doctor).order_by('day', 'start_time')
+    bloques_por_horario = []
+
+    # Obtén la fecha seleccionada del parámetro GET
+    fecha_str = request.GET.get('fecha')
+    if fecha_str:
+        try:
+            fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        except ValueError:
+            fecha = datetime.today().date()
+    else:
+        fecha = datetime.today().date()
+
+
+    # 1. Obtener el nombre del día en español (según tu modelo)
+    dias_map = {
+        0: 'LUNES', 1: 'MARTES', 2: 'MIERCOLES', 3: 'JUEVES',
+        4: 'VIERNES', 5: 'SABADO', 6: 'DOMINGO'
+    }
+    dia_semana = dias_map[fecha.weekday()]
+
+    # 2. Filtrar horarios solo para ese día
+    horarios = DoctorSchedule.objects.filter(doctor=doctor, day=dia_semana).order_by('start_time')
+    bloques_por_horario = []
+        
+    # Duración de cada consulta (en minutos)
+    duracion_consulta = 30
+
+    for horario in horarios:
+        # Convierte start_time y end_time a datetime para operar
+        inicio = datetime.combine(datetime.today(), horario.start_time)
+        fin = datetime.combine(datetime.today(), horario.end_time)
+        bloques = []
+        actual = inicio
+        while actual + timedelta(minutes=duracion_consulta) <= fin:
+            bloque_inicio = actual.time()
+            bloque_fin = (actual + timedelta(minutes=duracion_consulta)).time()
+            # Verifica si ya hay una consulta agendada en ese bloque
+            consulta_existente = Consultation.objects.filter(
+                doctor=doctor,
+                date=fecha,   
+                time=bloque_inicio,
+                consultorio=horario.consultorio
+            ).exists()
+            bloques.append({
+                'dia': horario.day,
+                'inicio': bloque_inicio.strftime('%H:%M'),
+                'fin': bloque_fin.strftime('%H:%M'),
+                'consultorio': horario.consultorio,
+                'ocupado': consulta_existente
+            })
+            actual += timedelta(minutes=duracion_consulta)
+        bloques_por_horario.append({
+            'horario': horario,
+            'bloques': bloques
+        })
+
+    doctor_no_atiende = not horarios.exists()
+
+    return render(request, 'reception/doctor_schedule_modal.html', {
+        'doctor': doctor,
+        'bloques_por_horario': bloques_por_horario,
+        'doctor_no_atiende': doctor_no_atiende,
+        'dia_semana': dia_semana,
     })

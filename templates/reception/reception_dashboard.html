@@ -5,42 +5,40 @@
 {% block content %}
 <main>
   <div class="container mt-4">
-      <div class="row mb-4">
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-people-fill"></i> Pacientes</h5>
-                      <p class="display-6 fw-bold">{{ pacientes_count }}</p>
-                      <a href="{% url 'reception:patient_list' %}" class="btn btn-outline-primary btn-sm">Ver pacientes</a>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-person-badge"></i> Doctores</h5>
-                      <p class="display-6 fw-bold">{{ doctores_count }}</p>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-clipboard2-pulse"></i> Consultas totales</h5>
-                      <p class="display-6 fw-bold">{{ consultas_count }}</p>
-                      <a href="{% url 'reception:consultation_list' %}" class="btn btn-outline-success btn-sm">Ver consultas</a>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-calendar-event"></i> Consultas hoy</h5>
-                      <p class="display-6 fw-bold">{{ consultas_hoy }}</p>
-                  </div>
-              </div>
-          </div>
-      </div>
+      <div class="dash-cards">
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-primary"><i class="bi bi-people" aria-hidden="true"></i></span>
+                <h4>{{ pacientes_count }}</h4>
+                <h5>Pacientes Registrados</h5>
+                <a href="{% url 'reception:patient_list' %}" class="btn btn-outline-primary btn-sm">Ver pacientes</a>
+            </div>
+        </div>
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-success"><i class="bi bi-heart-pulse" aria-hidden="true"></i></span>
+                <h4>{{ doctores_count }}</h4>
+                <h5>Médicos Registrados</h5>
+            </div>
+        </div>
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-info"><i class="bi bi-clipboard-heart" aria-hidden="true"></i></span>
+                <h4>{{ consultas_count }}</h4>
+                <h5>Consultas Totales</h5>
+                <a href="{% url 'reception:consultation_list' %}" class="btn btn-outline-success btn-sm">Ver consultas</a>
+            </div>
+        </div>
+        <div class="card-single">
+            <div class="card-body">
+                <span class="text-warning"><i class="bi bi-calendar-day" aria-hidden="true"></i></span>
+                <h4>{{ consultas_hoy }}</h4>
+                <h5>Consultas Hoy</h5>
+            </div>
+        </div>
+    </div>
+
+
       <div class="row mt-4">
           <div class="col-md-6">
               <a href="{% url 'reception:patient_create' %}" class="btn btn-primary w-100 mb-2">

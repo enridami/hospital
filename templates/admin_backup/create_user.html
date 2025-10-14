@@ -456,10 +456,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 staffFields.style.display = 'block';
                 document.getElementById('staff-role-field').style.display = 'block';
                 document.getElementById('staff_role').value = selectedType;
-                
-                if (selectedType === 'admin') {
-                    document.getElementById('department-field').style.display = 'block';
-                }
+
+                // Mostrar departamento para ambos roles
+                document.getElementById('department-field').style.display = 'block';
             }
             
             if (selectedType === 'patient') {

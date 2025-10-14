@@ -17,6 +17,7 @@
                             <th>Email</th>
                             <th>Permisos</th>
                             <th>Grupos</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,19 +39,32 @@
                             </td>
                             <td>
                                 {% if user.is_doctor %}
-                                        <span class="role-text text-success">Médico</span>
-                                    {% elif user.administrator %}
-                                        <span class="role-text text-warning">Administrador</span>
-                                    {% elif user.receptions %}
-                                        <span class="role-text text-info">Recepcionista</span>
-                                    {% else %}
-                                        <span class="role-text text-secondary">Usuario</span>
-                                    {% endif %}
+                                    <span class="role-text text-success">Médico</span>
+                                {% elif user.administrator %}
+                                    <span class="role-text text-warning">Administrador</span>
+                                {% elif user.receptions %}
+                                    <span class="role-text text-info">Recepcionista</span>
+                                {% else %}
+                                    <span class="role-text text-secondary">Usuario</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'assign_permission' %}">
+                                    {% csrf_token %}
+                                    <select name="perm_id">
+                                        {% for perm in perms %}
+                                            <option value="{{ perm.id }}">{{ perm.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                                    <button type="submit" name="action" value="add" class="btn btn-sm btn-success">Asignar</button>
+                                    <button type="submit" name="action" value="remove" class="btn btn-sm btn-danger">Quitar</button>
+                                </form>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center">No hay usuarios disponibles.</td>
+                            <td colspan="6" class="text-center">No hay usuarios disponibles.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

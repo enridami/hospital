@@ -1,0 +1,36 @@
+{% if doctor_no_atiende %}
+    <div class="alert alert-warning text-center">
+        El doctor no atiende los días {{ dia_semana|title }}.
+    </div>
+{% else %}
+    {% for item in bloques_por_horario %}
+        <h5>{{ item.horario.day }} (Consultorio: {{ item.horario.consultorio }})</h5>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for bloque in item.bloques %}
+                <tr>
+                    <td>{{ bloque.inicio }}</td>
+                    <td>{{ bloque.fin }}</td>
+                    <td>
+                        {% if not bloque.ocupado %}
+                            <button type="button" class="btn btn-success btn-sm"
+                                onclick="seleccionarHorario('{{ item.horario.day }}', '{{ bloque.inicio }}', '{{ bloque.fin }}', '{{ item.horario.consultorio }}')">
+                                Seleccionar
+                            </button>
+                        {% else %}
+                            <span class="badge bg-danger">Ocupado</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endif %}
