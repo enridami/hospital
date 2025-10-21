@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.models import Permission
 from datetime import datetime
 import re
+from django.db.models import Q
 
 # Create your views here.
 
@@ -316,6 +317,31 @@ def admin_create_doctor(request):
             if start >= end:
                 errores.append(f"En el horario {i+1}, la hora de inicio debe ser menor que la de fin.")
            
+        # Validación de solapamiento de horarios y consultorios a nivel global
+        for i in range(len(horario_days)):
+            day = horario_days[i]
+            start = horario_starts[i]
+            end = horario_ends[i]
+            consultorio = horario_consultorios[i].strip().lower()
+
+            # Imprime los valores que vas a validar
+            print(f"--- Validando horario {i+1} ---")
+            print(f"day: {day}, start: {start}, end: {end}, consultorio: {consultorio}")
+
+            # Imprime los horarios existentes en la base de datos para ese día y consultorio
+            existentes = DoctorSchedule.objects.filter(day=day, consultorio=consultorio)
+            print(f"Horarios existentes para {consultorio} el {day}:")
+            for h in existentes:
+                print(f"  {h.start_time} - {h.end_time}")
+
+            # Validación de solapamiento
+            existe = existentes.filter(
+                Q(start_time__lt=end) & Q(end_time__gt=start)
+            ).exists()
+            if existe:
+                errores.append(
+                    f"El consultorio '{consultorio}' ya está ocupado el {day} en el rango {start} - {end}."
+                )
 
         # Validación de solapamiento de horarios para evitar que un doctor tenga dos turnos que se crucen el mismo día
         for i in range(len(horario_days)):
@@ -395,7 +421,9 @@ def admin_create_doctor(request):
             messages.error(request, f'Error al crear doctor: {str(e)}')
     
     specialties = Specialty.objects.all()
-    context = {'specialties': specialties}
+    context = {
+        'specialties': specialties
+        }
     return render(request, 'admin_backup/create_doctor.html', context)
 
 # Crear personal desde Acciones rapidas

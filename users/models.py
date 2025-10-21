@@ -381,6 +381,11 @@ class DoctorSchedule(models.Model):
     end_time = models.TimeField()
     consultorio = models.CharField(max_length=20)  # Consultorio asignado en ese horario
 
+    def save(self, *args, **kwargs):
+        # Normaliza el consultorio antes de guardar
+        if self.consultorio:
+            self.consultorio = self.consultorio.strip().lower()
+        super().save(*args, **kwargs)
     class Meta:
         verbose_name = "Horario de Doctor"
         verbose_name_plural = "Horarios de Doctores"
