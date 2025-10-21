@@ -1,0 +1,13 @@
+Hospital Management System
+=======================
+
+Sistema de gestión hospitalaria desarrollado con Django.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contenidos:
+
+   users
+   models
+   views
+   admin

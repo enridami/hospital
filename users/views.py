@@ -1,3 +1,14 @@
+"""
+Vistas de la aplicación de usuarios.
+
+Este módulo contiene las vistas para la gestión de usuarios, incluyendo:
+- Login y autenticación
+- Dashboards específicos según rol
+- Cierre de sesión
+
+.. moduleauthor:: enridami
+"""
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -8,7 +19,14 @@ from django.contrib.auth import get_user_model
 Users = get_user_model()
 
 def login_view(request):
-    """Vista para manejar el login de usuarios"""
+    """
+    Vista para manejar el login de usuarios.
+    
+    :param request: Objeto HttpRequest
+    :type request: HttpRequest
+    :return: Redirección al dashboard o página de login con mensaje de error
+    :rtype: HttpResponse
+    """
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -28,7 +46,14 @@ def login_view(request):
 # Dashboards específicos con doble protección de seguridad
 @login_required
 def dashboard_view(request):
-    """Vista que redirecciona al dashboard especifico según el rol"""
+    """
+    Vista que redirecciona al dashboard específico según el rol del usuario.
+    
+    :param request: Objeto HttpRequest
+    :type request: HttpRequest
+    :return: Redirección al dashboard correspondiente según el rol
+    :rtype: HttpResponse
+    """
     user = request.user
 
     if hasattr(user, 'doctor'):
@@ -47,6 +72,13 @@ def dashboard_view(request):
 
 @login_required(login_url='/login/')
 def logout_view(request):
-    """Vista para cerrar sesión"""
+    """
+    Vista para cerrar sesión de usuario.
+    
+    :param request: Objeto HttpRequest
+    :type request: HttpRequest
+    :return: Redirección a la página de login
+    :rtype: HttpResponse
+    """
     logout(request)
     return redirect('login')

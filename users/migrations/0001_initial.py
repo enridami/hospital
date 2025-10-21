@@ -4,6 +4,13 @@ import django.contrib.auth.models
 import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
+"""
+Migración inicial para la aplicación de usuarios.
+
+Este archivo crea las tablas principales del sistema hospitalario.
+
+.. moduleauthor:: enridami
+"""
 from django.db import migrations, models
 
 

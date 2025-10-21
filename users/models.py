@@ -1,8 +1,30 @@
+"""
+Modelos de la aplicación de usuarios.
+
+Este módulo contiene los modelos para la gestión de usuarios, pacientes, doctores, administradores, recepcionistas, especialidades, consultas y recetas médicas.
+
+- Usuarios personalizados
+- Especialidades médicas
+- Doctores, recepcionistas y administradores
+- Pacientes y sus datos médicos
+- Consultas y recetas
+
+.. moduleauthor:: enridami
+"""
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Specialty(models.Model):
-    """Modelo para especialidades médicas"""
+    """
+    Modelo para especialidades médicas.
+
+    :param name: Nombre de la especialidad
+    :type name: str
+    :param description: Descripción de la especialidad
+    :type description: str
+    :return: Nombre de la especialidad
+    :rtype: str
+    """
     name = models.CharField(max_length=25, unique=True)
     description = models.TextField()
    
@@ -16,7 +38,38 @@ class Specialty(models.Model):
 
 
 class Users(AbstractUser):
-    """Modelo de usuario personalizado que extiende AbstractUser"""
+    """
+    Modelo de usuario personalizado que extiende AbstractUser.
+
+    :param email: Email único del usuario
+    :type email: str
+    :param username: Nombre de usuario único
+    :type username: str
+    :param password: Contraseña encriptada
+    :type password: str
+    :param first_name: Nombre
+    :type first_name: str
+    :param last_name: Apellido
+    :type last_name: str
+    :param gender: Género del usuario
+    :type gender: str
+    :param birthday: Fecha de nacimiento
+    :type birthday: date
+    :param is_doctor: Indica si el usuario es doctor
+    :type is_doctor: bool
+    :param profile_avatar: Imagen de perfil
+    :type profile_avatar: ImageField
+    :param address_line: Dirección
+    :type address_line: str
+    :param region: Región
+    :type region: str
+    :param city: Ciudad
+    :type city: str
+    :param code_postal: Código postal
+    :type code_postal: str
+    :return: Nombre de usuario
+    :rtype: str
+    """
     email = models.CharField(max_length=50, unique=True)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=200)
@@ -74,7 +127,20 @@ class Users(AbstractUser):
 
 
 class Reset_token(models.Model):
-    """Modelo para tokens de reset de contraseña"""
+    """
+    Modelo para tokens de reset de contraseña.
+
+    :param user: Usuario relacionado
+    :type user: Users
+    :param email: Email único
+    :type email: str
+    :param token: Token de recuperación
+    :type token: str
+    :param created_at: Fecha de creación
+    :type created_at: datetime
+    :return: Token para el usuario
+    :rtype: str
+    """
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     email = models.CharField(max_length=50, unique=True)
     token = models.CharField(max_length=50)
@@ -91,10 +157,24 @@ class Reset_token(models.Model):
 
 # Doctor
 class Doctor(models.Model):
+    """
+    Modelo para doctores del sistema hospitalario.
+
+    :param user: Usuario relacionado
+    :type user: Users
+    :param specialty: Especialidad médica
+    :type specialty: Specialty
+    :param bio: Biografía del doctor
+    :type bio: str
+    :param consultorio: Consultorio asignado
+    :type consultorio: str
+    :return: Nombre completo del doctor
+    :rtype: str
+    """
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE)
     bio = models.TextField()
-    consultorio = models.CharField(max_length=20, blank=True, null=True)  # Nuevo campo
+    consultorio = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         verbose_name = "Doctor"
@@ -106,6 +186,14 @@ class Doctor(models.Model):
 
 # Recepcion
 class Receptions(models.Model):
+    """
+    Modelo para recepcionistas del sistema hospitalario.
+
+    :param user: Usuario relacionado
+    :type user: Users
+    :return: Nombre completo del recepcionista
+    :rtype: str
+    """
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
 
     class Meta:
@@ -117,7 +205,22 @@ class Receptions(models.Model):
     
 # Administrador
 class Administrator(models.Model):
-    """Modelo para administradores del sistema hospitalario"""
+    """
+    Modelo para administradores del sistema hospitalario.
+
+    :param user: Usuario relacionado
+    :type user: Users
+    :param department: Departamento del administrador
+    :type department: str
+    :param can_create_users: Permiso para crear usuarios
+    :type can_create_users: bool
+    :param can_create_groups: Permiso para crear grupos
+    :type can_create_groups: bool
+    :param can_assign_roles: Permiso para asignar roles
+    :type can_assign_roles: bool
+    :return: Nombre completo del administrador
+    :rtype: str
+    """
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
     department = models.CharField(max_length=50, default="Administración") # Departamento del administrador
     can_create_users = models.BooleanField(default=True)
@@ -134,7 +237,58 @@ class Administrator(models.Model):
 
 # Paciente
 class Patient(models.Model):
-    """Modelo para pacientes del sistema hospitalario"""
+    """
+    Modelo para pacientes del sistema hospitalario.
+
+    :param first_name: Nombre
+    :type first_name: str
+    :param last_name: Apellido
+    :type last_name: str
+    :param email: Email
+    :type email: str
+    :param phone: Teléfono
+    :type phone: str
+    :param identification_type: Tipo de identificación
+    :type identification_type: str
+    :param identification_number: Número de identificación
+    :type identification_number: str
+    :param gender: Género
+    :type gender: str
+    :param date_of_birth: Fecha de nacimiento
+    :type date_of_birth: date
+    :param address_line: Dirección
+    :type address_line: str
+    :param city: Ciudad
+    :type city: str
+    :param region: Región/Estado
+    :type region: str
+    :param postal_code: Código postal
+    :type postal_code: str
+    :param country: País
+    :type country: str
+    :param blood_type: Tipo de sangre
+    :type blood_type: str
+    :param allergies: Alergias
+    :type allergies: str
+    :param medical_notes: Notas médicas
+    :type medical_notes: str
+    :param emergency_contact_name: Nombre del contacto de emergencia
+    :type emergency_contact_name: str
+    :param emergency_contact_relationship: Relación del contacto
+    :type emergency_contact_relationship: str
+    :param emergency_contact_phone: Teléfono del contacto de emergencia
+    :type emergency_contact_phone: str
+    :param created_at: Fecha de registro
+    :type created_at: datetime
+    :param updated_at: Última actualización
+    :type updated_at: datetime
+    :param is_active: Estado activo
+    :type is_active: bool
+    :param assigned_doctor: Doctor asignado
+    :type assigned_doctor: Doctor
+    :return: Nombre completo del paciente
+    :rtype: str
+    """
     
     # Información personal básica
     first_name = models.CharField(max_length=50, verbose_name="Nombre")
@@ -251,7 +405,62 @@ class Patient(models.Model):
 # Creación de modelos de tabla Consultas y Recetas
 
 class Consultation(models.Model):
-    """Modelo para consultas médicas"""
+    """
+    Modelo para consultas médicas.
+
+    :param description: Descripción de la consulta
+    :type description: str
+    :param date: Fecha
+    :type date: date
+    :param time: Hora
+    :type time: time
+    :param shift: Turno
+    :type shift: str
+    :param order: Orden en la cola
+    :type order: int
+    :param priority: Prioridad
+    :type priority: str
+    :param consultorio: Consultorio
+    :type consultorio: str
+    :param servicio: Servicio/especialidad
+    :type servicio: Specialty
+    :param temperatura: Temperatura
+    :type temperatura: float
+    :param presion_sistolica: Presión sistólica
+    :type presion_sistolica: int
+    :param presion_diastolica: Presión diastólica
+    :type presion_diastolica: int
+    :param frecuencia_respiratoria: Frecuencia respiratoria
+    :type frecuencia_respiratoria: int
+    :param pulso: Pulso
+    :type pulso: int
+    :param saturacion_oxigeno: Saturación de oxígeno
+    :type saturacion_oxigeno: int
+    :param peso: Peso
+    :type peso: float
+    :param talla: Talla
+    :type talla: float
+    :param circunferencia_abdominal: Circunferencia abdominal
+    :type circunferencia_abdominal: float
+    :param historia_actual: Historia actual
+    :type historia_actual: str
+    :param evolucion: Evolución
+    :type evolucion: str
+    :param impresion_diagnostica: Impresión diagnóstica
+    :type impresion_diagnostica: str
+    :param hba1c: HbA1c
+    :type hba1c: float
+    :param indicaciones: Indicaciones
+    :type indicaciones: str
+    :param status: Estado
+    :type status: str
+    :param doctor: Médico
+    :type doctor: Doctor
+    :param patient: Paciente
+    :type patient: Patient
+    :return: Descripción de la consulta
+    :rtype: str
+    """
     description = models.TextField(verbose_name="Descripción")
     date = models.DateField(verbose_name="Fecha")
     time = models.TimeField(verbose_name="Hora")
@@ -342,7 +551,20 @@ class Consultation(models.Model):
 
 # TABLA RECETAS
 class Prescription(models.Model):
-    """Modelo para recetas médicas"""
+    """
+    Modelo para recetas médicas.
+
+    :param medication: Medicamento
+    :type medication: str
+    :param description: Descripción
+    :type description: str
+    :param doctor: Médico
+    :type doctor: Doctor
+    :param consultation: Consulta relacionada
+    :type consultation: Consultation
+    :return: Descripción de la receta
+    :rtype: str
+    """
     medication = models.CharField(max_length=100, verbose_name="Medicamento")
     description = models.TextField(verbose_name="Descripción")
     doctor = models.ForeignKey(

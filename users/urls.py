@@ -1,3 +1,18 @@
+"""
+URLs de la aplicación de usuarios.
+
+Este módulo contiene la configuración de rutas URL para la gestión de usuarios, incluyendo:
+- Autenticación (login/logout)
+- Dashboards
+- Inclusión de otras apps (doctors, reception, administrator)
+- Configuración de archivos estáticos y multimedia
+
+:param urlpatterns: Lista de rutas URL
+:type urlpatterns: list
+
+.. moduleauthor:: enridami
+"""
+
 from django.urls import path, include
 from .views import login_view, logout_view, dashboard_view
 from django.conf.urls.static import static

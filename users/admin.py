@@ -1,3 +1,14 @@
+"""
+Panel de administración de la aplicación de usuarios.
+
+Este módulo contiene la configuración personalizada del panel de administración para:
+- Usuarios personalizados
+- Pacientes
+- Especialidades, doctores, recepcionistas, administradores y tokens de reset
+
+.. moduleauthor:: enridami
+"""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Users, Specialty, Doctor, Administrator, Receptions, Reset_token, Patient
@@ -5,7 +16,16 @@ from .models import Users, Specialty, Doctor, Administrator, Receptions, Reset_t
 # Información adicional al registrar usuario
 
 class CustomUserAdmin(UserAdmin):
-    # Campos a mostrar en la lista
+    """
+    Personalización del panel de administración para el modelo Users.
+
+    :param list_display: Campos a mostrar en la lista de usuarios
+    :type list_display: tuple
+    :param fieldsets: Campos a mostrar al editar usuario
+    :type fieldsets: tuple
+    :param add_fieldsets: Campos a mostrar al crear usuario
+    :type add_fieldsets: tuple
+    """
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff')
     
     # Campos a mostrar al editar usuario
@@ -29,6 +49,20 @@ class CustomUserAdmin(UserAdmin):
 # Admin personalizado para Pacientes
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
+    """
+    Personalización del panel de administración para el modelo Patient.
+
+    :param list_display: Campos a mostrar en la lista de pacientes
+    :type list_display: tuple
+    :param list_filter: Filtros disponibles en el panel
+    :type list_filter: tuple
+    :param search_fields: Campos por los que se puede buscar
+    :type search_fields: tuple
+    :param readonly_fields: Campos de solo lectura
+    :type readonly_fields: tuple
+    :param fieldsets: Organización de los campos en el formulario
+    :type fieldsets: tuple
+    """
     list_display = (
         'identification_number', 'first_name', 'last_name', 
         'gender', 'age', 'phone', 'assigned_doctor', 'is_active'
@@ -39,7 +73,6 @@ class PatientAdmin(admin.ModelAdmin):
         'email', 'phone'
     )
     readonly_fields = ('age', 'created_at', 'updated_at')
-    
     fieldsets = (
         ('Información Personal', {
             'fields': ('first_name', 'last_name', 'email', 'phone')
