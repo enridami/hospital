@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'users',
     'doctors',
     'reception',
-    'administrator'  # Nuestra aplicación personalizada de usuarios
+    'administrator', # Nuestra aplicación personalizada de usuarios
 ]
 
 MIDDLEWARE = [
@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'hospital.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'taller_hosp',
+        'USER': 'postgres',
+        'PASSWORD': '1304',
+        'HOST':'localhost',
+        'PORT':'5432'
     }
 }
 
