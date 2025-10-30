@@ -45,6 +45,20 @@
                 </li>
                 
                 <li>
+                    <a href="{% url 'doctor_patient_list' %}">
+                        &nbsp;&nbsp;<i class="bi bi-person-lines-fill"></i>
+                        <span class="menu-text">Lista de Pacientes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'doctor_consultation_history' %}">
+                        &nbsp;&nbsp;<i class="bi bi-person-rolodex"></i>
+                        <span class="menu-text">Historial de consulta</span>
+                    </a>
+                </li>
+                
+                
+                <!-- <li>
                     <a href="#" data-bs-toggle="collapse" data-bs-target="#consultasMenu">
                         &nbsp;&nbsp<i class="bi bi-file-medical me-2"></i>
                         <span class="menu-text">&nbsp;&nbsp;Consulta</span>
@@ -52,11 +66,19 @@
                     </a>
                     <div class="collapse" id="consultasMenu">
                         <ul class="submenu">
-                            <li><a href="{% url 'doctor_patient_list' %}" class="text-center"><span class="menu-text d-block text-center">Lista de Pacientes</span></a></li>
-                            <li><a href="{% url 'doctor_consultation_history' %}" class="text-center"><span class="menu-text d-block text-center">Historial de consulta</span></a></li>
+                            <li>
+                                <a href="{% url 'doctor_patient_list' %}" class="text-center">
+                                    <span class="menu-text d-block text-center">Lista de Pacientes</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'doctor_consultation_history' %}" class="text-center">
+                                    <span class="menu-text d-block text-center">Historial de consulta</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
 
 
                 <br><br>
