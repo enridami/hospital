@@ -44,36 +44,23 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#usersMenu" aria-expanded="false">
-                        &nbsp;&nbsp;<i class="bi bi-kanban"></i>
-                        <span class="menu-text">&nbsp;&nbsp;Gestionar usuarios</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
+                    <a href="{% url 'admin_users_list' %}">
+                        &nbsp;&nbsp;<i class="bi bi-people-fill"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Ver Usuarios</span>
                     </a>
-                    <div class="collapse" id="usersMenu">
-                        <ul class="submenu">
-                            <li>
-                                <a href="{% url 'admin_users_list' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Ver Usuarios</span>
-                                </a>
-                            </li>
-                            <!-- <li>
-                                <a href="{% url 'admin_create_user' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Crear Usuario</span>
-                                </a>
-                            </li> -->
-                            <li>
-                                <a href="{% url 'admin_select_user_for_role' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Asignar Roles</span>
-                                </a>
-                            </li>
-                            
-                            <li>
-                                <a href="{% url 'admin_permissions_list' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Permisos</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                </li>
+                <li>
+                    <a href="{% url 'admin_select_user_for_role' %}" class="text-center">
+                        &nbsp;&nbsp;<i class="bi bi-ui-checks-grid"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Asignar Roles</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'admin_permissions_list' %}" class="text-center">
+                        &nbsp;&nbsp;<i class="bi bi-person-fill-add"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Permisos</span>
+                    </a>
                 </li>
 
 
