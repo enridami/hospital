@@ -513,6 +513,9 @@ class Consultation(models.Model):
     hba1c = models.FloatField(blank=True, null=True)
     indicaciones = models.TextField(blank=True, null=True, default="")
 
+    #Opciones de Arreglo
+    #Redefinir cambio, texto no actualizados
+    #Cambio de formato "reStructuredText" para combinar con el docstring principal
 
     # Opciones de estado
     status_choices = (
