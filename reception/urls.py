@@ -15,6 +15,8 @@ urlpatterns = [
     path('pacientes/<int:pk>/editar/', views.patient_edit_view, name='patient_edit'),
     path('pacientes/<int:pk>/eliminar/', views.patient_delete_view, name='patient_delete'),
     path('patient/<int:pk>/', views.patient_detail, name='patient_detail'),
+    
+    
 
     # Consultas realizadas
     path('consultations/history/', views.consultation_history_view, name='consultation_history'),

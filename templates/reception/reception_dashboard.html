@@ -1,6 +1,6 @@
 {% extends "reception/base.html" %}
-{% block title %}Dashboard Recepción{% endblock title %}
-{% block page_title %}Panel de Recepcionista{% endblock page_title %}
+{% block title %}Inicio{% endblock title %}
+{% block page_title %} {{ request.user.first_name | safe | truncatechars:"20" }} {{ request.user.last_name | safe | truncatechars:"20" }} {% endblock page_title %}
 
 {% block content %}
 <main>

@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import Consultation, Patient, Doctor, Specialty, DoctorSchedule
 from .forms import PatientForm, ConsultationForm
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
 
 # Dashboard principal
 @login_required
@@ -391,7 +391,7 @@ def doctor_schedule_view(request, doctor_id):
         bloques_por_horario.append({
             'horario': horario,
             'bloques': bloques
-        })
+        })     
 
     doctor_no_atiende = not horarios.exists()
 
