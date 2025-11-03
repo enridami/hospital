@@ -401,3 +401,8 @@ def doctor_schedule_view(request, doctor_id):
         'doctor_no_atiende': doctor_no_atiende,
         'dia_semana': dia_semana,
     })
+
+@login_required
+def patient_detail(request,pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    return render(request, 'reception/patient_detail.html', {'patient': patient})

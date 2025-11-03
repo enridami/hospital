@@ -1,0 +1,134 @@
+{% extends "reception/base.html" %}
+{% load form_tags %}
+{% block content %}
+<main>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header text-white d-flex align-items-center">
+                        <h4 class="mb-0">Datos del paciente</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Nombres:</label>
+                                    <p>{{ patient.first_name }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Apellidos:</label>
+                                    <p>{{ patient.last_name }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Email:</label>
+                                    <p>{{ patient.email }}</p>
+                                     
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Teléfono:</label>
+                                    <p>{{ patient.phone }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Tipo de Identificación:</label>
+                                    <p>{{ patient.identification_type }} : {{ patient.identification_number }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    
+                                    {{ form.identification_number }}
+                                    {% if form.identification_number.errors %}
+                                        <div class="text-danger small">{{ form.identification_number.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Género:</label>
+                                    
+                                    {% if patient.gender == 'Male' %}
+                                        <p>Masculino</p>
+                                    {% else %}
+                                        <p>Femenino</p>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Fecha de Nacimiento:</label>
+                                    <p>{{ patient.date_of_birth }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Tipo de Sangre:</label>
+                                    <p>{{ patient.blood_type }} </p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Dirección:</label>
+                                    <p>{{ patient.address_line }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Ciudad:</label>
+                                    <p>{{ patient.city }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Región/Estado:</label>
+                                    <p>{{ patient.region }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Código Postal:</label>
+                                    <p>{{ patient.postal_code }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">País:</label>
+                                    <p>{{ patient.country }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Alergias:</label>
+                                    <p>{{ patient.allergies }}</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark">Notas Médicas:</label>
+                                <p>{{ patient.medical_notes }}</p>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Contacto de Emergencia:</label>
+                                    <p>{{ patient.emergency_contact_name }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Relación:</label>
+                                    <p>{{ patient.emergency_contact_relationship }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Teléfono:</label>
+                                    <p>{{ patient.emergency_contact_phone }}</p>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer py-3">
+                                <a href="{% url 'reception:patient_list' %}" class="btn btn-secondary px-4">Volver</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

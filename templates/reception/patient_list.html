@@ -42,6 +42,7 @@
                 <td>{{ patient.phone }}</td>
                 <td>{{ patient.date_of_birth }}</td>
                 <td>
+                    <a href="{% url 'reception:patient_detail' patient.id %}" class="btn btn-success btn-sm"> Ver datos</a>
                     <a href="{% url 'reception:patient_edit' patient.id %}" class="btn btn-warning btn-sm">Editar</a>
                     <!-- Botón para abrir el modal -->
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ patient.id }}">
