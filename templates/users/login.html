@@ -1,10 +1,10 @@
 {% extends 'users/base.html' %} {% block title %}Iniciar sesión{% endblock title %}
+{% block body_class %}login-background{% endblock body_class %}
+
 {% block content %}
 <div class="card shadow-lg mx-auto mt-5" style="max-width: 24rem">
   <div class="card-body p-4">
-    <h1 class="fs-4 card-title fw-bold mb-3 text-center">   </h1>
-
-
+    <!-- <h1 class="fs-4 card-title fw-bold mb-3 text-center">  Ingresar </h1> -->
     <form
       method="POST"
       class="needs-validation"
@@ -28,6 +28,7 @@
           class="form-control"
           name="username"
           value=""
+          placeholder="Ingresa tu usuario"
           required
           autofocus
         />
@@ -47,6 +48,7 @@
           type="password"
           class="form-control"
           name="password"
+          placeholder="Ingresa tu contraseña"
           required
         />
         <div class="invalid-feedback">Contraseña requerida</div>
@@ -62,7 +64,7 @@
           type="submit"
           class="btn btn-primary ms-auto"
         >
-          Ingresar
+          Iniciar sesión
         </button>
       </div>
     </form>
