@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 
 class Specialty(models.Model):
     """Modelo para especialidades médicas"""
@@ -139,7 +140,11 @@ class Patient(models.Model):
     first_name = models.CharField(max_length=50, verbose_name="Nombre")
     last_name = models.CharField(max_length=50, verbose_name="Apellido")
     email = models.EmailField(max_length=100, blank=True, null=True, verbose_name="Email")
-    phone = models.CharField(max_length=20, verbose_name="Teléfono")
+    phone = models.CharField(
+        max_length=20,
+        verbose_name="Teléfono",
+        validators=[RegexValidator(r'^\+?\d{7,15}$', message='Ingrese un número de teléfono válido (solo dígitos, opcional "+" al inicio).')]
+    )
     
     # Identificación
     identification_type_choices = (
@@ -156,9 +161,9 @@ class Patient(models.Model):
         verbose_name="Tipo de Identificación"
     )
     identification_number = models.CharField(
-        max_length=50, 
-        unique=True, 
-        verbose_name="Número de Identificación"
+        max_length=20,
+        unique=True,
+        validators=[RegexValidator(r'^\d+$', message='La cédula debe contener solo números.')]
     )
     
     # Información demográfica
@@ -204,8 +209,9 @@ class Patient(models.Model):
         verbose_name="Relación del Contacto"
     )
     emergency_contact_phone = models.CharField(
-        max_length=20, 
-        verbose_name="Teléfono del Contacto de Emergencia"
+        max_length=20,
+        verbose_name="Teléfono del Contacto de Emergencia",
+        validators=[RegexValidator(r'^\+?\d{7,15}$', message='Ingrese un número de teléfono válido (solo dígitos, opcional "+" al inicio).')]
     )
     
     # Información del sistema
