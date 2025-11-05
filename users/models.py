@@ -550,7 +550,9 @@ class Consultation(models.Model):
     def __str__(self):
         return f"Consulta de {self.patient.full_name} con {self.doctor} el {self.date} a las {self.time}"
 
-
+#
+# Modificacion de tabla recetas con los docstrings adecuados
+#
 
 # TABLA RECETAS
 class Prescription(models.Model):
@@ -558,15 +560,10 @@ class Prescription(models.Model):
     Modelo para recetas médicas.
 
     :param medication: Medicamento
-    :type medication: str
-    :param description: Descripción
-    :type description: str
     :param doctor: Médico
     :type doctor: Doctor
-    :param consultation: Consulta relacionada
-    :type consultation: Consultation
     :return: Descripción de la receta
-    :rtype: str
+
     """
     medication = models.CharField(max_length=100, verbose_name="Medicamento")
     description = models.TextField(verbose_name="Descripción")
