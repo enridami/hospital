@@ -7,6 +7,10 @@
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
+            <div>
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+            </div>
+            <br>
             <label for="role" class="form-label" style="color: black">Selecciona el rol:</label>
             <select name="role" id="role" class="form-select" onchange="toggleSpecialty(this.value)">
                 <option value="doctor">Doctor</option>
