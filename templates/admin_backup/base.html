@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} {% endblock %} - Sistema de Gestión Hospitalaria</title>
-    <!-- <link rel="icon" type="image/x-icon" href="{% static 'img/icon_app.png' %}"> -->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/icon_app.png' %}">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/base-style.css' %}" rel="stylesheet"/>
     <!-- Bootstrap Icons CDN -->
@@ -23,13 +23,13 @@
     <input type="checkbox" id="sidebar-toggle">
     <div class="sidebar">
         <div class="sidebar-header pt-4">
-            <div class="mx-auto d-block">
-                <!-- <img src="{% static 'img/logoBlanco.png' %}" alt="logo" class="img-fluid" style="max-width: 60px;"> -->
+            <div class="mx-auto d-block mt-3">
+                <img src="{% static 'img/icon_app.png' %}" alt="logo" class="img-fluid logo-responsive">
             </div>
             <label for="sidebar-toggle" class="ti-shift-left"></label>
         </div>
 
-        <div class="sidebar-menu mt-3">
+        <div class="sidebar-menu mt-5">
             <ul>
                 <li>
                     <a href="{% url 'admin_dashboard' %}">
