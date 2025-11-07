@@ -621,3 +621,13 @@ tbody tr:nth-child(even) {
     color: var(--color-dark) !important;
     font-size: 1.3rem;
 }
+
+.logo-responsive {
+  max-width: 80px;
+}
+
+@media (max-width: 576px) { /* Para móviles */
+  .logo-responsive {
+    max-width: 38px;
+  }
+}

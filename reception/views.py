@@ -270,14 +270,28 @@ def patient_list_view(request):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
     query = request.GET.get('ci', '')
+    sort = request.GET.get('sort', 'first_name')  # valor por defecto
+
+    # Define los campos permitidos para ordenar
+    allowed_sorts = {
+        'first_name': 'first_name',
+        'first_name_asc': '-first_name',
+        'last_name': 'last_name',
+        'last_name_asc': '-last_name',
+        'ci_asc': 'identification_number',
+        'ci_desc': '-identification_number',
+    }
+    sort_field = allowed_sorts.get(sort, 'first_name')
+
     if query:
-        pacientes = Patient.objects.filter(identification_number__icontains=query).order_by('-created_at')
+        pacientes = Patient.objects.filter(identification_number__icontains=query).order_by(sort_field)
     else:
-        pacientes = Patient.objects.all().order_by('-created_at')
+        pacientes = Patient.objects.all().order_by(sort_field)
     return render(request, 'reception/patient_list.html', {
         'patients': pacientes,
         'user': request.user,
         'ci_query': query,
+        'sort': sort,
     })
 
 
