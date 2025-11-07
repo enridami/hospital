@@ -2,9 +2,9 @@
 {% block body_class %}login-background{% endblock body_class %}
 
 {% block content %}
-<div class="card shadow-lg mx-auto mt-5" style="max-width: 24rem">
+<div class="card shadow-lg mx-auto" style="max-width: 24rem">
   <div class="card-body p-4">
-    <!-- <h1 class="fs-4 card-title fw-bold mb-3 text-center">  Ingresar </h1> -->
+    <!-- <h1 class="fs-6 card-title fw-normal mb-2 text-center">  Ingresar </h1> -->
     <form
       method="POST"
       class="needs-validation"
@@ -21,7 +21,7 @@
         {% endfor %}
       {% endif %}
       <div class="mb-3">
-        <label class="mb-2 text-muted" for="email">Usuario</label>
+        <label class="mb-2" for="email">Usuario</label>
         <input
           id="email"
           type="text"
@@ -38,7 +38,7 @@
 
       <div class="mb-3">
         <div class="mb-2 w-100">
-          <label class="text-muted" for="password">Contraseña</label>
+          <label class="mb-2" for="password">Contraseña</label>
           <!-- <a href="{% url 'password-reset' %}" class="float-end primary-color"
             >¿Olvidaste tu contraseña?</a
           > -->
@@ -57,20 +57,19 @@
 
       <div class="d-flex align-items-center justify-content-center">
         
-        <!-- label para recordar al usuario -->
-        <!-- <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1">
-          <label class="form-check-label" for="remember">Recordarme</label>
-
-        </div> -->
-
+        
         <button
-          type="submit"
-          class="btn btn-primary ms-auto mt-2"
-        >
-          Iniciar sesión
-        </button>
-      </div>
+        type="submit"
+        class="btn btn-primary ms-auto mt-2" style="background-color:var(--primary-color); border-color:var(--primary-color);">
+        Iniciar sesión
+      </button>
+    </div>
+    <!-- label para recordar al usuario -->
+    <!-- <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="remember" name="remember" value="1">
+      <label class="form-check-label" for="remember">Recordarme</label>
+
+    </div> -->
     </form>
   </div>
 </div>
