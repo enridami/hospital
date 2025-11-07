@@ -1,6 +1,7 @@
 {% extends "doctors/base.html" %}
 {% load form_tags %}
 {% block title %}Atender Consulta{% endblock %}
+{% block page_title %}Consulta médica - {{ consulta.patient.full_name }} {% endblock page_title %}
 {% block content %}
 
 <main>
@@ -10,7 +11,7 @@
                 <div class="card shadow-lg border-0">
                     <div class="card-header text-white d-flex align-items-center">
                         
-                        <h4 class="mb-0">Atender consulta</h4>
+                        <h4 class="mb-0 text-dark">Atender consulta</h4>
                     </div>
                     <div class="card-body">
                         
@@ -207,8 +208,8 @@
                                 {% endif %}
                             </div>
                             <div class="modal-footer py-3">
-                                <a href="{% url 'doctor_patient_list' %}" class="btn btn-secondary px-4"><i class="bi bi-x-circle me-1"></i> Cancelar</a>
-                                <button type="submit" class="btn btn-success px-4"><i class="bi bi-check2-circle me-1"></i> Guardar y marcar como atendido</button>
+                                <a href="{% url 'doctor_patient_list' %}" class="btn btn-secondary px-4"> Cancelar</a>
+                                <button type="submit" class="btn btn-success px-4"> Guardar y marcar como atendido</button>
                             </div>
                         </form>
                         <script>
