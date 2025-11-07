@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #123053;
+  --primary-color: #1f5f85;
   --secondary-color: #EFA323;
 }
 
@@ -47,4 +47,8 @@
 
 .login-logo{
   margin-bottom: 0px;
+}
+
+.copyright{
+  margin-top: 4rem;
 }
