@@ -22,6 +22,8 @@ urlpatterns = [
     path('consultas/historial/', views.consultation_history_view, name='consultation_history'),
 
     path('doctor-schedule/<int:doctor_id>/', doctor_schedule_view, name='doctor_schedule_view'),
+    path('doctor-days/<int:doctor_id>/', views.doctor_days_view, name='doctor_days_view'),
+
 
     
     

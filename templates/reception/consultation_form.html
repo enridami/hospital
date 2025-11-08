@@ -83,13 +83,19 @@
                             </div>
 
                             <div class="row g-3 mb-4">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-bold text-dark">Días de atención del doctor</label>
+                                    <div id="diasDoctor" class="alert alert-info py-2 px-3" style="min-height:38px;">
+                                        Seleccione un doctor para ver los días de atención.
+                                    </div>
+                                </div>
                                 
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold text-dark">Fecha</label>
                                     <input type="date" id="id_date" name="date" class="form-control" required>
                                     <button type="button" class="btn btn-info mt-2" onclick="verHorariosDoctor()">Ver horarios</button>
                                 </div>
-                               
+                                
                             </div>
                             
                             <div class="row g-3 mb-4">
@@ -237,6 +243,37 @@ function seleccionarHorario(dia, inicio, fin, consultorio) {
     var modal = bootstrap.Modal.getInstance(document.getElementById('modalHorariosDoctor'));
     modal.hide();
 }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var selectDoctor = document.getElementById('id_doctor');
+    var diasDoctorDiv = document.getElementById('diasDoctor');
+    if (selectDoctor && diasDoctorDiv) {
+        selectDoctor.addEventListener('change', function() {
+            var doctorId = selectDoctor.value;
+            if (!doctorId) {
+                diasDoctorDiv.innerHTML = "Seleccione un doctor para ver los días de atención.";
+                return;
+            }
+            fetch(`/reception/doctor-days/${doctorId}/`) 
+                .then(response => response.json())
+                .then(data => {
+                    if (data.dias && data.dias.length > 0) {
+                        diasDoctorDiv.innerHTML = "<strong>Días:</strong> " + data.dias.join(", ");
+                    } else {
+                        diasDoctorDiv.innerHTML = "Este doctor no tiene días de atención registrados.";
+                    }
+                })
+                .catch(() => {
+                    diasDoctorDiv.innerHTML = "No se pudieron cargar los días de atención.";
+                });
+        });
+        // Dispara el evento al cargar si ya hay un doctor seleccionado
+        if (selectDoctor.value) {
+            selectDoctor.dispatchEvent(new Event('change'));
+        }
+    }
+});
 </script>
 </main>
 {% endblock %}

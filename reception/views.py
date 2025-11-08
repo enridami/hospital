@@ -5,6 +5,7 @@ from django.contrib import messages
 from users.models import Consultation, Patient, Doctor, Specialty, DoctorSchedule
 from .forms import PatientForm, ConsultationForm
 from datetime import datetime, timedelta, date, time
+from django.http import JsonResponse
 
 # Dashboard principal
 @login_required
@@ -420,3 +421,9 @@ def doctor_schedule_view(request, doctor_id):
 def patient_detail(request,pk):
     patient = get_object_or_404(Patient, pk=pk)
     return render(request, 'reception/patient_detail.html', {'patient': patient})
+
+@login_required
+def doctor_days_view(request, doctor_id):
+    # Obtiene los días en que atiende el doctor
+    dias = DoctorSchedule.objects.filter(doctor_id=doctor_id).values_list('day', flat=True).distinct()
+    return JsonResponse({'dias': list(dias)})
