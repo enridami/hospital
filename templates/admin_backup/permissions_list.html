@@ -82,8 +82,13 @@
                                         {% endfor %}
                                     </select>
                                     <input type="hidden" name="user_id" value="{{ user.id }}">
-                                    <button type="submit" name="action" value="add" class="btn btn-sm btn-success">Asignar</button>
-                                    <button type="submit" name="action" value="remove" class="btn btn-sm btn-danger">Quitar</button>
+                                    
+                                    
+                                    <div class="mt-2">
+                                        <button type="submit" name="action" value="add" class="btn btn-sm btn-success">Asignar</button>
+                                        <button type="submit" name="action" value="remove" class="btn btn-sm btn-danger">Quitar</button>
+
+                                    </div>
                                 </form>
                             </td>
                         </tr>
