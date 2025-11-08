@@ -133,7 +133,7 @@
                                         {% endif %}
                                     </div>
                                     <div>
-                                        <h6 class="mb-1 fw-bold">Tipo de Usuario</h6>
+                                        <h6 class="mb-1 fw-bold"> Tipo de Usuario</h6>
                                         <small class="text-muted">
                                             {% if user_to_edit.is_doctor %}
                                                 Este usuario tiene permisos de médico en el sistema
@@ -152,17 +152,17 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="first_name" class="form-label fw-bold text-dark">
-                                        <i class="bi bi-person me-1"></i>Nombres
+                                        <i class="bi bi-person me-1"></i> Nombres
                                     </label>
-                                    <input type="text" class="form-control border-0 bg-light" 
+                                    <input type="text" class="form-control border-1 bg-light" 
                                            id="first_name" name="first_name" 
                                            value="{{ user_to_edit.first_name }}" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="last_name" class="form-label fw-bold text-dark">
-                                        <i class="bi bi-person me-1"></i>Apellidos
+                                        <i class="bi bi-person me-1"></i> Apellidos
                                     </label>
-                                    <input type="text" class="form-control border-0 bg-light" 
+                                    <input type="text" class="form-control border-1 bg-light" 
                                            id="last_name" name="last_name" 
                                            value="{{ user_to_edit.last_name }}" required>
                                 </div>
@@ -170,9 +170,9 @@
 
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-bold text-dark">
-                                    <i class="bi bi-envelope me-1"></i>Correo Electrónico
+                                    <i class="bi bi-envelope me-1"></i> Correo Electrónico
                                 </label>
-                                <input type="email" class="form-control border-0 bg-light" 
+                                <input type="email" class="form-control border-1 bg-light" 
                                        id="email" name="email" 
                                        value="{{ user_to_edit.email }}" required>
                             </div>
@@ -181,7 +181,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold text-dark">
-                                        <i class="bi bi-person-vcard me-1"></i>Nombre de Usuario
+                                        <i class="bi bi-person-vcard me-1"></i> Nombre de Usuario
                                     </label>
                                     <input type="text" class="form-control border-0 bg-light" 
                                            value="{{ user_to_edit.username }}" readonly>
@@ -192,7 +192,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold text-dark">
-                                        <i class="bi bi-calendar-check me-1"></i>Fecha de Registro
+                                        <i class="bi bi-calendar-check me-1"></i> Fecha de Registro
                                     </label>
                                     <input type="text" class="form-control border-0 bg-light" 
                                            value="{{ user_to_edit.date_joined|date:'d/m/Y H:i' }}" readonly>
@@ -202,7 +202,7 @@
                             <!-- Botones de acción -->
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{% url 'admin_users_list' %}" class="btn btn-outline-secondary btn-lg">
-                                    <i class="bi bi-arrow-left me-2"></i>Volver a Lista
+                                    <i class="bi bi-arrow-left me-2"></i> Volver a Lista
                                 </a>
                                 <div>
                                     <button type="button" class="btn btn-outline-warning btn-lg me-2" 
