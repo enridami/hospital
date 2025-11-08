@@ -144,7 +144,7 @@
                                     <label class="form-label fw-bold text-dark" for="first_name">
                                         <i class="bi bi-person me-1"></i>Nombre
                                     </label>
-                                    <input id="first_name" type="text" class="form-control border-0 bg-light" 
+                                    <input id="first_name" type="text" class="form-control border-1 bg-light" 
                                            name="user_firstname" value="{{ request.user.first_name }}" required />
                                 </div>
 
@@ -152,7 +152,7 @@
                                     <label class="form-label fw-bold text-dark" for="last_name">
                                         <i class="bi bi-person me-1"></i>Apellido
                                     </label>
-                                    <input id="last_name" type="text" class="form-control border-0 bg-light" 
+                                    <input id="last_name" type="text" class="form-control border-1 bg-light" 
                                            name="user_lastname" value="{{ request.user.last_name }}" required />
                                 </div>
                             </div>
@@ -162,7 +162,7 @@
                                     <label class="form-label fw-bold text-dark" for="email">
                                         <i class="bi bi-envelope me-1"></i>Email
                                     </label>
-                                    <input id="email" type="email" class="form-control border-0 bg-light" 
+                                    <input id="email" type="email" class="form-control border-1 bg-light" 
                                            name="user_email" value="{{ request.user.email }}" required />
                                 </div>
 
@@ -170,7 +170,7 @@
                                     <label class="form-label fw-bold text-dark" for="username">
                                         <i class="bi bi-at me-1"></i>Nombre de Usuario
                                     </label>
-                                    <input id="username" type="text" class="form-control border-0 bg-light" 
+                                    <input id="username" type="text" class="form-control border-1 bg-light" 
                                            name="username" value="{{ request.user.username }}" required />
                                 </div>
                             </div>
@@ -237,26 +237,26 @@
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-dark" for="current_password">
-                                    <i class="bi bi-key me-1"></i>Contraseña Actual
+                                    </i>Contraseña Actual
                                 </label>
-                                <input type="password" class="form-control border-0 bg-light" 
+                                <input type="password" class="form-control border-1 bg-light" 
                                        name="current_password" required />
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-dark" for="new_password">
-                                    <i class="bi bi-key-fill me-1"></i>Nueva Contraseña
+                                    </i>Nueva Contraseña
                                 </label>
-                                <input type="password" class="form-control border-0 bg-light" 
+                                <input type="password" class="form-control border-1 bg-light" 
                                        name="new_password" required />
                                 <small class="text-muted">Mínimo 8 caracteres</small>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold text-dark" for="confirm_new_password">
-                                    <i class="bi bi-check2-square me-1"></i>Confirmar Nueva
+                                    Confirmar nueva contraseña
                                 </label>
-                                <input type="password" class="form-control border-0 bg-light" 
+                                <input type="password" class="form-control border-1 bg-light" 
                                        name="confirm_new_password" required />
                             </div>
 
