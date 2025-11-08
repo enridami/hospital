@@ -28,11 +28,36 @@
                             <td>{{ user.email }}</td>
                             <td>
                                 {% if user.user_permissions.all %}
-                                    {% for perm in user.user_permissions.all %}
-                                        <span class="role-text text-success">{{ perm.name }}</span>
-                                    {% empty %}
-                                        <span class="role-text text-danger">Sin permisos</span>
-                                    {% endfor %}
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalPermisos{{ user.id }}">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </button>
+                                    <!-- Modal de permisos para cada usuario -->
+                                    <div class="modal fade" id="modalPermisos{{ user.id }}" tabindex="-1" aria-labelledby="modalPermisosLabel{{ user.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalPermisosLabel{{ user.id }}">Permisos de {{ user.get_full_name }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% if user.user_permissions.all %}
+                                                <ul class="list-unstyled mb-0" style="font-size: 0.97em;">
+                                                    {% for perm in user.user_permissions.all %}
+                                                    <li class="text-success" title="{{ perm.codename }}">{{ perm.name }}</li>
+                                                    {% empty %}
+                                                    <li class="text-danger">Sin permisos</li>
+                                                    {% endfor %}
+                                                </ul>
+                                                {% else %}
+                                                <span class="text-danger">Sin permisos</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 {% else %}
                                     <span class="role-text text-danger">Sin permisos</span>
                                 {% endif %}
