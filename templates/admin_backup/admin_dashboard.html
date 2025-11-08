@@ -6,11 +6,13 @@
 
 {% block content %}
 
+<link href="{% static 'css/style.css' %}" rel="stylesheet">
+
 <main>
     <div class="container-fluid">
     <!-- Tarjetas de estadísticas -->
     <div class="dash-cards">
-        <div class="card-single">
+        <div class="panel card-single">
             <div class="card-body">
                 <span class="text-primary"><i class="bi bi-people" aria-hidden="true"></i>  {{ total_users }}</span>
                 <!-- <h4>{{ total_users }}</h4> -->
@@ -18,7 +20,7 @@
             </div>
         </div>
         
-        <div class="card-single">
+        <div class="panel card-single">
             <div class="card-body">
                 <span class="text-success"><i class="bi bi-heart-pulse" aria-hidden="true"></i>  {{ total_doctors }}</span>
                 <!-- <h4>{{ total_doctors }}</h4> -->
@@ -26,7 +28,7 @@
             </div>
         </div>
         
-        <div class="card-single">
+        <div class="panel card-single">
             <div class="card-body">
                 <span class="text-warning"><i class="bi bi-briefcase" aria-hidden="true"></i>  {{ total_staff }}</span> 
                 <!-- <h4>{{ total_staff }}</h4> -->
@@ -34,7 +36,7 @@
             </div>
         </div>
         
-        <div class="card-single">
+        <div class="panel card-single">
             <div class="card-body">
                 <span class="text-info"><i class="bi bi-clipboard-heart" aria-hidden="true"></i> {{ total_patients }}</span>
                 <!-- <h4>{{ total_patients }}</h4> -->

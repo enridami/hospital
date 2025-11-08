@@ -631,3 +631,12 @@ tbody tr:nth-child(even) {
     max-width: 38px;
   }
 }
+
+.panel {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
