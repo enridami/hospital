@@ -29,7 +29,9 @@
                         <th>Apellido</th>
                         <th>Fecha</th>
                         <th>Hora</th>
-                        <th>Descripción</th>
+                        <th>Motivo</th>
+                        <th>Teléfono</th>
+                        <th>Teléfono de emergencia</th>
                         <th>Estado</th>
                         <th class="text-end"> </th>
                     </tr>
@@ -43,6 +45,8 @@
                         <td>{{ consulta.date }}</td>
                         <td>{{ consulta.time }}</td>
                         <td>{{ consulta.description }}</td>
+                        <td class="text-center">{{ consulta.patient.phone }}</td>
+                        <td class="text-center">{{ consulta.patient.emergency_contact_phone }}</td>
                         <td class="text-success">{{ consulta.get_status_display }}</td>
                         <td class="text-end">
                             <a href="{% url 'edit_consultation' consulta.id %}" class="btn btn-outline-warning btn-sm me-2">

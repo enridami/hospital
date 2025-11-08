@@ -12,7 +12,7 @@
                 <span class="text-primary"><i class="bi bi-people" aria-hidden="true"></i>   {{ pacientes_count }}</span>
                 <!-- <h4>{{ pacientes_count }}</h4> -->
                 <h5 class="mt-2">Pacientes Registrados</h5>
-                <a href="{% url 'reception:patient_list' %}" class="btn btn-outline-primary btn-sm">Ver pacientes</a>
+                <a href="{% url 'reception:patient_list' %}" class="btn btn-outline-primary btn-sm d-flex justify-content-center">Ver pacientes</a>
             </div>
         </div>
         <div class="panel card-single">
@@ -27,7 +27,7 @@
                 <span class="text-info"><i class="bi bi-clipboard-heart" aria-hidden="true"></i>   {{ consultas_count }}</span>
                 <!-- <h4>{{ consultas_count }}</h4> -->
                 <h5 class="mt-2">Consultas Totales</h5>
-                <a href="{% url 'reception:consultation_list' %}" class="btn btn-outline-success btn-sm">Ver consultas</a>
+                <a href="{% url 'reception:consultation_list' %}" class="btn btn-outline-success btn-sm d-flex justify-content-center">Ver consultas</a>
             </div>
         </div>
         <div class="panel card-single">
