@@ -2,7 +2,16 @@
 {% load static %}
 
 {% block title %} Inicio {% endblock title %}
-{% block page_title %} {{ request.user.first_name | safe | truncatechars:"20" }} {{ request.user.last_name | safe | truncatechars:"20" }} {% endblock page_title %}
+{% block page_title %} 
+{% if request.user.gender == "Male" %}
+  Dr. {{ request.user.first_name }} {{ request.user.last_name }}
+{% elif request.user.gender == "Female" %}
+  Dra. {{ request.user.first_name }} {{ request.user.last_name }}
+{% else %}
+  {{ request.user.first_name }} {{ request.user.last_name }}
+  
+{% endif %}
+{% endblock page_title %}
 
 {% block content %}
 <main>
@@ -30,7 +39,7 @@
               <td>{{ consulta.patient.full_name }}</td>
               <td>{{ consulta.date }}</td>
               <td>{{ consulta.time|default:"--" }}</td>
-              <td>{{ consulta.description|truncatechars:30 }}</td>
+              <td>{{ consulta.description|truncatechars:25 }}</td>
               <td>{{ consulta.get_status_display }}</td>
             </tr>
             {% empty %}
@@ -43,21 +52,20 @@
     </div>
 
 
-      <div class=" bg-light  p-2 shadow col-12 col-lg-5 mb-3">
-          <div>
-              <div class="d-flex justify-content-between">
-                  <h5 class="mt-2 mb-2"><i class="bi bi-journal-text"></i> Notas rápidas</h5>
-                  <!-- Button trigger modal -->
-                  <button type="button" class="btn text-end" data-bs-toggle="modal" data-bs-target="#Remainder" >
-                      <i class="bi bi-calendar-plus  fs-5"></i>
-                  </button>
-              </div>
-            
-          </div>
+    <div class=" bg-light  p-2 shadow col-12 col-lg-5 mb-3">
+      <div>
+        <div class="d-flex justify-content-between">
+            <h5 class="mt-2 mb-2"><i class="bi bi-journal-text"></i> Notas rápidas</h5>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn text-end" data-bs-toggle="modal" data-bs-target="#Remainder" >
+              <i class="bi bi-calendar-plus  fs-5"></i>
+            </button>
+        </div>   
+      </div>
           
   
-              <!-- Modal -->
-              <div class="modal fade" id="Remainder" tabindex="-1" aria-labelledby="Remainder" aria-hidden="true">
+        <!-- Modal -->
+            <div class="modal fade" id="Remainder" tabindex="-1" aria-labelledby="Remainder" aria-hidden="true">
                   <div class="modal-dialog">
                   <div class="modal-content">
                       <div class="modal-header">
@@ -87,10 +95,10 @@
                   </div>
                   </div>
               </div>
-              <div style = "overflow-y: scroll; height: 130px;" id="remainderList">
+              <div style = "overflow-y: scroll; height: 300px;" id="remainderList">
                   
-              </div>
-      </div>
+            </div>
+    </div>
 
 
       

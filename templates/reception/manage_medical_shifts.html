@@ -1,51 +1,73 @@
 {% extends "reception/base.html" %}
+{% load static %}
 {% block title %}Agenda{% endblock title %}
 {% block page_title %}Agendamiento{% endblock page_title %}
 {% block content %}
 
 
 <main>
-    <div class="container mt-4">
-        <h2>Consultas Agendadas</h2>
+    <div class="container-fluid">
+        <!-- <h2>Consultas Agendadas</h2>
         <a href="{% url 'reception:consultation_create' %}" class="btn btn-success mb-3">Agendar Nueva Consulta</a>
-        <a href="{% url 'reception:patient_create' %}" class="btn btn-primary mb-3">Registrar Paciente</a>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Orden</th>
-                    <th>Turno</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Paciente</th>
-                    <th>Doctor</th>
-                    <th>Consultorio</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for consulta in consultations %}
-                <tr>
-                    <td>{{ consulta.order }}</td>
-                    <td>{{ consulta.get_shift_display }}</td>
-                    <td>{{ consulta.date }}</td>
-                    <td>{{ consulta.time }}</td>
-                    <td>{{ consulta.patient.full_name }}</td>
-                    <td>{{ consulta.doctor }}</td>
-                    <td>{{ consulta.consultorio }}</td>
-                    <td>{{ consulta.get_status_display }}</td>
-                    <td>
-                        <a href="{% url 'reception:consultation_edit' consulta.id %}" class="btn btn-outline-warning btn-sm me-2">Editar</a>
-                        <a href="{% url 'reception:consultation_delete' consulta.id %}" class="btn btn-outline-danger btn-sm me-2">Eliminar</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="8">No hay consultas agendadas.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <a href="{% url 'reception:patient_create' %}" class="btn btn-primary mb-3">Registrar Paciente</a> -->
+
+        <div class="row mb-4">
+            <div class="col-md-8">
+            </div>
+
+            <div class="col-md-4 text-end">
+                <a href="{% url 'reception:consultation_create' %}" class="btn btn-success"><i class="bi bi-calendar-plus"></i> Agendar Nueva Consulta</a>
+                <a href="{% url 'reception:patient_create' %}" class="btn btn-primary"><i class="bi bi-person-plus"></i> Registrar Paciente</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Consultas Agendadas</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Orden</th>
+                                <th>Turno</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Doctor</th>
+                                <th>Consultorio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for consulta in consultations %}
+                            <tr>
+                                <td>{{ consulta.order }}</td>
+                                <td>{{ consulta.get_shift_display }}</td>
+                                <td>{{ consulta.date }}</td>
+                                <td>{{ consulta.time }}</td>
+                                <td>{{ consulta.patient.full_name }}</td>
+                                <td>{{ consulta.doctor }}</td>
+                                <td>{{ consulta.consultorio }}</td>
+                                <td>{{ consulta.get_status_display }}</td>
+                                <td>
+                                    <a href="{% url 'reception:consultation_edit' consulta.id %}" class="btn btn-outline-warning btn-sm me-2">Editar</a>
+                                    <a href="{% url 'reception:consultation_delete' consulta.id %}" class="btn btn-outline-danger btn-sm me-2">Eliminar</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                 <td colspan="8">No hay consultas agendadas.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </main>
 
