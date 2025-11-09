@@ -2,14 +2,14 @@
 {% load static %}
 
 {% block title %}Registrar Personal{% endblock title %}
-{% block page_title %}Registrar Nuevo Personal{% endblock page_title %}
+{% block page_title %}Gestión de Personal{% endblock page_title %}
 
 {% block content %}
 <main>
     <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="card shadow-lg" style="max-width: 40rem; width: 100%;">
             <div class="card-body p-4">
-                <h1 class="fs-4 card-title fw-bold mb-4 text-center">Registrar Nuevo Personal</h1>
+                <h1 class="fs-4 card-title fw-bold mb-4 text-center">Registrar Personal</h1>
 
                 {% if messages %}
                     {% for message in messages %}
@@ -47,14 +47,6 @@
                     <!-- Información de Usuario -->
                     <hr class="my-4">
                     <h5 class="mb-3 text-muted">Información Personal</h5>
-
-                    <div class="mb-3">
-                        <label class="mb-2 text-muted" for="username">Nombre de Usuario</label>
-                        <input type="text" class="form-control" id="username" name="username" required autofocus>
-                        <div class="invalid-feedback">El nombre de usuario es requerido</div>
-                        <small class="form-text text-muted">Este será usado para iniciar sesión en el sistema</small>
-                    </div>
-
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -81,6 +73,13 @@
                     <!-- Información de Acceso -->
                     <hr class="my-4">
                     <h5 class="mb-3 text-muted">Credenciales de Acceso</h5>
+
+                    <div class="mb-3">
+                        <label class="mb-2 text-muted" for="username">Nombre de Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" required autofocus>
+                        <div class="invalid-feedback">El nombre de usuario es requerido</div>
+                        <small class="form-text text-muted">Este será usado para iniciar sesión en el sistema</small>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-6">

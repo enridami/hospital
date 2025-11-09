@@ -2,41 +2,47 @@
 {% block title %}Asignar Rol{% endblock %}
 {% block page_title %}Asignar Roles{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <h3>Asignar rol a: {{ user.username }}</h3>
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <div>
-                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+
+<main>
+    <h4>Usuario: {{ user.username }}</h4>
+    <span class="text-dark">Nombres: {{ user.first_name }} {{ user.last_name }}</span>
+    {% if user.doctor %}
+        <div class="mb-2">
+            <span class="text-dark">Especialidad actual:</span>
+            {{ user.doctor.specialty.name }}
+        </div>
+    {% endif %}
+    <div class="container mt-4 d-flex justify-content-start">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="role" class="form-label" style="color: black">Selecciona el rol:</label>
+                <select name="role" id="role" class="form-select" onchange="toggleSpecialty(this.value)">
+                    <option value="doctor">Doctor</option>
+                    <option value="admin">Administrador</option>
+                    <option value="reception">Recepcionista</option>
+                </select>
             </div>
-            <br>
-            <label for="role" class="form-label" style="color: black">Selecciona el rol:</label>
-            <select name="role" id="role" class="form-select" onchange="toggleSpecialty(this.value)">
-                <option value="doctor">Doctor</option>
-                <option value="admin">Administrador</option>
-                <option value="reception">Recepcionista</option>
-            </select>
-        </div>
-        <div class="mb-3" id="specialtyDiv" style="display:none;">
-            <label for="specialty" class="form-label" style="color: black">Especialidad:</label>
-            <select name="specialty" id="specialty" class="form-select">
-                <option value="">-- Selecciona especialidad --</option>
-                {% for specialty in specialties %}
-                <option value="{{ specialty.id }}">{{ specialty.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Asignar Rol</button>
-        <a href="{% url 'admin_select_user_for_role' %}" class="btn btn-danger">Cancelar</a>
-    </form>
-</div>
-<script>
-function toggleSpecialty(role) {
-    document.getElementById('specialtyDiv').style.display = (role === 'doctor') ? 'block' : 'none';
-}
-window.onload = function() {
-    toggleSpecialty(document.getElementById('role').value);
-};
-</script>
+            <div class="mb-3" id="specialtyDiv" style="display:none;">
+                <label for="specialty" class="form-label" style="color: black">Especialidad:</label>
+                <select name="specialty" id="specialty" class="form-select">
+                    <option value="">-- Selecciona especialidad --</option>
+                    {% for specialty in specialties %}
+                    <option value="{{ specialty.id }}">{{ specialty.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Asignar Rol</button>
+            <a href="{% url 'admin_select_user_for_role' %}" class="btn btn-danger">Cancelar</a>
+        </form>
+    </div>
+    <script>
+    function toggleSpecialty(role) {
+        document.getElementById('specialtyDiv').style.display = (role === 'doctor') ? 'block' : 'none';
+    }
+    window.onload = function() {
+        toggleSpecialty(document.getElementById('role').value);
+    };
+    </script>
+</main>
 {% endblock %}
