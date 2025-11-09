@@ -1,46 +1,45 @@
 {% extends "reception/base.html" %}
-{% block title %}Dashboard Recepción{% endblock title %}
-{% block page_title %}Panel de Recepcionista{% endblock page_title %}
+{% load static %}
+{% block title %}Inicio{% endblock title %}
+{% block page_title %} {{ request.user.first_name | safe | truncatechars:"20" }} {{ request.user.last_name | safe | truncatechars:"20" }} {% endblock page_title %}
 
 {% block content %}
 <main>
   <div class="container mt-4">
-      <div class="row mb-4">
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-people-fill"></i> Pacientes</h5>
-                      <p class="display-6 fw-bold">{{ pacientes_count }}</p>
-                      <a href="{% url 'reception:patient_list' %}" class="btn btn-outline-primary btn-sm">Ver pacientes</a>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-person-badge"></i> Doctores</h5>
-                      <p class="display-6 fw-bold">{{ doctores_count }}</p>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-clipboard2-pulse"></i> Consultas totales</h5>
-                      <p class="display-6 fw-bold">{{ consultas_count }}</p>
-                      <a href="{% url 'reception:consultation_list' %}" class="btn btn-outline-success btn-sm">Ver consultas</a>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-3">
-              <div class="card text-center shadow">
-                  <div class="card-body">
-                      <h5 class="card-title"><i class="bi bi-calendar-event"></i> Consultas hoy</h5>
-                      <p class="display-6 fw-bold">{{ consultas_hoy }}</p>
-                  </div>
-              </div>
-          </div>
-      </div>
+      <div class="dash-cards">
+        <div class="panel card-single">
+            <div class="card-body">
+                <span class="text-primary"><i class="bi bi-people" aria-hidden="true"></i>   {{ pacientes_count }}</span>
+                <!-- <h4>{{ pacientes_count }}</h4> -->
+                <h5 class="mt-2">Pacientes Registrados</h5>
+                <a href="{% url 'reception:patient_list' %}" class="btn btn-outline-primary btn-sm d-flex justify-content-center">Ver pacientes</a>
+            </div>
+        </div>
+        <div class="panel card-single">
+            <div class="card-body">
+                <span class="text-success"><i class="bi bi-heart-pulse" aria-hidden="true"></i>   {{ doctores_count }}</span>
+                <!-- <h4>{{ doctores_count }}</h4> -->
+                <h5 class="mt-2">Médicos Registrados</h5>
+            </div>
+        </div>
+        <div class="panel card-single">
+            <div class="card-body">
+                <span class="text-info"><i class="bi bi-clipboard-heart" aria-hidden="true"></i>   {{ consultas_count }}</span>
+                <!-- <h4>{{ consultas_count }}</h4> -->
+                <h5 class="mt-2">Consultas Totales</h5>
+                <a href="{% url 'reception:consultation_list' %}" class="btn btn-outline-success btn-sm d-flex justify-content-center">Ver consultas</a>
+            </div>
+        </div>
+        <div class="panel card-single">
+            <div class="card-body">
+                <span class="text-warning"><i class="bi bi-calendar-day" aria-hidden="true"></i>   {{ consultas_hoy }}</span>
+                <!-- <h4>{{ consultas_hoy }}</h4> -->
+                <h5 class="mt-2">Consultas Hoy</h5>
+            </div>
+        </div>
+    </div>
+
+
       <div class="row mt-4">
           <div class="col-md-6">
               <a href="{% url 'reception:patient_create' %}" class="btn btn-primary w-100 mb-2">
@@ -55,4 +54,6 @@
       </div>
   </div>
 </main>
+
+<link href="{% static 'css/style.css' %}" rel="stylesheet">
 {% endblock %}

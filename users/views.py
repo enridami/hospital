@@ -9,6 +9,8 @@ Users = get_user_model()
 
 def login_view(request):
     """Vista para manejar el login de usuarios"""
+    list(messages.get_messages(request))
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -22,8 +24,8 @@ def login_view(request):
             return redirect('dashboard')    
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
-   
-    return render(request, 'users/login.html')
+
+    return render(request, 'users/login.html', context={})
 
 # Dashboards específicos con doble protección de seguridad
 @login_required
@@ -49,4 +51,5 @@ def dashboard_view(request):
 def logout_view(request):
     """Vista para cerrar sesión"""
     logout(request)
+    list(messages.get_messages(request))
     return redirect('login')

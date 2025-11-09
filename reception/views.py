@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from users.models import Consultation, Patient, Doctor, Specialty
+from users.models import Consultation, Patient, Doctor, Specialty, DoctorSchedule
 from .forms import PatientForm, ConsultationForm
-import datetime
+from datetime import datetime, timedelta, date, time
+from django.http import JsonResponse
 
 # Dashboard principal
 @login_required
@@ -15,7 +16,7 @@ def reception_dashboard_view(request):
     pacientes_count = Patient.objects.count()
     doctores_count = Doctor.objects.count()
     consultas_count = Consultation.objects.count()
-    consultas_hoy = Consultation.objects.filter(date__exact=datetime.date.today()).count()
+    consultas_hoy = Consultation.objects.filter(date__exact=date.today()).count()
 
     return render(request, 'reception/reception_dashboard.html', {
         'user': request.user,
@@ -31,7 +32,7 @@ def consultation_list_view(request):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
-    consultas = Consultation.objects.all().order_by('date', 'shift', 'order')
+    consultas = Consultation.objects.exclude(status="ATENDIDO").order_by('date', 'shift', 'order')
     return render(request, 'reception/manage_medical_shifts.html', {
         'consultations': consultas,
         'user': request.user,
@@ -60,9 +61,10 @@ def patient_create_view(request):
 @login_required
 def consultation_create_view(request):
     especialidades = Specialty.objects.all()
-    # Obtener especialidad tanto por GET como por POST
     especialidad_id = request.POST.get('especialidad') or request.GET.get('especialidad')
     doctores = Doctor.objects.none()
+    consultorio_asignado = None
+
     if especialidad_id:
         doctores = Doctor.objects.filter(specialty_id=especialidad_id)
 
@@ -75,25 +77,56 @@ def consultation_create_view(request):
     if ci_query:
         paciente_encontrado = Patient.objects.filter(identification_number=ci_query).first()
 
-    # Inicializar el formulario con los doctores filtrados
     if request.method == 'POST':
         form = ConsultationForm(request.POST)
         form.fields['doctor'].queryset = doctores
-        # Asignar el paciente si está presente
         if paciente_encontrado:
             form.instance.patient = paciente_encontrado
-        if form.is_valid():
+        else:
+            messages.error(request, "Debes buscar y seleccionar un paciente antes de agendar la consulta.")
+        if form.is_valid() and paciente_encontrado:
             consulta = form.save(commit=False)
-            # Asignar el orden automáticamente según el turno y fecha
-            mismo_turno = Consultation.objects.filter(
-                date=consulta.date,
-                shift=consulta.shift,
-                doctor=consulta.doctor
-            ).count()
-            consulta.order = mismo_turno + 1
-            consulta.save()
-            messages.success(request, 'Consulta agendada correctamente.')
-            return redirect('reception:consultation_list')
+
+            # Asignar el turno automáticamente si viene en el POST
+            turno_auto = request.POST.get('turno_auto')
+            if turno_auto:
+                consulta.shift = turno_auto
+
+
+            # Asignar consultorio automáticamente según el horario del doctor
+            day_name = consulta.date.strftime('%A').upper()
+            day_map = {
+                'MONDAY': 'LUNES', 'TUESDAY': 'MARTES', 'WEDNESDAY': 'MIERCOLES',
+                'THURSDAY': 'JUEVES', 'FRIDAY': 'VIERNES', 'SATURDAY': 'SABADO', 'SUNDAY': 'DOMINGO'
+            }
+            day = day_map.get(day_name, day_name)
+            horario = DoctorSchedule.objects.filter(
+                doctor=consulta.doctor,
+                day=day,
+                start_time__lte=consulta.time,
+                end_time__gte=consulta.time
+            ).first()
+            if not horario:
+                messages.error(request, "El doctor no está disponible en ese horario.")
+            else:
+                consulta.consultorio = horario.consultorio
+                mismo_turno = Consultation.objects.filter(
+                    date=consulta.date,
+                    shift=consulta.shift,
+                    doctor=consulta.doctor
+                ).count()
+                consulta.order = mismo_turno + 1
+                consulta.save()
+                messages.success(request, 'Consulta agendada correctamente.')
+                return redirect('reception:consultation_list')
+            
+            if horario:
+             consultorio_asignado = horario.consultorio
+
+        elif not paciente_encontrado:
+            pass
+        else:
+            messages.error(request, "Corrige los errores del formulario.")
     else:
         form = ConsultationForm()
         form.fields['doctor'].queryset = doctores
@@ -105,26 +138,55 @@ def consultation_create_view(request):
         'paciente_encontrado': paciente_encontrado,
         'especialidades': especialidades,
         'especialidad_id': especialidad_id,
+        'consultorio_asignado': consultorio_asignado,
     })
 
-
+# Editar consulta ya agendada
 @login_required
 def consultation_edit_view(request, pk):
     if not hasattr(request.user, 'receptions'):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
+
     consulta = get_object_or_404(Consultation, pk=pk)
+    especialidades = Specialty.objects.all()
+
+    # Obtener especialidad seleccionada (por GET, POST o la actual de la consulta)
+    especialidad_id = (
+        request.POST.get('especialidad')
+        or request.GET.get('especialidad')
+        or (str(consulta.doctor.specialty.id) if consulta.doctor and consulta.doctor.specialty else '')
+    )
+
+    # Filtrar doctores según la especialidad seleccionada
+    doctores = Doctor.objects.none()
+    if especialidad_id:
+        doctores = Doctor.objects.filter(specialty_id=especialidad_id)
+    else:
+        doctores = Doctor.objects.all()
+
+    # Paciente y CI
+    ci_query = consulta.patient.identification_number if consulta.patient else ''
+    paciente_encontrado = consulta.patient if consulta.patient else None
+
     if request.method == 'POST':
         form = ConsultationForm(request.POST, instance=consulta)
+        form.fields['doctor'].queryset = doctores
         if form.is_valid():
             form.save()
             messages.success(request, 'Consulta actualizada correctamente.')
             return redirect('reception:consultation_list')
     else:
         form = ConsultationForm(instance=consulta)
+        form.fields['doctor'].queryset = doctores
+
     return render(request, 'reception/consultation_form.html', {
         'form': form,
         'user': request.user,
+        'ci_query': ci_query,
+        'paciente_encontrado': paciente_encontrado,
+        'especialidades': especialidades,
+        'especialidad_id': especialidad_id,
     })
 
 # Eliminar consulta
@@ -209,14 +271,28 @@ def patient_list_view(request):
         messages.error(request, 'No tienes permisos para acceder a esta sección.')
         return redirect('dashboard')
     query = request.GET.get('ci', '')
+    sort = request.GET.get('sort', 'first_name')  # valor por defecto
+
+    # Define los campos permitidos para ordenar
+    allowed_sorts = {
+        'first_name': 'first_name',
+        'first_name_asc': '-first_name',
+        'last_name': 'last_name',
+        'last_name_asc': '-last_name',
+        'ci_asc': 'identification_number',
+        'ci_desc': '-identification_number',
+    }
+    sort_field = allowed_sorts.get(sort, 'first_name')
+
     if query:
-        pacientes = Patient.objects.filter(identification_number__icontains=query).order_by('-created_at')
+        pacientes = Patient.objects.filter(identification_number__icontains=query).order_by(sort_field)
     else:
-        pacientes = Patient.objects.all().order_by('-created_at')
+        pacientes = Patient.objects.all().order_by(sort_field)
     return render(request, 'reception/patient_list.html', {
         'patients': pacientes,
         'user': request.user,
         'ci_query': query,
+        'sort': sort,
     })
 
 
@@ -239,6 +315,8 @@ def patient_edit_view(request, pk):
         'user': request.user,
     })
 
+
+# Eliminar paciente
 @login_required
 def patient_delete_view(request, pk):
     if not hasattr(request.user, 'receptions'):
@@ -253,3 +331,99 @@ def patient_delete_view(request, pk):
         'object': paciente,
         'user': request.user,
     })
+
+
+# Historial de consultas realizadas
+@login_required
+def consultation_history_view(request):
+    if not hasattr(request.user, 'receptions'):
+        messages.error(request, 'No tienes permisos para acceder a esta sección.')
+        return redirect('dashboard')
+    consultas = Consultation.objects.filter(status="ATENDIDO").order_by('-date', '-time')
+    return render(request, 'reception/consultation_history.html', {
+        'consultations': consultas,
+        'user': request.user,
+    })
+
+
+
+
+@login_required
+def doctor_schedule_view(request, doctor_id):
+    doctor = get_object_or_404(Doctor, pk=doctor_id)
+    horarios = DoctorSchedule.objects.filter(doctor=doctor).order_by('day', 'start_time')
+    bloques_por_horario = []
+
+    # Obtén la fecha seleccionada del parámetro GET
+    fecha_str = request.GET.get('fecha')
+    if fecha_str:
+        try:
+            fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        except ValueError:
+            fecha = datetime.today().date()
+    else:
+        fecha = datetime.today().date()
+
+
+    # 1. Obtener el nombre del día en español (según tu modelo)
+    dias_map = {
+        0: 'LUNES', 1: 'MARTES', 2: 'MIERCOLES', 3: 'JUEVES',
+        4: 'VIERNES', 5: 'SABADO', 6: 'DOMINGO'
+    }
+    dia_semana = dias_map[fecha.weekday()]
+
+    # 2. Filtrar horarios solo para ese día
+    horarios = DoctorSchedule.objects.filter(doctor=doctor, day=dia_semana).order_by('start_time')
+    bloques_por_horario = []
+        
+    # Duración de cada consulta (en minutos)
+    duracion_consulta = 30
+
+    for horario in horarios:
+        # Convierte start_time y end_time a datetime para operar
+        inicio = datetime.combine(datetime.today(), horario.start_time)
+        fin = datetime.combine(datetime.today(), horario.end_time)
+        bloques = []
+        actual = inicio
+        while actual + timedelta(minutes=duracion_consulta) <= fin:
+            bloque_inicio = actual.time()
+            bloque_fin = (actual + timedelta(minutes=duracion_consulta)).time()
+            # Verifica si ya hay una consulta agendada en ese bloque
+            consulta_existente = Consultation.objects.filter(
+                doctor=doctor,
+                date=fecha,   
+                time=bloque_inicio,
+                consultorio=horario.consultorio
+            ).exists()
+            bloques.append({
+                'dia': horario.day,
+                'inicio': bloque_inicio.strftime('%H:%M'),
+                'fin': bloque_fin.strftime('%H:%M'),
+                'consultorio': horario.consultorio,
+                'ocupado': consulta_existente
+            })
+            actual += timedelta(minutes=duracion_consulta)
+        bloques_por_horario.append({
+            'horario': horario,
+            'bloques': bloques
+        })     
+
+    doctor_no_atiende = not horarios.exists()
+
+    return render(request, 'reception/doctor_schedule_modal.html', {
+        'doctor': doctor,
+        'bloques_por_horario': bloques_por_horario,
+        'doctor_no_atiende': doctor_no_atiende,
+        'dia_semana': dia_semana,
+    })
+
+@login_required
+def patient_detail(request,pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    return render(request, 'reception/patient_detail.html', {'patient': patient})
+
+@login_required
+def doctor_days_view(request, doctor_id):
+    # Obtiene los días en que atiende el doctor
+    dias = DoctorSchedule.objects.filter(doctor_id=doctor_id).values_list('day', flat=True).distinct()
+    return JsonResponse({'dias': list(dias)})

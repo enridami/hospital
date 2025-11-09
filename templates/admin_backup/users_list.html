@@ -14,8 +14,11 @@
                 <p class="text-muted">Total de usuarios registrados: {{ total_users }}</p>
             </div>
             <div class="col-md-4 text-end">
-                <a href="{% url 'admin_create_user' %}" class="btn btn-primary">
-                    <i class="bi bi-person-plus me-2"></i>Nuevo Usuario
+                <a href="{% url 'admin_create_doctor' %}" class="btn btn-success">
+                    <i class="bi bi-person-plus me-2"></i> Nuevo Doctor
+                </a>
+                <a href="{% url 'admin_create_staff' %}" class="btn btn-primary">
+                    <i class="bi bi-person-plus me-2"></i> Nuevo Personal
                 </a>
             </div>
         </div>
@@ -100,6 +103,14 @@
                                                 title="Cambiar estado">
                                             <i class="bi bi-power"></i>
                                         </button>
+
+                                        <a href="#" 
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Eliminar usuario"
+                                                onclick="deleteUser({{ user.id }})">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+
                                     </div>
                                 </td>
                             </tr>
@@ -140,6 +151,35 @@ function toggleUserStatus(userId) {
                 location.reload();
             } else {
                 alert('Error al cambiar el estado del usuario');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al procesar la solicitud');
+        });
+    }
+}
+
+
+
+function deleteUser(userId) {
+    if (!userId) return;
+    if (confirm('¿Está seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) return;
+        fetch(`/admin-dashboard/users/delete/${userId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken.value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error al eliminar el usuario');
             }
         })
         .catch(error => {

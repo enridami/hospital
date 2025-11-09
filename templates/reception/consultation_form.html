@@ -1,4 +1,6 @@
 {% extends "reception/base.html" %}
+{% block title %}{% if form.instance.pk %}Editar Consulta{% else %}Agendar Consulta{% endif %}{% endblock %}
+{% block page_title %}Agendamiento - Nueva consulta{% endblock page_title %}
 {% load form_tags_reception %}
 {% block content %}
 <main>
@@ -38,6 +40,24 @@
                                 No se encontró ningún paciente con ese número de CI.
                             </div>
                         {% endif %}
+
+<!--  -->
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+<!--  -->
+
                         <form method="post" class="needs-validation" novalidate>
                             {% csrf_token %}
                             {{ form.non_field_errors }}
@@ -63,31 +83,40 @@
                             </div>
 
                             <div class="row g-3 mb-4">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label fw-bold text-dark">Días de atención del doctor</label>
+                                    <div id="diasDoctor" class="alert alert-info py-2 px-3" style="min-height:38px;">
+                                        Seleccione un doctor para ver los días de atención.
+                                    </div>
+                                </div>
+                                
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold text-dark">Fecha</label>
-                                    {{ form.date|add_class:"form-control" }}
-                                    {% if form.date.errors %}
-                                        <div class="text-danger small">{{ form.date.errors|striptags }}</div>
-                                    {% endif %}
+                                    <input type="date" id="id_date" name="date" class="form-control" required>
+                                    <button type="button" class="btn btn-info mt-2" onclick="verHorariosDoctor()">Ver horarios</button>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold text-dark">Hora</label>
-                                    {{ form.time|add_class:"form-control" }}
-                                    {% if form.time.errors %}
-                                        <div class="text-danger small">{{ form.time.errors|striptags }}</div>
-                                    {% endif %}
+                                
+                            </div>
+                            
+                            <div class="row g-3 mb-4">
+                               
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Horario seleccionado</label>
+                                    <div id="horarioSeleccionadoInfo" class="alert alert-info py-2 px-3" style="min-height:38px;">
+                                        <!-- Aquí se mostrará el horario seleccionado -->
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
+
+                                 <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark">Turno</label>
                                     {{ form.shift|add_class:"form-select" }}
                                     {% if form.shift.errors %}
                                         <div class="text-danger small">{{ form.shift.errors|striptags }}</div>
                                     {% endif %}
                                 </div>
-                            </div>
 
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
+
+                                <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark">Estado</label>
                                     {{ form.status|add_class:"form-select" }}
                                     {% if form.status.errors %}
@@ -96,6 +125,18 @@
                                 </div>
                             </div>
 
+                            {% if form.cleaned_data.doctor and form.cleaned_data.date and form.cleaned_data.time %}
+                                {% with doctor=form.cleaned_data.doctor date=form.cleaned_data.date time=form.cleaned_data.time %}
+                                    {% comment %} 
+                                    {{ consultorio_asignado }}
+                                    {% endcomment %}
+                                    <div class="mb-3">
+                                        <label class="form-label">Consultorio asignado</label>
+                                        <input type="text" class="form-control" value="{{ consultorio_asignado }}" readonly>
+                                    </div>
+                                {% endwith %}
+                            {% endif %}
+                            
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-dark">Motivo de la consulta</label>
                                 {{ form.description|add_attrs:"class=form-control,rows=3,placeholder=Motivo de la consulta" }}
@@ -104,6 +145,9 @@
                                 {% endif %}
                             </div>
 
+                            <input type="hidden" id="turno_auto" name="turno_auto">
+                            <input type="hidden" id="hora_consulta" name="time">
+                            
                             <div class="modal-footer py-3">
                                 <button type="submit" class="btn btn-success px-4">
                                     {% if form.instance.pk %}Guardar Cambios{% else %}Agendar{% endif %}
@@ -116,5 +160,120 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para mostrar horarios del doctor -->
+<div class="modal fade" id="modalHorariosDoctor" tabindex="-1" aria-labelledby="modalHorariosDoctorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header  text-white">
+        <h5 class="modal-title" id="modalHorariosDoctorLabel">Horarios disponibles del doctor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="modalHorariosDoctorBody">
+        <!-- Aquí se cargará la tabla de horarios vía AJAX -->
+        <div class="text-center text-muted">Seleccione un doctor y haga clic en "Ver horarios".</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function verHorariosDoctor() {
+    var doctorId = document.getElementById('id_doctor').value;
+    var fecha = document.getElementById('id_date').value; // <-- obtiene la fecha seleccionada
+    if (!doctorId) {
+        alert('Selecciona un doctor primero.');
+        return;
+    }
+    if (!fecha) {
+        alert('Selecciona una fecha primero.');
+        return;
+    }
+    // Llama a la vista por AJAX y pasa la fecha como parámetro GET
+    fetch(`/reception/doctor-schedule/${doctorId}/?fecha=${fecha}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('modalHorariosDoctorBody').innerHTML = html;
+            var modal = new bootstrap.Modal(document.getElementById('modalHorariosDoctor'));
+            modal.show();
+        })
+        .catch(error => {
+            document.getElementById('modalHorariosDoctorBody').innerHTML = '<div class="text-danger">No se pudieron cargar los horarios.</div>';
+        });
+}
+
+
+function seleccionarHorario(dia, inicio, fin, consultorio) {
+    document.getElementById('horarioSeleccionadoInfo').innerHTML =
+        `<strong>Día:</strong> ${dia} &nbsp; <strong>Inicio:</strong> ${inicio} &nbsp; <strong>Fin:</strong> ${fin} &nbsp; <strong>Consultorio:</strong> ${consultorio}`;
+
+    // Asigna la hora de inicio al campo oculto
+    var inputHora = document.getElementById('hora_consulta');
+    if (inputHora) {
+        inputHora.value = inicio;
+    }
+    
+    // Determina el turno según la hora de inicio
+    var turno = "";
+    var hora = parseInt(inicio.split(":")[0]);
+    if (hora >= 8 && hora < 12) {
+        turno = "MAÑANA";
+    } else if (hora >= 12 && hora < 18) {
+        turno = "TARDE";
+    } else if (hora >= 18 && hora < 21) {
+        turno = "NOCHE";
+    }
+
+    // Selecciona el turno en el select
+    var selectTurno = document.getElementById('id_shift');
+    if (selectTurno) {
+        selectTurno.value = turno;
+    }
+
+    // Si usas el campo oculto
+    var inputTurno = document.getElementById('turno_auto');
+    if (inputTurno) {
+        inputTurno.value = turno;
+    }
+
+    var modal = bootstrap.Modal.getInstance(document.getElementById('modalHorariosDoctor'));
+    modal.hide();
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var selectDoctor = document.getElementById('id_doctor');
+    var diasDoctorDiv = document.getElementById('diasDoctor');
+    if (selectDoctor && diasDoctorDiv) {
+        selectDoctor.addEventListener('change', function() {
+            var doctorId = selectDoctor.value;
+            if (!doctorId) {
+                diasDoctorDiv.innerHTML = "Seleccione un doctor para ver los días de atención.";
+                return;
+            }
+            fetch(`/reception/doctor-days/${doctorId}/`) 
+                .then(response => response.json())
+                .then(data => {
+                    if (data.dias && data.dias.length > 0) {
+                        diasDoctorDiv.innerHTML = "<strong>Días:</strong> " + data.dias.join(", ");
+                    } else {
+                        diasDoctorDiv.innerHTML = "Este doctor no tiene días de atención registrados.";
+                    }
+                })
+                .catch(() => {
+                    diasDoctorDiv.innerHTML = "No se pudieron cargar los días de atención.";
+                });
+        });
+        // Dispara el evento al cargar si ya hay un doctor seleccionado
+        if (selectDoctor.value) {
+            selectDoctor.dispatchEvent(new Event('change'));
+        }
+    }
+});
+</script>
 </main>
 {% endblock %}

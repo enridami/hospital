@@ -12,7 +12,7 @@ urlpatterns = [
     path('password-reset/', login_view, name='password-reset'), #temporal para que pueda recuperar contraseña
     
     path('doctors/', include('doctors.urls')),
-    path('reception/', include('reception.urls')),
+    path('recepcion/', include('reception.urls')),
     path('administrator/', include('administrator.urls')),
     path('', include('administrator.urls')),
 

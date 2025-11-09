@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 
 class Specialty(models.Model):
     """Modelo para especialidades médicas"""
@@ -94,7 +95,6 @@ class Doctor(models.Model):
     user = models.OneToOneField(Users, on_delete=models.CASCADE, primary_key=True)
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE)
     bio = models.TextField()
-    consultorio = models.CharField(max_length=20, blank=True, null=True)  # Nuevo campo
 
     class Meta:
         verbose_name = "Doctor"
@@ -140,7 +140,11 @@ class Patient(models.Model):
     first_name = models.CharField(max_length=50, verbose_name="Nombre")
     last_name = models.CharField(max_length=50, verbose_name="Apellido")
     email = models.EmailField(max_length=100, blank=True, null=True, verbose_name="Email")
-    phone = models.CharField(max_length=20, verbose_name="Teléfono")
+    phone = models.CharField(
+        max_length=20,
+        verbose_name="Teléfono",
+        validators=[RegexValidator(r'^\+?\d{7,15}$', message='Ingrese un número de teléfono válido (solo dígitos, opcional "+" al inicio).')]
+    )
     
     # Identificación
     identification_type_choices = (
@@ -157,9 +161,9 @@ class Patient(models.Model):
         verbose_name="Tipo de Identificación"
     )
     identification_number = models.CharField(
-        max_length=50, 
-        unique=True, 
-        verbose_name="Número de Identificación"
+        max_length=20,
+        unique=True,
+        validators=[RegexValidator(r'^\d+$', message='La cédula debe contener solo números.')]
     )
     
     # Información demográfica
@@ -205,8 +209,9 @@ class Patient(models.Model):
         verbose_name="Relación del Contacto"
     )
     emergency_contact_phone = models.CharField(
-        max_length=20, 
-        verbose_name="Teléfono del Contacto de Emergencia"
+        max_length=20,
+        verbose_name="Teléfono del Contacto de Emergencia",
+        validators=[RegexValidator(r'^\+?\d{7,15}$', message='Ingrese un número de teléfono válido (solo dígitos, opcional "+" al inicio).')]
     )
     
     # Información del sistema
@@ -365,3 +370,32 @@ class Prescription(models.Model):
     def __str__(self):
         return f"Receta para {self.consultation.patient.full_name} - {self.medication}"
     
+
+class DoctorSchedule(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='schedules')
+    day_choices = [
+        ('LUNES', 'Lunes'),
+        ('MARTES', 'Martes'),
+        ('MIERCOLES', 'Miércoles'),
+        ('JUEVES', 'Jueves'),
+        ('VIERNES', 'Viernes'),
+        ('SABADO', 'Sábado'),
+        ('DOMINGO', 'Domingo'),
+    ]
+    day = models.CharField(max_length=10, choices=day_choices)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    consultorio = models.CharField(max_length=20)  # Consultorio asignado en ese horario
+
+    def save(self, *args, **kwargs):
+        # Normaliza el consultorio antes de guardar
+        if self.consultorio:
+            self.consultorio = self.consultorio.strip().lower()
+        super().save(*args, **kwargs)
+    class Meta:
+        verbose_name = "Horario de Doctor"
+        verbose_name_plural = "Horarios de Doctores"
+        ordering = ['doctor', 'day', 'start_time']
+
+    def __str__(self):
+        return f"{self.doctor} - {self.day} {self.start_time} a {self.end_time} ({self.consultorio})"

@@ -29,7 +29,10 @@
                         <th>Apellido</th>
                         <th>Fecha</th>
                         <th>Hora</th>
-                        <th>Descripción</th>
+                        <th>Motivo</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th class="text-end"> </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,17 +44,232 @@
                         <td>{{ consulta.date }}</td>
                         <td>{{ consulta.time }}</td>
                         <td>{{ consulta.description }}</td>
+                        <td class="text-center">{{ consulta.patient.phone }}</td>
+                        <td class="text-success">{{ consulta.get_status_display }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'edit_consultation' consulta.id %}" class="btn btn-outline-warning btn-sm me-2">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <button type="button"
+                                    class="btn btn-outline-primary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#consultaModal{{ consulta.id }}">
+                                <i class="bi bi-eye"></i> Ver detalle
+                            </button>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center">No hay consultas atendidas.</td>
+                        <td colspan="7" class="text-center">No hay consultas atendidas.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+
+    {# Modales de detalle por cada consulta atendida #}
+    {% for consulta in consultations %}
+    <div class="modal fade" id="consultaModal{{ consulta.id }}" tabindex="-1" aria-labelledby="consultaModalLabel{{ consulta.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="consultaModalLabel{{ consulta.id }}">Detalle de consulta</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+
+            <div class="row mb-4">
+                <div class="col-md-6 mb-2">
+                <label class="form-label fw-bold text-dark">Nombre del paciente</label>
+                <input type="text" class="form-control" value="{{ consulta.patient.full_name }}" readonly>
+                </div>
+                <div class="col-md-3 mb-2">
+                <label class="form-label fw-bold text-dark">N° de consulta</label>
+                <input type="text" class="form-control" value="{{ consulta.order }}" readonly>
+                </div>
+                <div class="col-md-3 mb-2">
+                <label class="form-label fw-bold text-dark">Consultorio</label>
+                <input type="text" class="form-control" value="{{ consulta.consultorio|default:'—' }}" readonly>
+                </div>
+            </div>
+
+            <div class="row gy-2 gx-3 align-items-center mb-4">
+                <div class="col-auto">
+                <label class="form-label fw-bold text-dark">Edad: </label>
+                </div>
+                <div class="col-md-1">
+                <input type="text" class="form-control" value="{{ consulta.patient.age }}" readonly>
+                </div>
+                <div class="col-auto">
+                <p class="fw-bold text-dark">años</p>
+                </div>
+                <div class="col-md-5 ms-auto d-flex align-items-center justify-content-end">
+                <label class="form-label fw-bold text-dark mb-0 me-2">Servicio</label>
+                <input type="text" class="form-control w-auto" value="{{ consulta.doctor.specialty.name }}" readonly>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                <label class="form-label fw-bold text-dark">Motivo de la consulta</label>
+                <textarea class="form-control" rows="3" readonly>{{ consulta.description }}</textarea>
+                </div>
+            </div>
+
+            <div class="accordion mb-4" id="vitalAccordion{{ consulta.id }}">
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="headingVital{{ consulta.id }}">
+                    <button class="btn btn-outline-info btn-m" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapseVital{{ consulta.id }}"
+                            aria-expanded="true"
+                            aria-controls="collapseVital{{ consulta.id }}">
+                    <i class="bi bi-heart-pulse me-2"></i> Signos vitales
+                    </button>
+                </h2>
+                <div id="collapseVital{{ consulta.id }}" class="accordion-collapse collapse show"
+                    aria-labelledby="headingVital{{ consulta.id }}"
+                    data-bs-parent="#vitalAccordion{{ consulta.id }}">
+                    <div class="accordion-body">
+
+                    <div class="row g-3 mt-2 align-items-end">
+                        <div class="col-md-4">
+                        <label class="form-label text-dark">Temperatura Corporal [°C]</label>
+                        <input type="number" class="form-control" value="{{ consulta.temperatura|default:'—' }}" readonly>
+                        </div>
+                        <div class="col-md-5">
+                        <label class="form-label fw-bold text-dark">Presión Arterial (PA) [mmHg]</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control text-center" placeholder="Sistólica" value="{{ consulta.presion_sistolica|default:'—' }}" readonly>
+                            <input type="number" class="form-control text-center" placeholder="Diastólica" value="{{ consulta.presion_diastolica|default:'—' }}" readonly>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">Frecuencia Respiratoria (FR) [lat/min]</label>
+                        <input type="number" class="form-control" value="{{ consulta.frecuencia_respiratoria|default:'—' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2 align-items-end">
+                        <div class="col-md-2">
+                        <label class="form-label fw-bold text-dark">Pulso [bpm]</label>
+                        <input type="number" class="form-control" value="{{ consulta.pulso|default:'—' }}" readonly>
+                        </div>
+                        <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark">Saturación de Oxígeno (%)</label>
+                        <input type="number" class="form-control text-center" value="{{ consulta.saturacion_oxigeno|default:'—' }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2 align-items-end">
+                        <div class="col-md-3">
+                        <label class="form-label fw-bold text-dark">Peso [Kg]</label>
+                        <input type="number" class="form-control" value="{{ consulta.peso|default:'—' }}" readonly>
+                        </div>
+                        <div class="col-md-3">
+                        <label class="form-label fw-bold text-dark">Talla [cm]</label>
+                        <input type="number" class="form-control" value="{{ consulta.talla|default:'—' }}" readonly>
+                        </div>
+                        <div class="col-md-3">
+                        <label class="form-label fw-bold text-dark">Circunferencia Abdominal [cm]</label>
+                        <input type="number" class="form-control" value="{{ consulta.circunferencia_abdominal|default:'—' }}" readonly>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="row gy-2 gx-3 align-items-center mb-4">
+                <div class="col-auto">
+                <label class="form-label fw-bold text-dark">Historia actual:</label>
+                <textarea class="form-control" rows="3" readonly>{{ consulta.historia_actual|default:'' }}</textarea>
+                </div>
+                <div class="col-auto">
+                <label class="form-label fw-bold text-dark">Evolución / Otros Datos (Examen Físico):</label>
+                <textarea class="form-control" rows="3" readonly>{{ consulta.evolucion|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold text-dark">Impresión Diagnóstica:</label>
+                <textarea class="form-control" rows="3" readonly>{{ consulta.impresion_diagnostica|default:'' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold text-dark">Indicaciones:</label>
+                <textarea class="form-control" rows="3" readonly>{{ consulta.indicaciones|default:'' }}</textarea>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold text-dark">HbA1c [%]</label>
+                <input type="number" class="form-control" value="{{ consulta.hba1c|default:'—' }}" readonly>
+            </div>
+
+            </div>
+        </div>
+        <div class="modal-footer py-3">
+            <button type="button" class="btn btn-outline-secondary" onclick="printModal('consultaModal{{ consulta.id }}')">
+            <i class="bi bi-printer"></i> Imprimir
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+        </div>
+    </div>
+    </div>
+    {% endfor %}
 </div>
+
+
+
+
+<script>
+    function printModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        const content = modal.querySelector('.modal-content');
+        if (!content) return;
+
+        const printWindow = window.open('', '_blank', 'width=900,height=700');
+        if (!printWindow) return;
+
+        printWindow.document.open();
+        printWindow.document.write(`<!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Consulta</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 16px; }
+            .form-label { font-weight: 600; }
+            .row { display: flex; flex-wrap: wrap; margin: 0 -8px; }
+            .col-md-6, .col-md-5, .col-md-4, .col-md-3, .col-md-2, .col-md-1, .col-auto { padding: 8px; }
+            input.form-control, textarea.form-control { width: 100%; box-sizing: border-box; }
+            .text-dark { color: #212529; }
+            .fw-bold { font-weight: 600; }
+            .mb-2 { margin-bottom: 0.5rem; }
+            .mb-3 { margin-bottom: 1rem; }
+            .mb-4 { margin-bottom: 1.5rem; }
+            .input-group { display: flex; gap: 8px; }
+            .text-center { text-align: center; }
+            @media print { button { display: none; } }
+        </style>
+        </head>
+        <body>
+        ${content.innerHTML}
+        <script>window.onload = function(){ window.print(); }<\/script>
+        </body>
+        </html>`);
+        printWindow.document.close();
+        }
+</script>
 </main>
+
+
 
 {% endblock %}

@@ -1,15 +1,187 @@
 {% extends "reception/base.html" %}
-{% block title %}Editar Paciente{% endblock title %}
-{% block page_title %}Editar Paciente{% endblock page_title %}
-
+{% block title %}{% if form.instance.pk %}Editar Paciente{% else %}Registrar Paciente{% endif %}{% endblock %}
+{% block page_title %}Pacientes{% endblock page_title %}
+{% load form_tags %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Editar Paciente</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Guardar Cambios</button>
-        <a href="{% url 'reception:patient_list' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
-</div>
+<main>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header text-white d-flex align-items-center">
+                        <h4 class="mb-0 text-dark">{% if form.instance.pk %}Editar Paciente{% else %}Registrar Paciente{% endif %}</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Nombre:</label>
+                                    {{ form.first_name|add_attrs:"class=form-control" }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger small">{{ form.first_name.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Apellido:</label>
+                                    {{ form.last_name|add_attrs:"class=form-control" }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger small">{{ form.last_name.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Email:</label>
+                                    {{ form.email|add_attrs:"class=form-control" }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small">{{ form.email.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Teléfono:</label>
+                                    {{ form.phone|add_attrs:"class=form-control" }}
+                                    {% if form.phone.errors %}
+                                        <div class="text-danger small">{{ form.phone.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Tipo de Identificación:</label>
+                                    {{ form.identification_type|add_class:"form-select" }}
+                                    {% if form.identification_type.errors %}
+                                        <div class="text-danger small">{{ form.identification_type.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    
+                                    {{ form.identification_number|add_attrs:"class=form-control,placeholder=Número de Identificación" }}
+                                    {% if form.identification_number.errors %}
+                                        <div class="text-danger small">{{ form.identification_number.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Género:</label>
+                                    {{ form.gender|add_class:"form-select" }}
+                                    {% if form.gender.errors %}
+                                        <div class="text-danger small">{{ form.gender.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Fecha de Nacimiento:</label>
+                                    {{ form.date_of_birth|add_class:"form-control" }}
+                                    {% if form.date_of_birth.errors %}
+                                        <div class="text-danger small">{{ form.date_of_birth.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Tipo de Sangre:</label>
+                                    {{ form.blood_type|add_class:"form-select" }}
+                                    {% if form.blood_type.errors %}
+                                        <div class="text-danger small">{{ form.blood_type.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Dirección:</label>
+                                    {{ form.address_line|add_attrs:"class=form-control" }}
+                                    {% if form.address_line.errors %}
+                                        <div class="text-danger small">{{ form.address_line.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Ciudad:</label>
+                                    {{ form.city|add_attrs:"class=form-control" }}
+                                    {% if form.city.errors %}
+                                        <div class="text-danger small">{{ form.city.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Región/Estado:</label>
+                                    {{ form.region|add_attrs:"class=form-control" }}
+                                    {% if form.region.errors %}
+                                        <div class="text-danger small">{{ form.region.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Código Postal:</label>
+                                    {{ form.postal_code|add_attrs:"class=form-control" }}
+                                    {% if form.postal_code.errors %}
+                                        <div class="text-danger small">{{ form.postal_code.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">País:</label>
+                                    {{ form.country|add_attrs:"class=form-control" }}
+                                    {% if form.country.errors %}
+                                        <div class="text-danger small">{{ form.country.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold text-dark">Alergias:</label>
+                                    {{ form.allergies|add_attrs:"class=form-control" }}
+                                    {% if form.allergies.errors %}
+                                        <div class="text-danger small">{{ form.allergies.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-dark">Notas Médicas:</label>
+                                {{ form.medical_notes|add_attrs:"class=form-control,rows=2" }}
+                                {% if form.medical_notes.errors %}
+                                    <div class="text-danger small">{{ form.medical_notes.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-dark">Contacto de Emergencia:</label>
+                                    {{ form.emergency_contact_name|add_attrs:"class=form-control" }}
+                                    {% if form.emergency_contact_name.errors %}
+                                        <div class="text-danger small">{{ form.emergency_contact_name.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Relación:</label>
+                                    {{ form.emergency_contact_relationship|add_attrs:"class=form-control" }}
+                                    {% if form.emergency_contact_relationship.errors %}
+                                        <div class="text-danger small">{{ form.emergency_contact_relationship.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold text-dark">Teléfono:</label>
+                                    {{ form.emergency_contact_phone|add_attrs:"class=form-control" }}
+                                    {% if form.emergency_contact_phone.errors %}
+                                        <div class="text-danger small">{{ form.emergency_contact_phone.errors|striptags }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="modal-footer py-3">
+                                <button type="submit" class="btn btn-success px-4">
+                                    {% if form.instance.pk %}Guardar Cambios{% else %}Registrar{% endif %}
+                                </button>
+                                <a href="{% url 'reception:patient_list' %}" class="btn btn-secondary px-4">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}

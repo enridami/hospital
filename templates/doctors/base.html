@@ -23,28 +23,42 @@
     <input type="checkbox" id="sidebar-toggle">
     <div class="sidebar">
         <div class="sidebar-header pt-4">
-            <div class="mx-auto d-block">
-                <img src="{% static 'img/logoBlanco.png' %}" alt="logo" class="img-fluid" style="max-width: 60px;">
+            <div class="mx-auto d-block mt-3">
+                <img src="{% static 'img/icon_app.png' %}" alt="logo" class="img-fluid logo-responsive">
             </div>
-            <label for="sidebar-toggle" class="ti-menu-alt"></label>
+            <label for="sidebar-toggle" class="ti-shift-left"></label>
         </div>
 
-        <div class="sidebar-menu">
+        <div class="sidebar-menu mt-5">
             <ul>
                 <li>
                     <a href="{% url 'doctor_dashboard' %}">
-                        &nbsp;&nbsp;<i class="bi bi-house"></i>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-house"></i>
                         <span class="menu-text">&nbsp;&nbsp;Inicio</span>
                     </a>
                 </li>
                 <li>
                     <a href="{% url 'doctor_profile' %}">
-                        &nbsp;&nbsp;<i class="bi bi-person-circle me-2"></i>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-person-circle me-2"></i>
                         <span class="menu-text">&nbsp;&nbsp;Perfil</span>
                     </a>
                 </li>
                 
                 <li>
+                    <a href="{% url 'doctor_patient_list' %}">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-person-lines-fill"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Lista de Pacientes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'doctor_consultation_history' %}">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-person-rolodex"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Historial de consulta</span>
+                    </a>
+                </li>
+                
+                
+                <!-- <li>
                     <a href="#" data-bs-toggle="collapse" data-bs-target="#consultasMenu">
                         &nbsp;&nbsp<i class="bi bi-file-medical me-2"></i>
                         <span class="menu-text">&nbsp;&nbsp;Consulta</span>
@@ -52,18 +66,26 @@
                     </a>
                     <div class="collapse" id="consultasMenu">
                         <ul class="submenu">
-                            <li><a href="{% url 'doctor_patient_list' %}" class="text-center"><span class="menu-text d-block text-center">Lista de Pacientes</span></a></li>
-                            <li><a href="{% url 'doctor_consultation_history' %}" class="text-center"><span class="menu-text d-block text-center">Historial de consulta</span></a></li>
+                            <li>
+                                <a href="{% url 'doctor_patient_list' %}" class="text-center">
+                                    <span class="menu-text d-block text-center">Lista de Pacientes</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'doctor_consultation_history' %}" class="text-center">
+                                    <span class="menu-text d-block text-center">Historial de consulta</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
-                </li>
+                </li> -->
 
 
                 <br><br>
 
                 <li>
                     <a href="{% url 'logout' %}" class="logout text-light" data-bs-toggle="tooltip" data-bs-placement="right" title="logout">
-                        &nbsp;&nbsp;<i class="bi bi-box-arrow-left me-2"></i> 
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-box-arrow-left me-2"></i> 
                         <span class="menu-text">&nbsp;&nbsp;Cerrar sesión</span>
                     </a>
                 </li>

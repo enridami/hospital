@@ -1,7 +1,7 @@
 {% extends 'admin_backup/base.html' %}
 {% load static %}
 
-{% block title %}Perfil de Administrador{% endblock title %}
+{% block title %}Perfil{% endblock title %}
 {% block page_title %}Mi Perfil{% endblock page_title %}
 
 {% block content %}
@@ -120,17 +120,17 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold text-dark" for="first_name">
-                                        <i class="bi bi-person me-1"></i>Nombre
+                                        <i class="bi bi-person me-1"></i> Nombre
                                     </label>
-                                    <input id="first_name" type="text" class="form-control border-0 bg-light" 
+                                    <input id="first_name" type="text" class="form-control border-1 bg-light" 
                                            name="user_firstname" value="{{ request.user.first_name }}" required />
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold text-dark" for="last_name">
-                                        <i class="bi bi-person me-1"></i>Apellido
+                                        <i class="bi bi-person me-1"></i> Apellido
                                     </label>
-                                    <input id="last_name" type="text" class="form-control border-0 bg-light" 
+                                    <input id="last_name" type="text" class="form-control border-1 bg-light" 
                                            name="user_lastname" value="{{ request.user.last_name }}" required />
                                 </div>
                             </div>
@@ -138,24 +138,24 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold text-dark" for="email">
-                                        <i class="bi bi-envelope me-1"></i>Email
+                                        <i class="bi bi-envelope me-1"></i> Email
                                     </label>
-                                    <input id="email" type="email" class="form-control border-0 bg-light" 
+                                    <input id="email" type="email" class="form-control border-1 bg-light" 
                                            name="user_email" value="{{ request.user.email }}" required />
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold text-dark" for="username">
-                                        <i class="bi bi-at me-1"></i>Nombre de Usuario
+                                        <i class="bi bi-at me-1"></i> Nombre de Usuario
                                     </label>
-                                    <input id="username" type="text" class="form-control border-0 bg-light" 
+                                    <input id="username" type="text" class="form-control border-1 bg-light" 
                                            name="username" value="{{ request.user.username }}" required />
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-dark" for="date_joined">
-                                    <i class="bi bi-calendar-check me-1"></i>Fecha de Registro
+                                    <i class="bi bi-calendar-check me-1"></i> Fecha de Registro
                                 </label>
                                 <input type="text" class="form-control border-0 bg-light" 
                                        value="{{ request.user.date_joined|date:'d/m/Y H:i' }}" readonly />
@@ -163,7 +163,7 @@
 
                             <div class="mb-4">
                                 <label for="pic" class="form-label fw-bold text-dark">
-                                    <i class="bi bi-image me-1"></i>Avatar de Perfil
+                                    <i class="bi bi-image me-1"></i> Avatar de Perfil
                                 </label>
                                 <input type="file" class="form-control border-0 bg-light" 
                                        name="profile_pic" id="pic" accept="image/*">
@@ -175,7 +175,7 @@
 
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary btn-lg" name="update_profile">
-                                    <i class="bi bi-check-lg me-2"></i>Actualizar Perfil
+                                    <i class="bi bi-check-lg me-2"></i> Actualizar Perfil
                                 </button>
                             </div>
                         </form>
@@ -215,32 +215,32 @@
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-dark" for="current_password">
-                                    <i class="bi bi-key me-1"></i>Contraseña Actual
+                                    Contraseña Actual
                                 </label>
-                                <input type="password" class="form-control border-0 bg-light" 
+                                <input type="password" class="form-control border-1 bg-light" 
                                        name="current_password" required />
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-dark" for="new_password">
-                                    <i class="bi bi-key-fill me-1"></i>Nueva Contraseña
+                                    Nueva Contraseña
                                 </label>
-                                <input type="password" class="form-control border-0 bg-light" 
+                                <input type="password" class="form-control border-1 bg-light" 
                                        name="new_password" required />
                                 <small class="text-muted">Mínimo 8 caracteres</small>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold text-dark" for="confirm_new_password">
-                                    <i class="bi bi-check2-square me-1"></i>Confirmar Nueva
+                                    Confirmar nueva contraseña
                                 </label>
-                                <input type="password" class="form-control border-0 bg-light" 
+                                <input type="password" class="form-control border-1 bg-light" 
                                        name="confirm_new_password" required />
                             </div>
 
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-warning btn-lg" name="update_password">
-                                    <i class="bi bi-shield-check me-2"></i>Cambiar Contraseña
+                                    <i class="bi bi-shield-check me-2"></i> Cambiar Contraseña
                                 </button>
                             </div>
                         </form>

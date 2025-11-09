@@ -1,4 +1,6 @@
 {% extends "reception/base.html" %}
+{% block title %}{% if form.instance.pk %}Editar Paciente{% else %}Registrar Paciente{% endif %}{% endblock %}
+{% block page_title %}Pacientes{% endblock page_title %}
 {% load form_tags %}
 {% block content %}
 <main>
@@ -7,7 +9,7 @@
             <div class="col-lg-8">
                 <div class="card shadow-lg border-0">
                     <div class="card-header text-white d-flex align-items-center">
-                        <h4 class="mb-0">{% if form.instance.pk %}Editar Paciente{% else %}Registrar Paciente{% endif %}</h4>
+                        <h4 class="mb-0 text-dark">{% if form.instance.pk %}Editar Paciente{% else %}Registrar Paciente{% endif %}</h4>
                     </div>
                     <div class="card-body">
                         <form method="post" class="needs-validation" novalidate>

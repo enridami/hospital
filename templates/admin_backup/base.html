@@ -23,57 +23,56 @@
     <input type="checkbox" id="sidebar-toggle">
     <div class="sidebar">
         <div class="sidebar-header pt-4">
-            <div class="mx-auto d-block">
-                <img src="{% static 'img/logoBlanco.png' %}" alt="logo" class="img-fluid" style="max-width: 60px;">
+            <div class="mx-auto d-block mt-3">
+                <img src="{% static 'img/icon_app.png' %}" alt="logo" class="img-fluid logo-responsive">
             </div>
-            <label for="sidebar-toggle" class="ti-menu-alt"></label>
+            <label for="sidebar-toggle" class="ti-shift-left"></label>
         </div>
 
-        <div class="sidebar-menu">
+        <div class="sidebar-menu mt-5">
             <ul>
                 <li>
                     <a href="{% url 'admin_dashboard' %}">
-                        &nbsp;&nbsp;<i class="bi bi-house"></i>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-house"></i>
                         <span class="menu-text">&nbsp;&nbsp;Inicio</span>
                     </a>
                 </li>
                 <li>
                     <a href="{% url 'admin_profile' %}">
-                        &nbsp;&nbsp;<i class="bi bi-person-circle me-2"> </i>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-person-circle me-2"> </i>
                         <span class="menu-text">&nbsp;&nbsp;Perfil</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#usersMenu" aria-expanded="false">
-                        &nbsp;&nbsp;<i class="bi bi-kanban"></i>
-                        <span class="menu-text">&nbsp;&nbsp;Gestionar usuarios</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
+                    <a href="{% url 'admin_create_doctor' %}">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-person-plus-fill"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Registrar Médico</span>
                     </a>
-                    <div class="collapse" id="usersMenu">
-                        <ul class="submenu">
-                            <li>
-                                <a href="{% url 'admin_users_list' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Ver Usuarios</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'admin_create_user' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Crear Usuario</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'admin_select_user_for_role' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Asignar Roles</span>
-                                </a>
-                            </li>
-                            
-                            <li>
-                                <a href="{% url 'admin_permissions_list' %}" class="text-center">
-                                    <span class="menu-text d-block text-center">Permisos</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                </li>
+                <li>
+                    <a href="{% url 'admin_create_staff' %}">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-building-fill-add"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Registrar personal</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_users_list' %}">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-people-fill"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Ver Usuarios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_select_user_for_role' %}" class="text-center">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-ui-checks-grid"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Asignar Roles</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'admin_permissions_list' %}" class="text-center">
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-person-fill-add"></i>
+                        <span class="menu-text">&nbsp;&nbsp;Permisos</span>
+                    </a>
                 </li>
 
 
@@ -82,7 +81,7 @@
 
                 <li>
                     <a href="{% url 'logout' %}" class="logout text-dark" data-bs-toggle="tooltip" data-bs-placement="right" title="logout">
-                        &nbsp;&nbsp;<i class="bi bi-box-arrow-left me-3"></i>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-box-arrow-left me-3"></i>
                         <span class="menu-text">Cerrar sesión</span>
                     </a>
                 </li>

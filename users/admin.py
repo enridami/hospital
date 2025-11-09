@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Users, Specialty, Doctor, Administrator, Receptions, Reset_token, Patient
+from .models import Users, Specialty, Doctor, Administrator, Receptions, Reset_token, Patient, DoctorSchedule
 
 # Información adicional al registrar usuario
 
@@ -63,6 +63,15 @@ class PatientAdmin(admin.ModelAdmin):
             'fields': ('is_active', 'created_at', 'updated_at')
         }),
     )
+
+
+
+@admin.register(DoctorSchedule)
+class DoctorScheduleAdmin(admin.ModelAdmin):
+    list_display = ('doctor', 'day', 'start_time', 'end_time', 'consultorio')
+    list_filter = ('doctor', 'day', 'consultorio')
+    search_fields = ('doctor__user__first_name', 'doctor__user__last_name', 'consultorio')
+
 
 # Register your models here.
 admin.site.register(Users, CustomUserAdmin)

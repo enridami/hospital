@@ -10,20 +10,60 @@
     <link rel="icon" type="image/x-icon" href="{% static 'img/icon_app.png' %}">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/base-style.css' %}" rel="stylesheet"/>
+
+    <!-- Estilos específicos para la página de login -->
+    <style>
+      /* Fondo solo para esta plantilla de usuarios (login) */
+      body.login-background {
+        background-image: url("{% static 'img/fondo.jpg' %}");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        min-height: 100vh;
+      }
+      /* Superposición oscura para legibilidad */
+      body.login-background::before{
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.35);
+        pointer-events: none;
+        z-index: 0;
+      }
+      /* Asegurar que el contenido quede por encima de la superposición */
+      section.h-100, .container, .row, .col-xxl-4 {
+        position: relative;
+        z-index: 1;
+      }
+
+      hr{
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #ccc;
+        margin: 1em 0;
+        padding: 0
+      }
+    </style>
+
   </head>
 
 
-  <body>
+  <body class="{% block body_class %}{% endblock body_class %}">
+    <section class="h-100">
+      <div class="container h-100">
     <section class="h-100">
       <div class="container h-100">
         <div class="row justify-content-sm-center h-100">
           <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
-            <div class="text-center my-5" style="height: 80px;">
-              <img src="{% static 'img/logo_Centro.png' %}" alt="logo" class="img-fluid" style="max-height: 170px; max-width: 330px;" />
+            <div class="text-center my-5">
+              <img src="{% static 'img/logo.png' %}" alt="logo" class="img-fluid login-logo mt-4"/>
             </div>
             {% block content %}{% endblock content %}
-            <div class="text-center my-5 text-muted">
+            <div class="text-center text-light copyright">
               Copyright &copy; 2025 &mdash; Sistema de Gestión Hospitalaria
+              <hr>
             </div>
           </div>
         </div>

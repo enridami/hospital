@@ -4,7 +4,7 @@
     --main-color: #424a5b;
     --color-dark: #1D2231;
     --text-grey: #8390A2;
-    --primary-color: #123053;
+    --primary-color: #1f5f85;
     --secondary-color: #EFA323;
 }
 
@@ -17,6 +17,7 @@
     box-sizing: border-box;
 
 }
+
 
 #sidebar-toggle {
     display: none;
@@ -46,7 +47,7 @@
 
 .sidebar-menu {
     padding: 0rem;
-    padding-top: 40px;
+    padding-top: 0px;
 }
 
 
@@ -619,4 +620,23 @@ tbody tr:nth-child(even) {
 .card-body .d-flex span {
     color: var(--color-dark) !important;
     font-size: 1.3rem;
+}
+
+.logo-responsive {
+  max-width: 80px;
+}
+
+@media (max-width: 576px) { /* Para móviles */
+  .logo-responsive {
+    max-width: 38px;
+  }
+}
+
+.panel {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.panel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
 }

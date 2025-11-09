@@ -1,0 +1,53 @@
+{% extends "reception/base.html" %}
+{% block title %}Historial de consultas{% endblock %}
+{% block page_title %}Historial de consultas{% endblock page_title %}
+{% block content %}
+
+
+<main>
+    <div class="container-fluid">
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Consultas Atendidas</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Orden</th>
+                                <th>Turno</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Doctor</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for consulta in consultations %}
+                            <tr>
+                                <td>{{ consulta.order }}</td>
+                                <td>{{ consulta.get_shift_display }}</td>
+                                <td>{{ consulta.date }}</td>
+                                <td>{{ consulta.time }}</td>
+                                <td>{{ consulta.patient.full_name }}</td>
+                                <td>{{ consulta.doctor }}</td>
+                                <td class="text-success">{{ consulta.get_status_display }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7">No hay consultas atendidas.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+{% endblock %}

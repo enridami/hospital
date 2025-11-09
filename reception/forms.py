@@ -1,5 +1,5 @@
 from django import forms
-from users.models import Patient, Consultation, Doctor
+from users.models import Patient, Consultation, Doctor, DoctorSchedule
 
 class PatientForm(forms.ModelForm):
     date_of_birth = forms.DateField(
@@ -26,20 +26,25 @@ class ConsultationForm(forms.ModelForm):
         widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
         label="Hora"
     )
+    # El campo consultorio ya no se incluye aquí
 
     class Meta:
         model = Consultation
-        fields = ['doctor', 'date', 'time', 'shift', 'status', 'description']
-        # No incluyas 'patient' aquí, lo asignas desde la vista
+        fields = ['doctor', 'date', 'time', 'shift', 'status', 'description']  # consultorio excluido
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Puedes personalizar widgets aquí si lo necesitas
         self.fields['doctor'].queryset = Doctor.objects.none()
 
-    # Validar que el paciente esté presente si es nuevo, si el paciente no esta se muestra un error general en el formulario
     def clean(self):
         cleaned_data = super().clean()
+        doctor = cleaned_data.get('doctor')
+        date = cleaned_data.get('date')
+        time = cleaned_data.get('time')
+        # consultorio se obtiene en la vista, no del formulario
+
         if not self.instance.pk and not getattr(self.instance, 'patient', None):
             raise forms.ValidationError("Debes seleccionar un paciente antes de agendar la consulta.")
+
+        # La validación de consultorio se debe hacer en la vista, no aquí
         return cleaned_data

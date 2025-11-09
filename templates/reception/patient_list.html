@@ -23,9 +23,21 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>CI</th>
+                <th>
+                    Nombres
+                    <a href="?sort=first_name{% if ci_query %}&ci={{ ci_query }}{% endif %}" class="ti-angle-down"></a>
+                    <a href="?sort=first_name_asc{% if ci_query %}&ci={{ ci_query }}{% endif %}" class="ti-angle-up"></a>
+                </th>
+                <th>
+                    Apellidos
+                    <a href="?sort=last_name{% if ci_query %}&ci={{ ci_query }}{% endif %}" class="ti-angle-down"></a>
+                    <a href="?sort=last_name_asc{% if ci_query %}&ci={{ ci_query }}{% endif %}" class="ti-angle-up"></a>
+                </th>
+                <th>
+                    CI 
+                    <a href="?sort=ci_asc{% if ci_query %}&ci={{ ci_query }}{% endif %}" class="ti-angle-down"></a>
+                    <a href="?sort=ci_desc{% if ci_query %}&ci={{ ci_query }}{% endif %}" class="ti-angle-up"></a>
+                </th>
                 <th>Email</th>
                 <th>Teléfono</th>
                 <th>Fecha de Nacimiento</th>
@@ -42,9 +54,10 @@
                 <td>{{ patient.phone }}</td>
                 <td>{{ patient.date_of_birth }}</td>
                 <td>
-                    <a href="{% url 'reception:patient_edit' patient.id %}" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="{% url 'reception:patient_detail' patient.id %}" class="btn btn-outline-primary btn-sm"> <i class="bi bi-eye"></i> Ver detalle</a>
+                    <a href="{% url 'reception:patient_edit' patient.id %}" class="btn btn-outline-warning btn-sm me-2">Editar</a>
                     <!-- Botón para abrir el modal -->
-                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ patient.id }}">
+                    <button type="button" class="btn btn-outline-danger btn-sm me-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ patient.id }}">
                         Eliminar
                     </button>
 
