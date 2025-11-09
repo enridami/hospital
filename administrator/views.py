@@ -92,184 +92,183 @@ def admin_users_list(request):
     return render(request, 'admin_backup/users_list.html', context)
 
 
-# Crear usuario desde Acciones rapidas
+# Crear usuario desde Acciones rapidas  --- REMOVIDO (ERRORES EN LAS PRUEBAS DE ADMINISTRADOR)
 
-@login_required
-def admin_create_user(request):
-    """Crear nuevo usuario con validaciones robustas"""
-    if not hasattr(request.user, 'administrator') or not request.user.has_perm('users.add_users'):
-        messages.error(request, 'No tienes permisos.')
-        return redirect('dashboard')
+# @login_required
+# def admin_create_user(request):
+#     """Crear nuevo usuario con validaciones robustas"""
+#     if not hasattr(request.user, 'administrator') or not request.user.has_perm('users.add_users'):
+#         messages.error(request, 'No tienes permisos.')
+#         return redirect('dashboard')
     
-    specialties = Specialty.objects.all().order_by('name')
-    errores = []
+#     specialties = Specialty.objects.all().order_by('name')
+#     errores = []
 
-    if request.method == 'POST':
-        # Obtener datos del formulario
-        username = request.POST.get('username', '').strip()
-        email = request.POST.get('email', '').strip()
-        first_name = request.POST.get('first_name', '').strip()
-        last_name = request.POST.get('last_name', '').strip()
-        password = request.POST.get('password', '')
-        role = request.POST.get('role', '')
-        specialty_id = request.POST.get('specialty', '')
-        bio = request.POST.get('bio', '').strip()
-        profile_pic = request.FILES.get('profile_avatar')
+#     if request.method == 'POST':
+#         # Obtener datos del formulario
+#         username = request.POST.get('username', '').strip()
+#         email = request.POST.get('email', '').strip()
+#         first_name = request.POST.get('first_name', '').strip()
+#         last_name = request.POST.get('last_name', '').strip()
+#         password = request.POST.get('password', '')
+#         role = request.POST.get('role', '')
+#         specialty_id = request.POST.get('specialty', '')
+#         bio = request.POST.get('bio', '').strip()
+#         profile_pic = request.FILES.get('profile_avatar')
 
-        ### VALIDACIONES ###
+#         ### VALIDACIONES ###
         
-        # Validación de campos obligatorios
-        if not username or not email or not first_name or not last_name or not password or not role:
-            errores.append("Todos los campos básicos son obligatorios.")
+#         # Validación de campos obligatorios
+#         if not username or not email or not first_name or not last_name or not password or not role:
+#             errores.append("Todos los campos básicos son obligatorios.")
 
-        # Validación de email
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            errores.append("El correo electrónico no es válido.")
+#         # Validación de email
+#         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+#             errores.append("El correo electrónico no es válido.")
 
-        # Validación de contraseña segura
-        if len(password) < 8 or password.isdigit() or password.isalpha():
-            errores.append("La contraseña debe tener al menos 8 caracteres y contener letras y números.")
+#         # Validación de contraseña segura
+#         if len(password) < 8 or password.isdigit() or password.isalpha():
+#             errores.append("La contraseña debe tener al menos 8 caracteres y contener letras y números.")
 
-        # Validación de username único y sin espacios
-        if " " in username:
-            errores.append("El nombre de usuario no debe contener espacios.")
-        if Users.objects.filter(username=username).exists():
-            errores.append("El nombre de usuario ya está registrado.")
+#         # Validación de username único y sin espacios
+#         if " " in username:
+#             errores.append("El nombre de usuario no debe contener espacios.")
+#         if Users.objects.filter(username=username).exists():
+#             errores.append("El nombre de usuario ya está registrado.")
 
-        # Validación de email único
-        if Users.objects.filter(email=email).exists():
-            errores.append("El correo ya está registrado.")
+#         # Validación de email único
+#         if Users.objects.filter(email=email).exists():
+#             errores.append("El correo ya está registrado.")
 
-        # Validaciones específicas para doctor
-        if role == 'doctor':
-            if not specialty_id:
-                errores.append("Debes seleccionar una especialidad para el doctor.")
-            if not bio or len(bio) < 10:
-                errores.append("La biografía profesional es obligatoria y debe tener al menos 10 caracteres.")
+#         # Validaciones específicas para doctor
+#         if role == 'doctor':
+#             if not specialty_id:
+#                 errores.append("Debes seleccionar una especialidad para el doctor.")
+#             if not bio or len(bio) < 10:
+#                 errores.append("La biografía profesional es obligatoria y debe tener al menos 10 caracteres.")
 
-        # Validaciones para imagen de perfil
-        if profile_pic:
-            if not profile_pic.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
-                errores.append("La imagen de perfil debe ser JPG, PNG o GIF.")
-            if profile_pic.size > 2 * 1024 * 1024:
-                errores.append("La imagen de perfil no debe superar los 2MB.")
+#         # Validaciones para imagen de perfil
+#         if profile_pic:
+#             if not profile_pic.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')):
+#                 errores.append("La imagen de perfil debe ser JPG, PNG o GIF.")
+#             if profile_pic.size > 2 * 1024 * 1024:
+#                 errores.append("La imagen de perfil no debe superar los 2MB.")
  
 
          
 
-        # Validaciones para paciente
-        if role == 'patient':
-            phone = request.POST.get('phone', '').strip()
-            birthday = request.POST.get('birthday', '').strip()
-            identification_type = request.POST.get('identification_type', '').strip()
-            identification_number = request.POST.get('identification_number', '').strip()
-            address_line = request.POST.get('address_line', '').strip()
-            city = request.POST.get('city', '').strip()
-            emergency_contact_name = request.POST.get('emergency_contact_name', '').strip()
-            emergency_contact_phone = request.POST.get('emergency_contact_phone', '').strip()
+#         # Validaciones para paciente
+#         if role == 'patient':
+#             phone = request.POST.get('phone', '').strip()
+#             birthday = request.POST.get('birthday', '').strip()
+#             identification_type = request.POST.get('identification_type', '').strip()
+#             identification_number = request.POST.get('identification_number', '').strip()
+#             address_line = request.POST.get('address_line', '').strip()
+#             city = request.POST.get('city', '').strip()
+#             emergency_contact_name = request.POST.get('emergency_contact_name', '').strip()
+#             emergency_contact_phone = request.POST.get('emergency_contact_phone', '').strip()
 
-            # Teléfono válido (10-15 dígitos)
-            if not re.match(r'^\+?\d{10,15}$', phone):
-                errores.append("El teléfono debe tener entre 10 y 15 dígitos.")
+#             # Teléfono válido (10-15 dígitos)
+#             if not re.match(r'^\+?\d{10,15}$', phone):
+#                 errores.append("El teléfono debe tener entre 10 y 15 dígitos.")
 
-            # Fecha de nacimiento válida (no futura)
+#             # Fecha de nacimiento válida (no futura)
              
-            try:
-                fecha_nac = datetime.strptime(birthday, "%Y-%m-%d")
-                if fecha_nac > datetime.now():
-                    errores.append("La fecha de nacimiento no puede ser futura.")
-            except Exception:
-                errores.append("La fecha de nacimiento es inválida.")
+#             try:
+#                 fecha_nac = datetime.strptime(birthday, "%Y-%m-%d")
+#                 if fecha_nac > datetime.now():
+#                     errores.append("La fecha de nacimiento no puede ser futura.")
+#             except Exception:
+#                 errores.append("La fecha de nacimiento es inválida.")
 
-            # Número de identificación único
-            if not identification_number:
-                errores.append("El número de identificación es obligatorio.")
-            elif Patient.objects.filter(identification_number=identification_number).exists():
-                errores.append("El número de identificación ya está registrado.")
+#             # Número de identificación único
+#             if not identification_number:
+#                 errores.append("El número de identificación es obligatorio.")
+#             elif Patient.objects.filter(identification_number=identification_number).exists():
+#                 errores.append("El número de identificación ya está registrado.")
 
-            # Dirección y ciudad obligatorias
-            if not address_line:
-                errores.append("La dirección es obligatoria.")
-            if not city:
-                errores.append("La ciudad es obligatoria.")
+#             # Dirección y ciudad obligatorias
+#             if not address_line:
+#                 errores.append("La dirección es obligatoria.")
+#             if not city:
+#                 errores.append("La ciudad es obligatoria.")
 
-            # Contacto de emergencia obligatorio
-            if not emergency_contact_name or not emergency_contact_phone:
-                errores.append("El nombre y teléfono de contacto de emergencia son obligatorios.")
-            elif not re.match(r'^\+?\d{10,15}$', emergency_contact_phone):
-                errores.append("El teléfono de emergencia debe tener entre 10 y 15 dígitos.")
-
-
-        print("---- DEPURACIÓN: POST DATA ----")
-        for key, value in request.POST.items():
-            print(f"{key}: {value}")
-        print("---- DEPURACIÓN: FILES ----")
-        for key, value in request.FILES.items():
-            print(f"{key}: {value}")
+#             # Contacto de emergencia obligatorio
+#             if not emergency_contact_name or not emergency_contact_phone:
+#                 errores.append("El nombre y teléfono de contacto de emergencia son obligatorios.")
+#             elif not re.match(r'^\+?\d{10,15}$', emergency_contact_phone):
+#                 errores.append("El teléfono de emergencia debe tener entre 10 y 15 dígitos.")
 
 
-        if errores:
-            for error in errores:
-                messages.error(request, error)
-            return render(request, 'admin_backup/create_user.html', {'specialties': specialties})
+#         print("---- DEPURACIÓN: POST DATA ----")
+#         for key, value in request.POST.items():
+#             print(f"{key}: {value}")
+#         print("---- DEPURACIÓN: FILES ----")
+#         for key, value in request.FILES.items():
+#             print(f"{key}: {value}")
+
+
+#         if errores:
+#             for error in errores:
+#                 messages.error(request, error)
+#             return render(request, 'admin_backup/create_user.html', {'specialties': specialties})
         
-        print("Errores detectados:", errores)
+#         print("Errores detectados:", errores)
 
-        try:
-            with transaction.atomic():
-                # Crear usuario
-                print("Creando usuario...")
-                user = Users.objects.create_user(
-                    username=username,
-                    email=email,
-                    first_name=first_name,
-                    last_name=last_name,
-                    password=password
-                )
-                print("Usuario creado:", user)
-                # Guardar imagen de perfil si se subió
-                if profile_pic:
-                    user.profile_avatar = profile_pic
-                    user.save()
-                    print("Imagen de perfil guardada.")
+#         try:
+#             with transaction.atomic():
+#                 # Crear usuario
+#                 print("Creando usuario...")
+#                 user = Users.objects.create_user(
+#                     username=username,
+#                     email=email,
+#                     first_name=first_name,
+#                     last_name=last_name,
+#                     password=password
+#                 )
+#                 print("Usuario creado:", user)
+#                 # Guardar imagen de perfil si se subió
+#                 if profile_pic:
+#                     user.profile_avatar = profile_pic
+#                     user.save()
+#                     print("Imagen de perfil guardada.")
                 
-                # Asignar rol según selección
-                if role == 'doctor':
-                    user.is_doctor = True
-                    user.save()
-                    specialty = None
-                    if specialty_id:
-                        specialty = Specialty.objects.get(id=specialty_id)
-                    Doctor.objects.create(user=user, specialty=specialty, bio=bio)
-                elif role == 'admin':
-                    print("Creando perfil de administrador...")
-                    Administrator.objects.create(user=user)
-                elif role == 'reception':
-                    print("Creando perfil de recepcionista...")
-                    Receptions.objects.create(user=user)
-                elif role == 'patient':
-                    print("Creando perfil de paciente...")
-                    Patient.objects.create(
-                        user=user,
-                        phone=phone,
-                        date_of_birth=birthday,
-                        identification_type=identification_type,
-                        identification_number=identification_number,
-                        address_line=address_line,
-                        city=city,
-                        emergency_contact_name=emergency_contact_name,
-                        emergency_contact_phone=emergency_contact_phone,
-                    )
-                print("Usuario y perfil creados correctamente.")
-                messages.success(request, f'Usuario {user.get_full_name()} creado exitosamente.')
-                return redirect('admin_users_list')
+#                 # Asignar rol según selección
+#                 if role == 'doctor':
+#                     user.is_doctor = True
+#                     user.save()
+#                     specialty = None
+#                     if specialty_id:
+#                         specialty = Specialty.objects.get(id=specialty_id)
+#                     Doctor.objects.create(user=user, specialty=specialty, bio=bio)
+#                 elif role == 'admin':
+#                     print("Creando perfil de administrador...")
+#                     Administrator.objects.create(user=user)
+#                 elif role == 'reception':
+#                     print("Creando perfil de recepcionista...")
+#                     Receptions.objects.create(user=user)
+#                 elif role == 'patient':
+#                     print("Creando perfil de paciente...")
+#                     Patient.objects.create(
+#                         #user=user,
+#                         phone=phone,
+#                         date_of_birth=birthday,
+#                         identification_type=identification_type,
+#                         identification_number=identification_number,
+#                         address_line=address_line,
+#                         city=city,
+#                         emergency_contact_name=emergency_contact_name,
+#                         emergency_contact_phone=emergency_contact_phone,
+#                     )
+#                 print("Usuario y perfil creados correctamente.")
+#                 messages.success(request, f'Usuario {user.get_full_name()} creado exitosamente.')
+#                 return redirect('admin_users_list')
                 
-        except Exception as e:
-            print("EXCEPCIÓN:", str(e))
-            messages.error(request, f'Error al crear usuario: {str(e)}')
+#         except Exception as e:
+#             print("EXCEPCIÓN:", str(e))
+#             messages.error(request, f'Error al crear usuario: {str(e)}')
     
-    return render(request, 'admin_backup/create_user.html', {'specialties': specialties})
-
+#     return render(request, 'admin_backup/create_user.html', {'specialties': specialties})
 
 # Crear doctor desde Acciones rapidas
 @login_required
