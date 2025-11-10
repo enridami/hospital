@@ -30,3 +30,4 @@ class DoctorProfileForm(forms.ModelForm):
     class Meta:
         model = Doctor
         fields = ['bio', 'specialty']
+        #Addingmore here
