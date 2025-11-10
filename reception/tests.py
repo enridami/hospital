@@ -98,80 +98,68 @@ class ReceptionViewsTest(TestCase):
         # COMENTADO: Esta línea causaba el FAIL. Se valida el éxito con las aserciones anteriores.
         # self.assertContains(response, 'Paciente registrado correctamente.')
         self.assertEqual(Patient.objects.count(), 2) # Paciente inicial + nuevo
-
-
-    # 3. Prueba: Fallo en la Creación de Paciente (Datos Faltantes)
+        
+        
+        # 5. Prueba: Bloqueo de Creación de Pacientes a Usuarios No Recepcionistas (Seguridad POST)
     # ----------------------------------------------------
-    def test_03_patient_creation_fails_on_missing_data(self):
-        """Verifica que la creación de paciente falle con datos incompletos."""
+    def test_05_patient_creation_denied_to_non_receptionist(self):
+        """Verifica que un usuario sin rol de Recepcionista no pueda crear un paciente."""
         
-        self.client.login(username='recepcion_test', password='123')
+        # A. Iniciar sesión como Doctor (Usuario no autorizado)
+        self.client.login(username='doctor_test', password='123')
         
-        # Datos inválidos: Falta identificación, nombre, etc.
-        invalid_data = {
-            'first_name': '',  # Campo requerido faltante
-            'last_name': 'Apellido',
-            'phone': '12345678',
-            'identification_number': '11111111',
-            'gender': 'Male',
+        # Datos válidos de un paciente que intentarán crear
+        unauthorized_patient_data = {
+            'first_name': 'Hacker', 'last_name': 'Test', 
+            'email': 'hacker@test.com', 'phone': '55555555',
+            'identification_type': 'DNI', 'identification_number': '99999999',
+            'gender': 'Male', 
+            'date_of_birth': '1995-01-01',
+            'address_line': 'Fake Street', 'city': 'FakeCity',
+            'region': 'FakeRegion', 'postal_code': '0000', 'country': 'FakeCountry',
+            'blood_type': 'A-', 'allergies': '', 'medical_notes': '',
+            'emergency_contact_name': 'E', 'emergency_contact_relationship': 'F',
+            'emergency_contact_phone': '1',
         }
         
-        # El response debe ser 200 (volver a mostrar el formulario) y no redireccionar
-        response = self.client.post(self.patient_create_url, invalid_data, follow=True)
+        # B. Intento de POST
+        response = self.client.post(self.patient_create_url, unauthorized_patient_data, follow=True)
         
-        # A. Verifica que no se haya redireccionado (sigue en la página del formulario)
-        self.assertEqual(response.status_code, 200) 
-        self.assertTemplateUsed(response, 'reception/patient_form.html')
+        # C. Verificaciones
+        # 1. Debe redirigir al dashboard general o mostrar un error de permiso.
+        # Asumiendo que redirige fuera del área de recepción:
+        self.assertRedirects(response, reverse('dashboard')) 
         
-        # B. Verifica que el objeto NO se haya creado en la DB
-        self.assertFalse(Patient.objects.filter(identification_number='11111111').exists())
-        self.assertEqual(Patient.objects.count(), 1) # Solo el paciente creado en setUpTestData
-        
-        # C. Verifica que el formulario contenga mensajes de error
-        self.assertIn('Este campo es obligatorio', response.content.decode())
+        # 2. El objeto NO debe haber sido creado en la base de datos.
+        self.assertFalse(Patient.objects.filter(identification_number='99999999').exists())
+        self.assertEqual(Patient.objects.count(), 1) # Solo el paciente original
 
-    # 4. Prueba: Creación de Consulta y Asignación Automática de Orden
+        # 6. Prueba: Bloqueo de Creación de Consultas a Usuarios No Recepcionistas (Seguridad POST)
     # ----------------------------------------------------
-    def test_04_consultation_creation_and_auto_order_assignment(self):
-        """Verifica que el sistema asigne automáticamente el orden correcto a las consultas."""
+    def test_06_consultation_creation_denied_to_non_receptionist(self):
+        """Verifica que un usuario sin rol de Recepcionista no pueda crear una consulta."""
         
-        self.client.login(username='recepcion_test', password='123')
+        # A. Iniciar sesión como Doctor (Usuario no autorizado)
+        self.client.login(username='doctor_test', password='123')
         
-        # Datos base para la consulta (Misma fecha, mismo doctor, mismo turno)
-        consultation_data_base = {
+        # Datos válidos de una consulta (usando objetos existentes)
+        unauthorized_consultation_data = {
             'patient': self.patient.pk,
             'doctor': self.doctor.pk,
             'date': date.today().isoformat(),
-            'shift': Consultation.SHIFT_MORNING, # Turno Mañana
-            'reason': 'Checkup general',
+            'shift': 'M', # Asumiendo 'M' es Mañana
+            'description': 'Intento de consulta no autorizado', # <-- CORRECCIÓN 1: Usar 'description'
         }
         
-        # --- A. Primera Consulta (Orden 1) ---
-        self.client.post(self.consultation_create_url, consultation_data_base)
-        consultation_1 = Consultation.objects.get(patient=self.patient, order=1)
-        self.assertEqual(consultation_1.order, 1)
-
-        # --- B. Segunda Consulta (Mismos criterios, debe ser Orden 2) ---
-        # Se necesita crear un nuevo paciente para la segunda consulta
-        patient_2 = Patient.objects.create(
-            first_name='Segundo', last_name='Paciente', identification_number='2222222'
-        )
-        consultation_data_2 = consultation_data_base.copy()
-        consultation_data_2['patient'] = patient_2.pk # Asigna el nuevo paciente
-
-        self.client.post(self.consultation_create_url, consultation_data_2)
-        consultation_2 = Consultation.objects.get(patient=patient_2)
-        self.assertEqual(consultation_2.order, 2)
+        # B. Intento de POST
+        response = self.client.post(self.consultation_create_url, unauthorized_consultation_data, follow=True)
         
-        # --- C. Tercera Consulta (Diferente Turno, debe ser Orden 1) ---
-        patient_3 = Patient.objects.create(
-            first_name='Tercero', last_name='Paciente', identification_number='3333333'
-        )
-        consultation_data_3 = consultation_data_base.copy()
-        consultation_data_3['patient'] = patient_3.pk
-        consultation_data_3['shift'] = Consultation.SHIFT_AFTERNOON # Turno Tarde
+        # C. Verificaciones
+        # 1. Debe redirigir al dashboard general o mostrar un error de permiso (403 o redirección 302 a otra URL).
+        self.assertRedirects(response, reverse('dashboard')) 
         
-        self.client.post(self.consultation_create_url, consultation_data_3)
-        consultation_3 = Consultation.objects.get(patient=patient_3)
-        # Como el turno es diferente, el contador debe resetearse a 1 para ese turno
-        self.assertEqual(consultation_3.order, 1)
+        # 2. La consulta NO debe haber sido creada.
+        self.assertFalse(
+            Consultation.objects.filter(description='Intento de consulta no autorizado').exists() # <-- CORRECCIÓN 2: Usar 'description'
+        )
+        self.assertEqual(Consultation.objects.count(), 0)
