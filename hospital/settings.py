@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'users',
     'doctors',
     'reception',
-    'administrator', # Nuestra aplicación personalizada de usuarios
+    'administrator',
+    'mytests',
 ]
 
 MIDDLEWARE = [
