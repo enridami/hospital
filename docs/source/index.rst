@@ -1,11 +1,11 @@
 
-Documentacion Hospital 
+DOCUMENTACIÓN HOSPITAL 
 ======================
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contenido:
 
    modules
 

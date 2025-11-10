@@ -1,9 +1,9 @@
-Este es la documentación de los módulos del sistema hospitalario.
-=================================================================
+GRUPO MODULOS
+=================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contenido:
 
    users
    

@@ -1,7 +1,7 @@
-users.migrations package
-========================
+MIGRACIONES DE USERS
+====================
 
-Submodules
+Submodulos
 ----------
 
 users.migrations.0001\_initial module

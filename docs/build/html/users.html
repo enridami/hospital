@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>users package &mdash; documentación de Documentacion Hospital - 1.0</title>
+  <title>PAQUETE USERS &mdash; documentación de Documentacion Hospital - 1.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="users.migrations package" href="users.migrations.html" />
-    <link rel="prev" title="Este es la documentación de los módulos del sistema hospitalario." href="modules.html" /> 
+    <link rel="next" title="MIGRACIONES DE USERS" href="users.migrations.html" />
+    <link rel="prev" title="GRUPO MODULOS" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,26 +43,26 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contenido:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Este es la documentación de los módulos del sistema hospitalario.</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">users package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="users.migrations.html">users.migrations package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">GRUPO MODULOS</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PAQUETE USERS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#paquetes">Paquetes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="users.migrations.html">MIGRACIONES DE USERS</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-users.admin">users.admin module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodulos">SubModulos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-users.admin">Modulo Admin</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#users.admin.CustomUserAdmin"><code class="docutils literal notranslate"><span class="pre">CustomUserAdmin</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#users.admin.DoctorScheduleAdmin"><code class="docutils literal notranslate"><span class="pre">DoctorScheduleAdmin</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#users.admin.PatientAdmin"><code class="docutils literal notranslate"><span class="pre">PatientAdmin</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-users.apps">users.apps module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-users.apps">Modulo Apps</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#users.apps.UsersConfig"><code class="docutils literal notranslate"><span class="pre">UsersConfig</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-users.models">users.models module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-users.models">Modulo Models</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#users.models.Administrator"><code class="docutils literal notranslate"><span class="pre">Administrator</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#users.models.Consultation"><code class="docutils literal notranslate"><span class="pre">Consultation</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#users.models.Doctor"><code class="docutils literal notranslate"><span class="pre">Doctor</span></code></a></li>
@@ -75,12 +75,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#users.models.Users"><code class="docutils literal notranslate"><span class="pre">Users</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-users.tests">users.tests module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-users.tests">Modulo Tests</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#users.tests.UserModelTest"><code class="docutils literal notranslate"><span class="pre">UserModelTest</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-users.urls">users.urls module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-users.views">users.views module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-users.urls">Modulo Urls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-users.views">Modulo Views</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#users.views.dashboard_view"><code class="docutils literal notranslate"><span class="pre">dashboard_view()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#users.views.login_view"><code class="docutils literal notranslate"><span class="pre">login_view()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#users.views.logout_view"><code class="docutils literal notranslate"><span class="pre">logout_view()</span></code></a></li>
@@ -107,8 +107,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">Este es la documentación de los módulos del sistema hospitalario.</a></li>
-      <li class="breadcrumb-item active">users package</li>
+          <li class="breadcrumb-item"><a href="modules.html">GRUPO MODULOS</a></li>
+      <li class="breadcrumb-item active">PAQUETE USERS</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/users.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
       </li>
@@ -118,14 +118,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="users-package">
-<h1>users package<a class="headerlink" href="#users-package" title="Link to this heading"></a></h1>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+  <section id="paquete-users">
+<h1>PAQUETE USERS<a class="headerlink" href="#paquete-users" title="Link to this heading"></a></h1>
+<section id="paquetes">
+<h2>Paquetes<a class="headerlink" href="#paquetes" title="Link to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="users.migrations.html">users.migrations package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="users.migrations.html#submodules">Submodules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="users.migrations.html">MIGRACIONES DE USERS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="users.migrations.html#submodulos">Submodulos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="users.migrations.html#module-users.migrations.0001_initial">users.migrations.0001_initial module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="users.migrations.html#users.migrations.0001_initial.Migration"><code class="docutils literal notranslate"><span class="pre">Migration</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="users.migrations.html#users.migrations.0001_initial.Migration.dependencies"><code class="docutils literal notranslate"><span class="pre">Migration.dependencies</span></code></a></li>
@@ -157,11 +157,11 @@
 </ul>
 </div>
 </section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+<section id="submodulos">
+<h2>SubModulos<a class="headerlink" href="#submodulos" title="Link to this heading"></a></h2>
 </section>
 <section id="module-users.admin">
-<span id="users-admin-module"></span><h2>users.admin module<a class="headerlink" href="#module-users.admin" title="Link to this heading"></a></h2>
+<span id="modulo-admin"></span><h2>Modulo Admin<a class="headerlink" href="#module-users.admin" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="users.admin.CustomUserAdmin">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">users.admin.</span></span><span class="sig-name descname"><span class="pre">CustomUserAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">admin_site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/users/admin.html#CustomUserAdmin"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#users.admin.CustomUserAdmin" title="Link to this definition"></a></dt>
@@ -252,7 +252,7 @@
 
 </section>
 <section id="module-users.apps">
-<span id="users-apps-module"></span><h2>users.apps module<a class="headerlink" href="#module-users.apps" title="Link to this heading"></a></h2>
+<span id="modulo-apps"></span><h2>Modulo Apps<a class="headerlink" href="#module-users.apps" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="users.apps.UsersConfig">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">users.apps.</span></span><span class="sig-name descname"><span class="pre">UsersConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/users/apps.html#UsersConfig"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#users.apps.UsersConfig" title="Link to this definition"></a></dt>
@@ -271,7 +271,7 @@
 
 </section>
 <section id="module-users.models">
-<span id="users-models-module"></span><h2>users.models module<a class="headerlink" href="#module-users.models" title="Link to this heading"></a></h2>
+<span id="modulo-models"></span><h2>Modulo Models<a class="headerlink" href="#module-users.models" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="users.models.Administrator">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">users.models.</span></span><span class="sig-name descname"><span class="pre">Administrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/users/models.html#Administrator"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#users.models.Administrator" title="Link to this definition"></a></dt>
@@ -1697,7 +1697,7 @@ object the first time, the query is executed.</p>
 
 </section>
 <section id="module-users.tests">
-<span id="users-tests-module"></span><h2>users.tests module<a class="headerlink" href="#module-users.tests" title="Link to this heading"></a></h2>
+<span id="modulo-tests"></span><h2>Modulo Tests<a class="headerlink" href="#module-users.tests" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="users.tests.UserModelTest">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">users.tests.</span></span><span class="sig-name descname"><span class="pre">UserModelTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/users/tests.html#UserModelTest"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#users.tests.UserModelTest" title="Link to this definition"></a></dt>
@@ -1711,10 +1711,10 @@ object the first time, the query is executed.</p>
 
 </section>
 <section id="module-users.urls">
-<span id="users-urls-module"></span><h2>users.urls module<a class="headerlink" href="#module-users.urls" title="Link to this heading"></a></h2>
+<span id="modulo-urls"></span><h2>Modulo Urls<a class="headerlink" href="#module-users.urls" title="Link to this heading"></a></h2>
 </section>
 <section id="module-users.views">
-<span id="users-views-module"></span><h2>users.views module<a class="headerlink" href="#module-users.views" title="Link to this heading"></a></h2>
+<span id="modulo-views"></span><h2>Modulo Views<a class="headerlink" href="#module-users.views" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="users.views.dashboard_view">
 <span class="sig-prename descclassname"><span class="pre">users.views.</span></span><span class="sig-name descname"><span class="pre">dashboard_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/users/views.html#dashboard_view"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#users.views.dashboard_view" title="Link to this definition"></a></dt>
@@ -1743,8 +1743,8 @@ object the first time, the query is executed.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
-        <a href="modules.html" class="btn btn-neutral float-left" title="Este es la documentación de los módulos del sistema hospitalario." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
-        <a href="users.migrations.html" class="btn btn-neutral float-right" title="users.migrations package" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="GRUPO MODULOS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="users.migrations.html" class="btn btn-neutral float-right" title="MIGRACIONES DE USERS" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

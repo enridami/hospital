@@ -1,18 +1,18 @@
-users package
+PAQUETE USERS
 =============
 
-Subpackages
------------
+Paquetes
+--------
 
 .. toctree::
    :maxdepth: 4
 
    users.migrations
 
-Submodules
+SubModulos
 ----------
 
-users.admin module
+Modulo Admin
 ------------------
 
 .. automodule:: users.admin
@@ -20,7 +20,7 @@ users.admin module
    :show-inheritance:
    :undoc-members:
 
-users.apps module
+Modulo Apps
 -----------------
 
 .. automodule:: users.apps
@@ -28,7 +28,7 @@ users.apps module
    :show-inheritance:
    :undoc-members:
 
-users.models module
+Modulo Models
 -------------------
 
 .. automodule:: users.models
@@ -36,7 +36,7 @@ users.models module
    :show-inheritance:
    :undoc-members:
 
-users.tests module
+Modulo Tests
 ------------------
 
 .. automodule:: users.tests
@@ -44,7 +44,7 @@ users.tests module
    :show-inheritance:
    :undoc-members:
 
-users.urls module
+Modulo Urls
 -----------------
 
 .. automodule:: users.urls
@@ -52,7 +52,7 @@ users.urls module
    :show-inheritance:
    :undoc-members:
 
-users.views module
+Modulo Views
 ------------------
 
 .. automodule:: users.views
