@@ -338,7 +338,7 @@ class Consultation(models.Model):
     class Meta:
         verbose_name = "Consulta"
         verbose_name_plural = "Consultas"
-        ordering = ['-date', '-time']
+        ordering = ['time']
 
     def __str__(self):
         return f"Consulta de {self.patient.full_name} con {self.doctor} el {self.date} a las {self.time}"
