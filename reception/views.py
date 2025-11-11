@@ -364,6 +364,10 @@ def doctor_schedule_view(request, doctor_id):
     else:
         fecha = datetime.today().date()
 
+    # Excluir la propia consulta al editar para no marcar su turno como ocupado
+    consulta_id = request.GET.get('consulta_id')
+
+
 
     # 1. Obtener el nombre del día en español (según tu modelo)
     dias_map = {
@@ -389,12 +393,23 @@ def doctor_schedule_view(request, doctor_id):
             bloque_inicio = actual.time()
             bloque_fin = (actual + timedelta(minutes=duracion_consulta)).time()
             # Verifica si ya hay una consulta agendada en ese bloque
-            consulta_existente = Consultation.objects.filter(
-                doctor=doctor,
-                date=fecha,   
-                time=bloque_inicio,
-                consultorio=horario.consultorio
-            ).exists()
+            #consulta_existente = Consultation.objects.filter(
+            #    doctor=doctor,
+            #    date=fecha,   
+            #    time=bloque_inicio,
+            #    consultorio=horario.consultorio
+           # ).exists()
+           # if consulta_id:
+           #    consulta_qs = consulta_qs.exclude(pk=consulta_id)
+            consulta_qs = Consultation.objects.filter( 
+               doctor=doctor,
+               date=fecha,
+               time=bloque_inicio,
+               consultorio=horario.consultorio
+               )
+            if consulta_id:
+               consulta_qs = consulta_qs.exclude(pk=consulta_id)
+            consulta_existente = consulta_qs.exists()
             bloques.append({
                 'dia': horario.day,
                 'inicio': bloque_inicio.strftime('%H:%M'),

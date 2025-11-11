@@ -9,7 +9,7 @@
             <div class="col-lg-8">
                 <div class="card shadow-lg border-0">
                     <div class="card-header text-white d-flex align-items-center ">
-                        <h4 class="mb-0">{% if form.instance.pk %}Editar Consulta{% else %}Agendar Consulta{% endif %}</h4>
+                        <h4 class="mb-0 text-dark">{% if form.instance.pk %}Editar Consulta{% else %}Agendar Consulta{% endif %}</h4>
                     </div>
                     <div class="card-body">
                         <!-- Formulario de búsqueda de paciente por CI -->
@@ -92,7 +92,7 @@
                                 
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold text-dark">Fecha</label>
-                                    <input type="date" id="id_date" name="date" class="form-control" required>
+                                    <input type="date" id="id_date" name="date" class="form-control" required value="{% if form.instance.pk %}{{ form.instance.date|date:'Y-m-d' }}{% endif %}">
                                     <button type="button" class="btn btn-info mt-2" onclick="verHorariosDoctor()">Ver horarios</button>
                                 </div>
                                 
@@ -115,13 +115,31 @@
                                     {% endif %}
                                 </div>
 
-
+<!-- 
                                 <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark">Estado</label>
                                     {{ form.status|add_class:"form-select" }}
                                     {% if form.status.errors %}
                                         <div class="text-danger small">{{ form.status.errors|striptags }}</div>
                                     {% endif %}
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label class="form-label fw-bold text-dark">Turno</label>
+                                    
+                                    <input type="hidden" name="shift" value="{{ form.shift.value }}">
+                                  
+                                    <div class="alert alert-info py-2 px-3">
+                                        {{ form.shift.value|default:"(no asignado)" }}
+                                    </div>
+                                </div> -->
+
+                                <div class="col-md-3">
+                                    <label class="form-label text-dark">Estado</label>
+                                    <input type="hidden" name="status" value="{{ form.status.value }}">
+                                    <div class="alert alert-info py-2 px-3">
+                                        {{ form.status.value|default:"EN ESPERA" }}
+                                    </div>
                                 </div>
                             </div>
 
@@ -147,6 +165,9 @@
 
                             <input type="hidden" id="turno_auto" name="turno_auto">
                             <input type="hidden" id="hora_consulta" name="time">
+                            {% if form.instance.pk %}
+                              <input type="hidden" id="consulta_id" value="{{ form.instance.pk }}">
+                            {% endif %}
                             
                             <div class="modal-footer py-3">
                                 <button type="submit" class="btn btn-success px-4">
@@ -185,6 +206,8 @@
 function verHorariosDoctor() {
     var doctorId = document.getElementById('id_doctor').value;
     var fecha = document.getElementById('id_date').value; // <-- obtiene la fecha seleccionada
+    var consultaIdEl = document.getElementById('consulta_id');
+    var consultaId = consultaIdEl ? consultaIdEl.value : '';
     if (!doctorId) {
         alert('Selecciona un doctor primero.');
         return;
@@ -194,7 +217,7 @@ function verHorariosDoctor() {
         return;
     }
     // Llama a la vista por AJAX y pasa la fecha como parámetro GET
-    fetch(`/reception/doctor-schedule/${doctorId}/?fecha=${fecha}`)
+    fetch(`/reception/doctor-schedule/${doctorId}/?fecha=${fecha}` + (consultaId ? `&consulta_id=${consultaId}` : ''))
         .then(response => response.text())
         .then(html => {
             document.getElementById('modalHorariosDoctorBody').innerHTML = html;
@@ -273,7 +296,31 @@ document.addEventListener('DOMContentLoaded', function() {
             selectDoctor.dispatchEvent(new Event('change'));
         }
     }
+
+
+// Prefill al editar: mostrar horario guardado y setear campos ocultos
+var isEditing = {{ form.instance.pk|yesno:"true,false" }};
+if (isEditing) {
+    var existingDate = "{{ form.instance.date|date:'Y-m-d' }}";
+    var existingTime = "{{ form.instance.time|time:'H:i' }}";
+    var existingShift = "{{ form.instance.shift }}";
+    var existingConsultorio = "{{ form.instance.consultorio }}";
+    var dateInput = document.getElementById('id_date');
+    if (dateInput && !dateInput.value) { dateInput.value = existingDate; }
+    var horaInput = document.getElementById('hora_consulta');
+    if (horaInput) { horaInput.value = existingTime; }
+    var turnoInput = document.getElementById('turno_auto');
+    if (turnoInput) { turnoInput.value = existingShift; }
+    var selectTurno = document.getElementById('id_shift');
+    if (selectTurno) { selectTurno.value = existingShift; }
+    var info = document.getElementById('horarioSeleccionadoInfo');
+    if (info) {
+        info.innerHTML = `<strong>Fecha:</strong> ${existingDate} &nbsp; <strong>Hora:</strong> ${existingTime} &nbsp; <strong>Consultorio:</strong> ${existingConsultorio}`;
+    }
+   }
+   
 });
+
 </script>
 </main>
 {% endblock %}
