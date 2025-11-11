@@ -41,7 +41,7 @@
                     <tbody>
                         {% for consulta in consultations %}
                         <tr>
-                            <td>{{ consulta.order }}</td>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ consulta.get_status_display }}</td>
                             <td>{{ consulta.patient.identification_number }}</td>
                             <td>{{ consulta.patient.first_name }}</td>
