@@ -48,3 +48,11 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Procesos ordenados por rol y reducción de fricciones operativas.
 - Datos consistentes mediante validaciones y modelos de dominio claros.
 - Escalable: nuevas especialidades o reglas se integran como nuevas vistas/modelos dentro del monolito.
+
+## Autores
+
+- [@enridami](https://www.github.com/enridami) Developer
+- [@Gabriel-Gabe](https://github.com/Gabriel-Gabe) Testing - Security
+- [@RaulOjeda1122](https://github.com/RaulOjeda1122) Documentation
+
+
