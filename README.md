@@ -10,24 +10,24 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Centralizar la información clínica y administrativa.
 - Reducir tiempos de atención y errores de registro.
 - Mantener trazabilidad de consultas, pacientes y profesionales.
-- Ofrecer una interfaz clara y responsiva para cada rol.
+- Ofrecer una interfaz clara y responsiva para cada rol. 
 
 ## Roles y paneles
-- Recepción: agenda, reprograma y confirma consultas; registra/edita pacientes.
-- Médico: consulta su agenda, atiende y documenta la atención; emite recetas.
-- Administrador: gestiona usuarios, roles, permisos y especialidades.
-- Paciente: perfil básico (datos demográficos y contacto).
+- Recepción: agenda, reprograma y confirma consultas; registra/edita pacientes. 
+- Médico: consulta su agenda, atiende y documenta la atención; emite recetas. 
+- Administrador: gestiona usuarios, roles, permisos y especialidades. 
+- Paciente: perfil básico (datos demográficos y contacto). 
 
 ## Funcionalidades clave
 - Gestión de usuarios y perfiles (Users + Doctor/Reception/Administrator).
 - Catálogo de especialidades médicas (Specialty).
-- Registro completo de pacientes, con validaciones y cálculo de edad (Patient).
-- Agenda y atención de consultas (Consultation) y emisión de recetas (Prescription).
-- Horarios por médico (DoctorSchedule).
+- Registro completo de pacientes, con validaciones y cálculo de edad (Patient). 
+- Agenda y atención de consultas (Consultation) y emisión de recetas (Prescription). 
+- Horarios por médico (DoctorSchedule). 
 - Manejo de archivos estáticos y media (avatares, etc.).
-
+ 
 ## Entidades principales del dominio
-- Users (extiende AbstractUser), Doctor, Receptions, Administrator.
+- Users (extiende AbstractUser), Doctor, Receptions, Administrator. 
 - Patient (datos demográficos, contacto de emergencia, doctor asignado).
 - Specialty (especialidades), Consultation (consulta médica), Prescription (receta).
 - DoctorSchedule (horarios)
