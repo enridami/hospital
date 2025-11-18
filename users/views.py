@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 # Obtener el modelo de usuario personalizado
 Users = get_user_model()
 
+# Iniciar sesión
 def login_view(request):
     """Vista para manejar el login de usuarios"""
     list(messages.get_messages(request))
@@ -46,7 +47,7 @@ def dashboard_view(request):
             'specialty': None
         })
 
-
+# Cerrar sesión
 @login_required(login_url='/login/')
 def logout_view(request):
     """Vista para cerrar sesión"""
