@@ -37,7 +37,9 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Apps por dominio: `users`, `doctors`, `reception`, `administrator`.
 - Presentación por plantillas segmentadas por rol (templates/), recursos en `static/` y archivos subidos en `media/`.
 - Documentación técnica con Sphinx (docs/).
-![Aoo Screenshot](static/img/estructura.png)
+- Estructura básica del proyecto:
+
+![App Screenshot](static/img/estructura.png)
 
 ## Flujo básico
 1. Recepción registra al paciente y agenda una consulta con un médico de una especialidad.
@@ -49,6 +51,17 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Procesos ordenados por rol y reducción de fricciones operativas.
 - Datos consistentes mediante validaciones y modelos de dominio claros.
 - Escalable: nuevas especialidades o reglas se integran como nuevas vistas/modelos dentro del monolito.
+
+## Screenshots
+![App Screenshot](static/img/1.png)
+![App Screenshot](static/img/2.png)
+![App Screenshot](static/img/6.png)
+![App Screenshot](static/img/7.png)
+![App Screenshot](static/img/8.png)
+![App Screenshot](static/img/9.png)
+![App Screenshot](static/img/10.png)
+![App Screenshot](static/img/11.png)
+![App Screenshot](static/img/12.png)
 
 ## Autores
 
