@@ -1,6 +1,6 @@
 
-![App Screenshot](static/img/logo.png)
 #           Sistema de Gestión Hospitalaria (SGH)
+![App Screenshot](static/img/logo.png)
 
 Aplicación web diseñada para agilizar, optimizar y organizar la interacción entre recepción, médicos y pacientes. Permite agendar y gestionar consultas por especialidad, atenderlas y dejar constancia clínica de cada atención.
 
