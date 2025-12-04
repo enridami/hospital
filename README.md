@@ -1,5 +1,6 @@
 
-# Sistema de Gestión Hospitalaria (SGH)
+![App Screenshot](static/img/logo.png)
+#           Sistema de Gestión Hospitalaria (SGH)
 
 Aplicación web diseñada para agilizar, optimizar y organizar la interacción entre recepción, médicos y pacientes. Permite agendar y gestionar consultas por especialidad, atenderlas y dejar constancia clínica de cada atención.
 
@@ -58,18 +59,19 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Python
 - pip
 - virtualenv
+- PostgreSQL
 
 **1 - Crear el directorio**: abrir el terminal y crear el directorio en donde se guardara el proyecto.
 
 ```bash
-  mkdir CRUD #Para crear el directorio 
+  mkdir hospital #Para crear el directorio 
 ```
     
 **2 - Clonar el repositorio**: posicionarse en el directorio donde se desea clonar el repositorio y ejecutar git clone
 
 ```bash
   cd CRUD
-  git clone https://github.com/enridami/simple_crud.git
+  git clone https://github.com/enridami/hospital.git
 ```
 
 **3 - Crear el entorno virtual:** ingresar cualquiera de las dos opciones para crear el entorno virtual en la carpeta del proyecto
@@ -114,7 +116,10 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 
 Una vez realizado todos los pasos abre tu navegador e ingresa al http://localhost:8000/ para acceder al despliegue del proyecto.
 
-
+## Semilla de la Database
+```bash
+  python manage.py loaddata data.json
+```
 
 ## Screenshots
 ![App Screenshot](static/img/1.png)
