@@ -52,6 +52,70 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Datos consistentes mediante validaciones y modelos de dominio claros.
 - Escalable: nuevas especialidades o reglas se integran como nuevas vistas/modelos dentro del monolito.
 
+## Instalación
+
+**Pre-requisitos**: 
+- Python
+- pip
+- virtualenv
+
+**1 - Crear el directorio**: abrir el terminal y crear el directorio en donde se guardara el proyecto.
+
+```bash
+  mkdir CRUD #Para crear el directorio 
+```
+    
+**2 - Clonar el repositorio**: posicionarse en el directorio donde se desea clonar el repositorio y ejecutar git clone
+
+```bash
+  cd CRUD
+  git clone https://github.com/enridami/simple_crud.git
+```
+
+**3 - Crear el entorno virtual:** ingresar cualquiera de las dos opciones para crear el entorno virtual en la carpeta del proyecto
+
+```bash
+  virtualenv env
+```
+
+
+```bash
+  python -m venv env
+```
+
+**4 - Iniciar el entorno virtual:**
+
+```bash
+  env\Scripts\activate
+```
+
+**5 - Instalar las dependencias requeridas:**
+
+```bash
+  pip install -r requirements.txt
+```
+
+**6 - Aplicar las migraciones para configurar la base de datos:**
+
+```bash
+  python manage.py makemigrations
+  python manage.py migrate
+```
+
+
+
+## Despligue
+
+**Inicializar la aplicación:**
+
+```bash
+  python manage.py runserver
+```
+
+Una vez realizado todos los pasos abre tu navegador e ingresa al http://localhost:8000/ para acceder al despliegue del proyecto.
+
+
+
 ## Screenshots
 ![App Screenshot](static/img/1.png)
 ![App Screenshot](static/img/2.png)
