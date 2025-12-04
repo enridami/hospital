@@ -1,6 +1,9 @@
 
-#           Sistema de Gestión Hospitalaria (SGH)
-![App Screenshot](static/img/logo.png)
+<p align="center">
+  <img src="static/img/logo.png" alt="Logo SGH" width="300">
+</p>
+<h1 align="center">Sistema de Gestión Hospitalaria (SGH)</h1>
+
 
 Aplicación web diseñada para agilizar, optimizar y organizar la interacción entre recepción, médicos y pacientes. Permite agendar y gestionar consultas por especialidad, atenderlas y dejar constancia clínica de cada atención.
 
@@ -70,7 +73,7 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 **2 - Clonar el repositorio**: posicionarse en el directorio donde se desea clonar el repositorio y ejecutar git clone
 
 ```bash
-  cd CRUD
+  cd hospital
   git clone https://github.com/enridami/hospital.git
 ```
 
