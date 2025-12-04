@@ -37,6 +37,7 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Apps por dominio: `users`, `doctors`, `reception`, `administrator`.
 - Presentación por plantillas segmentadas por rol (templates/), recursos en `static/` y archivos subidos en `media/`.
 - Documentación técnica con Sphinx (docs/).
+![Aoo Screenshot](static/img/estructura.png)
 
 ## Flujo básico
 1. Recepción registra al paciente y agenda una consulta con un médico de una especialidad.
