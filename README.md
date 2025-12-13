@@ -56,6 +56,19 @@ El recepcionista agenda consultas médicas según especialidad y disponibilidad 
 - Datos consistentes mediante validaciones y modelos de dominio claros.
 - Escalable: nuevas especialidades o reglas se integran como nuevas vistas/modelos dentro del monolito.
 
+## Tecnologías utilizadas
+En el proyecto se utilizaron las tecnologías:
+1. Frontend:
+  - HTML
+  - CSS
+  - JavaScript
+2. Backend:
+  - Python
+  - PostgreSQL
+3. Frameworks:
+  - Django
+  - Bootstrap
+
 ## Instalación
 
 **Pre-requisitos**: 
@@ -140,5 +153,6 @@ Una vez realizado todos los pasos abre tu navegador e ingresa al http://localhos
 - [@enridami](https://www.github.com/enridami) Developer
 - [@Gabriel-Gabe](https://github.com/Gabriel-Gabe) Testing - Security
 - [@RaulOjeda1122](https://github.com/RaulOjeda1122) Documentation
+
 
 
